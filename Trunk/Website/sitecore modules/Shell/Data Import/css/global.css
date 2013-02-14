@@ -1,0 +1,51 @@
+﻿* {
+	font-family:Arial;
+	font-size:11px;
+	color:#336699;
+}
+.clear {
+	clear:both;
+}
+body {
+	background-color:#aaaaaa;
+}
+h1 {
+	font-size:27px;
+	color:#333;
+	margin:10px;
+	font-weight:normal;
+}
+.TextBox {
+	width:400px;
+	margin:0 0 5px 0;
+}
+.MainWrapper {
+	width:300px;
+	margin:0px auto;
+}
+	.Section {
+		width:250px;
+		padding:10px;
+		background-color:#cccccc;
+		margin:5px 10px;
+		clear:both;
+		float:left;
+		border:1px solid #dddddd;
+	}
+		.SectionTitle {
+			margin:0 0 10px;
+			font-size:18px;
+			color:#003366;
+		}
+		
+		.ImportForm {
+			margin:0 0 10px;
+			padding:0 0 10px;
+			border-bottom:1px solid #cccccc;
+		}
+			.ImportForm label {
+				width:150px;
+				display:block;
+				float:left;
+				margin:0 5px 0 0;
+			}
