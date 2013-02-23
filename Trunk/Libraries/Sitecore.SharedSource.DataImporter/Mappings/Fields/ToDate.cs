@@ -5,6 +5,9 @@ using System.Text;
 using Sitecore.Data.Items;
 using Sitecore.SharedSource.DataImporter.Extensions;
 using System.Data;
+using System.Collections;
+using Sitecore.SharedSource.DataImporter.Providers;
+using Sitecore.Data.Fields;
 
 namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
 	public class ToDate : ToText {
@@ -24,25 +27,13 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
 		
 		#region Methods
 
-		//methods
-		public override void FillField(ref Item newItem, DataRow importRow) {
-			FillField(ref newItem, GetValueFromDataRow(importRow));
+        public override void FillField(BaseDataMap map, ref Item newItem, string importValue)
+        {
+            DateTime date = DateTime.Parse(importValue);
+			Field f = newItem.Fields[NewItemField];
+            if(f != null)
+                f.Value = date.ToDateFieldValue();
 		}
-
-		public override void FillField(ref Item newItem, Item importRow) {
-			FillField(ref newItem, GetValueFromItem(importRow));
-		}
-
-		protected virtual void FillField(ref Item newItem, string existingValue) {
-			
-			try {
-				DateTime date = DateTime.Parse(existingValue);
-				newItem.Fields[NewItemField].Value = date.ToDateFieldValue();
-			} catch (Exception ex) {
-				//this is because the value was not a proper date
-			}
-		}
-
 
 		#endregion Methods
 	}

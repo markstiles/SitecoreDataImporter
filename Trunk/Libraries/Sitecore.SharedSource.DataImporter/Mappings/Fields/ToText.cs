@@ -7,22 +7,25 @@ using Sitecore.Data.Items;
 using System.Web;
 using Sitecore.Data.Fields;
 using System.Data;
+using System.Collections;
+using Sitecore.SharedSource.DataImporter.Providers;
 
 namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
 {
-	public class ToText : BaseField {
+    public class ToText : BaseMapping, IBaseField
+    {
 		
 		#region Properties 
 
 		public char[] comSplitr = { ',' };
 
-		private string _existingDataName;
-		public string ExistingDataName {
+		private IEnumerable<string> _existingDataNames;
+		public IEnumerable<string> ExistingDataNames {
 			get {
-				return _existingDataName;
+				return _existingDataNames;
 			}
 			set {
-				_existingDataName = value;
+				_existingDataNames = value;
 			}
 		}
 
@@ -40,10 +43,9 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
 		
 		#region Constructor
 
-		//constructor
 		public ToText(Item i) : base(i) {
-			
-			ExistingDataName = i.Fields["From What Fields"].Value;
+
+            ExistingDataNames = i.Fields["From What Fields"].Value.Split(comSplitr, StringSplitOptions.RemoveEmptyEntries);
 			Delimiter = i.Fields["Delimiter"].Value;
 		}
 
@@ -51,56 +53,32 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
 		
 		#region Methods
 
-		//methods
-		public override void FillField(ref Item newItem, DataRow importRow) {
-			FillField(ref newItem, GetValueFromDataRow(importRow));
+		public virtual void FillField(BaseDataMap map, ref Item newItem, string importValue)
+        {
+            Field f = newItem.Fields[NewItemField];
+            if(f != null)
+                f.Value = importValue;
 		}
 
-		public override void FillField(ref Item newItem, Item importRow) {
-			FillField(ref newItem, GetValueFromItem(importRow));
-		}
+        #endregion Methods
 
-		protected virtual void FillField(ref Item newItem, string existingValue) {
-			
-			try {
-				newItem.Fields[NewItemField].Value = existingValue;
-			} catch (Exception ex) {
-				//this is because the value was not a proper date
-				HttpContext.Current.Response.Write(newItem.Paths.Path + " - " + NewItemField + "<br/>");
-			}
-		}
+        #region IBaseField Methods
 
-		public string GetValueFromDataRow(DataRow importItem) {
+        public string GetNewFieldName()
+        {
+            return NewItemField;
+        }
 
-			
-			string[] existingDataNames = ExistingDataName.Split(comSplitr, StringSplitOptions.RemoveEmptyEntries);
-			string fullData = "";
-			int i = 0;
-			foreach (string dataName in existingDataNames) {
-				if (i > 0) {
-					fullData += Delimiter;
-				}
-				fullData += importItem[dataName].ToString();
-				i++;
-			}
+        public IEnumerable<string> GetExistingFieldNames()
+        {
+            return ExistingDataNames;
+        }
 
-			return fullData;
-		}
+        public string GetFieldValueDelimiter()
+        {
+            return Delimiter;
+        }
 
-		public string GetValueFromItem(Item importItem) {
-			string[] existingDataNames = ExistingDataName.Split(comSplitr, StringSplitOptions.RemoveEmptyEntries);
-			string fullData = "";
-			int i = 0;
-			foreach (string dataName in existingDataNames) {
-				if (i > 0) {
-					fullData += Delimiter;
-				}
-				fullData += importItem.Fields[dataName].Value;
-				i++;
-			}
-			return fullData;
-		}
-
-		#endregion Methods
-	}
+        #endregion IBaseField Methods
+    }
 }

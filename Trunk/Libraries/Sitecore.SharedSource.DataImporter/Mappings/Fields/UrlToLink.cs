@@ -5,6 +5,8 @@ using System.Text;
 using Sitecore.Data.Items;
 using Sitecore.Data.Fields;
 using System.Data;
+using System.Collections;
+using Sitecore.SharedSource.DataImporter.Providers;
 
 namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
 	public class UrlToLink : ToText {
@@ -24,19 +26,11 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
 		
 		#region Methods
 
-		//methods
-		public override void FillField(ref Item newItem, DataRow importRow) {
-			FillField(ref newItem, GetValueFromDataRow(importRow));
-		}
-
-		public override void FillField(ref Item newItem, Item importRow) {
-			FillField(ref newItem, GetValueFromItem(importRow));
-		}
-
-		protected virtual void FillField(ref Item newItem, string existingValue) {
-			
-			LinkField lf = newItem.Fields[NewItemField];
-			lf.Url = existingValue;
+        public override void FillField(BaseDataMap map, ref Item newItem, string importValue)
+        {
+            LinkField lf = newItem.Fields[NewItemField];
+			if(lf != null)
+                lf.Url = importValue;
 		}
 
 		#endregion Methods

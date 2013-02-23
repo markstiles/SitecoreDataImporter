@@ -6,6 +6,11 @@ using Sitecore.SharedSource.DataImporter;
 using Sitecore.Data.Items;
 using Sitecore.Data;
 using System.Data;
+using Sitecore.SharedSource.DataImporter.Extensions;
+using System.Collections;
+using Sitecore.SharedSource.DataImporter.Providers;
+using Sitecore.SharedSource.DataImporter.Utility;
+using Sitecore.Data.Fields;
 
 namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
 	public class ListToGuid : ToText {
@@ -35,24 +40,19 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
 
 		#region Methods
 
-		//fills it's own field
-		public override void FillField(ref Item newItem, DataRow importRow) {
-			FillField(ref newItem, GetValueFromDataRow(importRow));
-		}
-
-		public override void FillField(ref Item newItem, Item importRow) {
-			FillField(ref newItem, GetValueFromItem(importRow));
-		}
-
-		protected override void FillField(ref Item newItem, string existingValue) {
-
-			Item i = newItem.Database.GetItem(SourceList);
+        public override void FillField(BaseDataMap map, ref Item newItem, string importValue)
+        {
+            Item i = newItem.Database.GetItem(SourceList);
 			if (i != null) {
-				foreach (Item child in i.GetChildren()) {
-					if (child.DisplayName.Equals(existingValue)) {
-						newItem.Fields[NewItemField].Value = child.ID.ToString();
-					}
-				}
+                IEnumerable<Item> t = from Item c in i.GetChildren()
+                                      where c.DisplayName.Equals(StringUtility.GetNewItemName(importValue, map.ItemNameMaxLength))
+                                      select c;
+
+                if (t.Any()) {
+                    Field f = newItem.Fields[NewItemField];
+                    if(f != null)
+                        f.Value = t.First().ID.ToString();
+                }
 			}
 		}
 

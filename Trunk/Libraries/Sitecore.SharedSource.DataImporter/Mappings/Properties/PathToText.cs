@@ -2,15 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Sitecore.SharedSource.DataImporter.Comparers;
 using Sitecore.Data.Items;
 using Sitecore.Data.Fields;
 using System.Web;
 using Sitecore.SharedSource.DataImporter.Extensions;
+using System.Collections;
+using Sitecore.SharedSource.DataImporter.Providers;
 
 namespace Sitecore.SharedSource.DataImporter.Mappings.Properties
 {
-	public class PathToText : BaseProperty {
+	public class PathToText : BaseMapping, IBaseProperty {
 
 		#region Properties
 
@@ -28,9 +29,11 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Properties
 		#region Methods
 
 		//fills it's own field
-		public override void FillField(ref Item newItem, Item importRow) {
-
-			newItem.Fields[NewItemField].Value = importRow.Paths.Path;
+        public void FillField(BaseDataMap map, ref Item newItem, Item importRow)
+        {
+            Field f = newItem.Fields[NewItemField];
+            if(f != null)
+                f.Value = importRow.Paths.FullPath;
 		}
 
 		#endregion Methods

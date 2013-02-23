@@ -4,9 +4,12 @@ using System.Linq;
 using System.Text;
 using Sitecore.Data.Items;
 using System.Data;
+using Sitecore.SharedSource.DataImporter.Providers;
+using Sitecore.Links;
+using Sitecore.Data.Fields;
 
 namespace Sitecore.SharedSource.DataImporter.Mappings.Properties {
-	public class UrlToText : BaseProperty {
+	public class UrlToText : BaseMapping, IBaseProperty {
 		#region Properties
 
 		#endregion Properties
@@ -23,21 +26,11 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Properties {
 		#region Methods
 
 		//fills it's own field
-		public override void FillField(ref Item newItem, Item importRow) {
-
-			StringBuilder existingValue = new StringBuilder();
-			string[] splitr = { "/" };
-			string[] pathArr = importRow.Paths.Path.Split(splitr, StringSplitOptions.RemoveEmptyEntries);
-			
-			//removes /sitecore/content
-			if (pathArr.Length > 3) {
-				for (int i = 3; i < pathArr.Length; i++) {
-					existingValue.Append("/" + pathArr[i]);
-				}
-			}
-
-			existingValue.Append(".aspx");
-			newItem.Fields[NewItemField].Value = existingValue.ToString();
+        public void FillField(BaseDataMap map, ref Item newItem, Item importRow)
+        {
+            Field f = newItem.Fields[NewItemField];
+            if(f != null)
+                f.Value = LinkManager.GetDynamicUrl(importRow);
 		}
 
 		#endregion Methods

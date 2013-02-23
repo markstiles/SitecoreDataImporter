@@ -4,9 +4,12 @@ using System.Linq;
 using System.Text;
 using Sitecore.Data.Items;
 using System.Data;
+using System.Collections;
+using Sitecore.SharedSource.DataImporter.Providers;
+using Sitecore.Data.Fields;
 
 namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
-	public class ToStaticValue : BaseField {
+	public class ToStaticValue : BaseMapping, IBaseField {
 
 		#region Properties
 
@@ -24,7 +27,6 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
 
 		#region Constructor
 
-		//constructor
 		public ToStaticValue(Item i) : base(i) {
 			Value = i.Fields["Value"].Value;
 		}
@@ -33,18 +35,32 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
 
 		#region Methods
 
-		public override void FillField(ref Item newItem, DataRow importRow) {
-			FillField(ref newItem);
-		}
-
-		public override void FillField(ref Item newItem, Item importRow) {
-			FillField(ref newItem);
-		}
-
-		protected virtual void FillField(ref Item newItem) {
-			newItem.Fields[NewItemField].Value = Value;
+        public void FillField(BaseDataMap map, ref Item newItem, string importValue)
+        {
+            Field f = newItem.Fields[NewItemField];
+            if(f != null)
+                f.Value = Value;
 		}
 
 		#endregion Methods
+
+        #region IBaseField Methods
+
+        public string GetNewFieldName()
+        {
+            return NewItemField;
+        }
+
+        public IEnumerable<string> GetExistingFieldNames()
+        {
+            return Enumerable.Empty<string>();
+        }
+
+        public string GetFieldValueDelimiter()
+        {
+            return string.Empty;
+        }
+
+        #endregion IBaseField Methods
 	}
 }
