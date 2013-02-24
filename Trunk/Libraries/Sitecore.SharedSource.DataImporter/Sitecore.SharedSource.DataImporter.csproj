@@ -82,7 +82,6 @@
     <Compile Include="Mappings\Fields\UrlToLink.cs" />
     <Compile Include="Providers\BaseDataMap.cs" />
     <Compile Include="Mappings\Fields\ListToGuid.cs" />
-    <Compile Include="Enums.cs" />
     <Compile Include="Mappings\Fields\ToText.cs" />
     <Compile Include="Mappings\Properties\IBaseProperty.cs" />
     <Compile Include="Mappings\Properties\UrlToText.cs" />

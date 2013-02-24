@@ -29,6 +29,10 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 
         #region Override Methods
 
+        /// <summary>
+        /// uses a SqlConnection to get data
+        /// </summary>
+        /// <returns></returns>
         public override IEnumerable<object> GetImportData()
         {
             DataSet ds = new DataSet();
@@ -45,14 +49,26 @@ namespace Sitecore.SharedSource.DataImporter.Providers
                     select dr).Cast<object>();
         }
 
+        /// <summary>
+        /// doesn't handle any custom data
+        /// </summary>
+        /// <param name="newItem"></param>
+        /// <param name="importRow"></param>
         public override void ProcessCustomData(ref Item newItem, object importRow)
         {
         }
         
+        /// <summary>
+        /// gets custom data from a DataRow
+        /// </summary>
+        /// <param name="importRow"></param>
+        /// <param name="fieldName"></param>
+        /// <returns></returns>
         protected override string GetFieldValue(object importRow, string fieldName)
         {
             DataRow item = importRow as DataRow;
-            return item[fieldName].ToString();
+            object f = item[fieldName];
+            return (f != null) ? f.ToString() : string.Empty;
         }
 
         #endregion Override Methods

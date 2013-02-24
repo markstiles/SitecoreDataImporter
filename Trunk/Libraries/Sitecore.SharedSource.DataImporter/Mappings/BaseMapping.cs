@@ -5,12 +5,19 @@ using System.Text;
 using Sitecore.Data.Items;
 
 namespace Sitecore.SharedSource.DataImporter.Mappings {
-	public class BaseMapping {
+	
+    /// <summary>
+    /// this is the class that all fields/properties should extend. 
+    /// </summary>
+    public class BaseMapping {
 
 		#region Properties
 
 		private string _newItemField;
-		public string NewItemField {
+		/// <summary>
+		/// the field on the new item that the imported data should be stored in
+		/// </summary>
+        public string NewItemField {
 			get {
 				return _newItemField;
 			}
@@ -20,7 +27,10 @@ namespace Sitecore.SharedSource.DataImporter.Mappings {
 		}
 
 		private string _HandlerClass;
-		public string HandlerClass {
+		/// <summary>
+		/// the class that represents the field
+		/// </summary>
+        public string HandlerClass {
 			get {
 				return _HandlerClass;
 			}
@@ -30,7 +40,10 @@ namespace Sitecore.SharedSource.DataImporter.Mappings {
 		}
 
 		private string _HandlerAssembly;
-		public string HandlerAssembly {
+		/// <summary>
+		/// the assembly that the class representing this field is stored in
+		/// </summary>
+        public string HandlerAssembly {
 			get {
 				return _HandlerAssembly;
 			}

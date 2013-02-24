@@ -30,6 +30,10 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
 
         #region Override Methods
 
+        /// <summary>
+        /// uses a MySqlConnection to retrieve data
+        /// </summary>
+        /// <returns></returns>
         public override IEnumerable<object> GetImportData() {
             DataSet ds = new DataSet();
             MySqlConnection conSQL = new MySqlConnection(this.DatabaseConnectionString);
