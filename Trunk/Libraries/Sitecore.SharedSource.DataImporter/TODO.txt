@@ -1,3 +1,0 @@
-﻿
-
-build it as release before packaging up
