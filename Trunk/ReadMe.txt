@@ -1,3 +1,0 @@
-If you're just looking to install the package and use it 'As is' then just browse to the /data/packages folder. 
-
-If you're looking to use the system to customize it then you'll want to add the class library under /Libraries to your working solution as well as the DataImport folder under /Website/sitecore modules. You'll also want to follow the documentation under /Documentation to know how to add custom Field or Property types.
