@@ -5,50 +5,69 @@
 <html xmlns="http://www.w3.org/1999/xhtml" >
 <head runat="server">
     <title>Data Import</title>
-	<link href="css/global.css?id=dded" rel="stylesheet" type="text/css">
-</link>
+	<link href="css/global.css?id=dded" rel="stylesheet" type="text/css"></link>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+    <script type="text/javascript">
+    	$(document).ready(function () {
+    		$('h2').dblclick(function () {
+    			$(this).next(".Section").toggle();
+    		});
+    	});
+    </script>
 </head>
 <body>
     <form id="form1" runat="server">
     <asp:ScriptManager ID="scrptManager" runat="server"></asp:ScriptManager>
     <div class="MainWrapper">
-        <h1>Data Import Utility</h1>
+        <h2>Import Settings</h2>
         <div class="Section">
-			<div class="SectionTitle">SQL Import</div>
-			<div>
-				<label>Connection String:</label>
-				<br />
-				<asp:UpdatePanel ID="upRefresh" runat="server">
-					<ContentTemplate>
-						<asp:DropDownList ID="ddlConnStr" runat="server"></asp:DropDownList>
-						<br /><br />
-						<label>Import Setting:</label>
-						<br />	
-						<asp:DropDownList ID="ddlSQLImport" runat="server"></asp:DropDownList>
-						<asp:Button ID="btnRefresh" Text="Refresh" OnClick="btnRefresh_Click" runat="server" />
-					</ContentTemplate>
-				</asp:UpdatePanel>
-				<br />
-				<asp:Button ID="btnSQLImport" Text="Import" OnClick="btnSQLImport_Click" runat="server" />
-				<br /><br />
-			</div>
-			<div class="Message">
-				<asp:Literal ID="ltlSQLMessage" runat="server"></asp:Literal>
-			</div>
+            <div class="Controls">
+			    <div class="formRow">
+                    <div class="rowTitle noButtons">Connection String:</div>
+                    <asp:DropDownList ID="ddlConnStr" runat="server"></asp:DropDownList>
+				    <div class="clear"></div>
+                </div>
+                <div class="rowSpacer"></div>
+			    <asp:UpdatePanel ID="upRefresh" runat="server">
+				    <ContentTemplate>
+					    <div class="formRow">
+                            <div class="rowTitle">Import Definition:</div>
+                            <div class="btnBox">
+                                <div class="btn">
+                                    <asp:Button ID="btnRefresh" CssClass="refreshBtn" Text="Refresh" OnClick="btnRefresh_Click" runat="server" />
+                                </div>
+                            </div>
+                            <div class="clear"></div>
+                            <asp:DropDownList ID="ddlImport" runat="server"></asp:DropDownList>
+                            <div class="clear"></div>
+                        </div>
+				    </ContentTemplate>
+			    </asp:UpdatePanel>
+            </div>
         </div>
+        <div class="clear"></div>
+        <h2>Results</h2>
         <div class="Section">
-			<div class="SectionTitle">Sitecore Import</div>
-			<div>
-				<label>Import Setting:</label>
-				<br />
-				<asp:DropDownList ID="ddlSCImport" runat="server"></asp:DropDownList>
-				<br /><br />
-				<asp:Button ID="btnSCImport" Text="Import" OnClick="btnSCImport_Click" runat="server" />
-				<br /><br />
-			</div>
-			<div class="Message">
-				<asp:Literal ID="ltlSCMessage" runat="server"></asp:Literal>
-			</div>
+            <div class="Controls">
+			    <div class="formRow">
+                    <div class="btnBox">
+                        <div class="btn">
+                            <asp:Button ID="btnImport" CssClass="runBtn" Text="Run Import" OnClick="btnImport_Click" runat="server" />
+                            <div class="clear"></div>
+                        </div>
+                        <div class="clear"></div>
+			        </div>
+                </div>
+                <div class="rowSpacer"></div>
+                <div class="formRow">
+                    <div class="rowTitle">Messages:</div>
+                    <div class="Message">
+                        <asp:TextBox ID="txtMessage" TextMode="MultiLine" runat="server"></asp:TextBox>
+		            </div>
+                    <div class="clear"></div>
+                </div>
+                <div class="clear"></div>
+            </div>
         </div>
     </div>
     </form>
