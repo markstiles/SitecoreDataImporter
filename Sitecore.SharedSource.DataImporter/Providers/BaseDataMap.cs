@@ -405,7 +405,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers
         /// <returns></returns>
         protected Item GetItemByTemplate(Item parent, string TemplateID) {
             IEnumerable<Item> x = from Item i in parent.GetChildren()
-                                  where i.Template.IsID(FieldsFolderID)
+                                  where i.Template.IsID(TemplateID)
                                   select i;
             return (x.Any()) ? x.First() : null;
         }
