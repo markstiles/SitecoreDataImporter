@@ -68,11 +68,11 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 			}
 		}
 
-		private TemplateItem _NewItemTemplate ;
+		private CustomItemBase _NewItemTemplate ;
 		/// <summary>
 		/// the template to create new items with
 		/// </summary>
-        public TemplateItem NewItemTemplate  {
+        public CustomItemBase NewItemTemplate  {
 			get {
 				return _NewItemTemplate;
 			}
@@ -253,10 +253,15 @@ namespace Sitecore.SharedSource.DataImporter.Providers
             string templateID = importItem.Fields["Import To What Template"].Value;
 			if (!string.IsNullOrEmpty(templateID)) {
                 Item templateItem = SitecoreDB.Items[templateID];
-                if(templateItem.IsNotNull())
-                    NewItemTemplate = templateItem;
-                else
+                if(templateItem.IsNotNull()) {
+			        if ((BranchItem) templateItem != null) {
+			            NewItemTemplate = (BranchItem)templateItem;
+                    } else {
+                        NewItemTemplate = (TemplateItem)templateItem;
+                    }
+                } else {
                     Log("Error", "the 'To What Template' item is null");
+                }
             } else {
                 Log("Error", "the 'To What Template' field is not set");
             }
@@ -458,7 +463,12 @@ namespace Sitecore.SharedSource.DataImporter.Providers
                         break;
                     }
                     
-                    Sitecore.Data.Items.Item newItem = thisParent.Add(newItemName, NewItemTemplate);
+                    Sitecore.Data.Items.Item newItem;
+                    if (NewItemTemplate is BranchItem)
+                        newItem = thisParent.Add(newItemName, (BranchItem)NewItemTemplate);
+                    else
+                        newItem = thisParent.Add(newItemName, (TemplateItem)NewItemTemplate);
+                        
                     if (newItem == null) {
                         Log("Error", "the new item created was null");
                         continue;
