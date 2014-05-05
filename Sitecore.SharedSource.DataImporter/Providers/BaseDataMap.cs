@@ -489,7 +489,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers
                 }
             }
             //if no messages then you're good
-            if (log.Length < 1) 
+            if (log.Length < 1 || !log.ToString().Contains("Error")) 
                 Log("Success", "the import completed successfully");
 
             return log.ToString();
