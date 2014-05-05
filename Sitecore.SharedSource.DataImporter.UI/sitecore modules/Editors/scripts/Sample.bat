@@ -9,6 +9,6 @@
 set LauncherPath=%cd%\..\..\..\..\bin\Sitecore.SharedSource.DataImporter.Launcher.exe
 
 @echo on
-"%LauncherPath%" "Sitecore.SharedSource.DataImporter" "Sitecore.SharedSource.DataImporter.Providers.SitecoreDataMap" "master" "master" "{59A62A95-9E5D-4478-BDC9-1E793823C48F}"
+"%LauncherPath%" -a "Sitecore.SharedSource.DataImporter" -cn "Sitecore.SharedSource.DataImporter.Providers.SitecoreDataMap" -d "master" -cs "master" -i "{59A62A95-9E5D-4478-BDC9-1E793823C48F}"
 pause
 
