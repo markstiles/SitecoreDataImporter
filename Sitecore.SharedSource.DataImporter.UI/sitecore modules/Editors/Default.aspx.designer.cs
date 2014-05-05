@@ -9,7 +9,7 @@
 
 
 
-public partial class DataImporter {
+public partial class Default {
     
     /// <summary>
     /// form1 control.

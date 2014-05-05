@@ -22,7 +22,7 @@ using System.Text;
 using System.IO;
 using Sitecore.Web;
 
-public partial class DataImporter : Page
+public partial class Default : Page
 {
 	protected Database currentDB;
     protected StringBuilder log;
