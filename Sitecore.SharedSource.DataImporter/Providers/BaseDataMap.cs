@@ -16,6 +16,7 @@ using System.Web;
 using Sitecore.SharedSource.DataImporter.Utility;
 using Sitecore.Collections;
 using System.IO;
+using Sitecore.Globalization;
 
 namespace Sitecore.SharedSource.DataImporter.Providers
 {
@@ -121,6 +122,16 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 			}
 			set {
 				_itemNameMaxLength = value;
+			}
+		}
+
+		private Item _ImportLanguage;
+		public Item ImportLanguage {
+			get {
+				return _ImportLanguage;
+			}
+			set {
+				_ImportLanguage = value;
 			}
 		}
 
@@ -268,7 +279,11 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 			//more properties
             ItemNameDataField = importItem.Fields["Pull Item Name from What Fields"].Value;
 			ItemNameMaxLength = int.Parse(importItem.Fields["Item Name Max Length"].Value);
-            //foldering information
+			ImportLanguage = SitecoreDB.GetItem(importItem.Fields["Import Language"].Value);
+			if(ImportLanguage == null)
+                Log("Error", "The 'Import Language' field is not set");
+
+			//foldering information
 			FolderByDate = ((CheckboxField)importItem.Fields["Folder By Date"]).Checked;
 			FolderByName = ((CheckboxField)importItem.Fields["Folder By Name"]).Checked;
 			DateField = importItem.Fields["Date Field"].Value;
@@ -462,28 +477,43 @@ namespace Sitecore.SharedSource.DataImporter.Providers
                         Log("Error", "The 'Import To What Template' item is null");
                         break;
                     }
-                    
-                    Sitecore.Data.Items.Item newItem;
-                    if (NewItemTemplate is BranchItem)
-                        newItem = thisParent.Add(newItemName, (BranchItem)NewItemTemplate);
-                    else
-                        newItem = thisParent.Add(newItemName, (TemplateItem)NewItemTemplate);
-                        
-                    if (newItem == null) {
-                        Log("Error", "the new item created was null");
-                        continue;
-                    }
 
-                    using (new EditContext(newItem, true, false)) {
-                        //add in the field mappings
-                        foreach (IBaseField d in this.FieldDefinitions) { 
-                            IEnumerable<string> values = GetFieldValues(d.GetExistingFieldNames(), importRow);
-                            d.FillField(this, ref newItem, String.Join(d.GetFieldValueDelimiter(), values));
-                        }
+					Language l;
+					Language.TryParse(ImportLanguage.Name, out l);			
+					using (new LanguageSwitcher(l)) {
+						//get the parent in the specific language
+						thisParent = SitecoreDB.GetItem(thisParent.ID);
+						
+						Item newItem;
+						//search for the child by name
+						newItem = thisParent.GetChildren()[newItemName];
+						if(newItem != null) //add version for lang
+							newItem = newItem.Versions.AddVersion();
 
-                        //calls the subclass method to handle custom fields and properties
-                        ProcessCustomData(ref newItem, importRow);
-                    }
+						//if not found then create one
+						if (newItem == null) {
+							if (NewItemTemplate is BranchItem)
+								newItem = thisParent.Add(newItemName, (BranchItem)NewItemTemplate);
+							else
+								newItem = thisParent.Add(newItemName, (TemplateItem)NewItemTemplate);
+						}
+
+						if (newItem == null) {
+							Log("Error", "the new item created was null");
+							continue;
+						}
+
+						using (new EditContext(newItem, true, false)) {
+							//add in the field mappings
+							foreach (IBaseField d in this.FieldDefinitions) {
+								IEnumerable<string> values = GetFieldValues(d.GetExistingFieldNames(), importRow);
+								d.FillField(this, ref newItem, String.Join(d.GetFieldValueDelimiter(), values));
+							}
+
+							//calls the subclass method to handle custom fields and properties
+							ProcessCustomData(ref newItem, importRow);
+						}
+					}
                 } catch (Exception ex) {
                     Log("Error", ex.Message);
                 }
