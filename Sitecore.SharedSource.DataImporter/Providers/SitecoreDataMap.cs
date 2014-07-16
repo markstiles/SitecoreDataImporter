@@ -14,6 +14,7 @@ using Sitecore.SharedSource.DataImporter.Utility;
 using Sitecore.Collections;
 using System.IO;
 using Sitecore.Data.Fields;
+using System.Configuration;
 
 namespace Sitecore.SharedSource.DataImporter.Providers
 {
@@ -84,7 +85,20 @@ namespace Sitecore.SharedSource.DataImporter.Providers
         /// <returns></returns>
         public override IEnumerable<object> GetImportData()
         {
-            return SitecoreDB.SelectItems(StringUtility.CleanXPath(this.Query));
+			var csNames = from ConnectionStringSettings c in ConfigurationManager.ConnectionStrings
+					where c.ConnectionString.Equals(DatabaseConnectionString)
+					select c.Name;
+			if(!csNames.Any()) {
+				Log("Warn", "The connection string wasn't found.");
+				return Enumerable.Empty<object>();
+			}
+			
+			List<Database> dbs = Sitecore.Configuration.Factory.GetDatabases().Where(a => a.ConnectionStringName.Equals(csNames.First())).ToList();
+			if(!dbs.Any()) {
+				Log("Warn", "No database in the Sitecore configuration using the connection string was found.");
+				return Enumerable.Empty<object>();
+			}
+			return dbs.First().SelectItems(StringUtility.CleanXPath(this.Query));
         }
 
         /// <summary>
