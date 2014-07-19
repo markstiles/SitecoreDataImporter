@@ -17,6 +17,7 @@ using Sitecore.SharedSource.DataImporter.Utility;
 using Sitecore.Collections;
 using System.IO;
 using Sitecore.Globalization;
+using Sitecore.Data.Managers;
 
 namespace Sitecore.SharedSource.DataImporter.Providers
 {
@@ -125,13 +126,13 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 			}
 		}
 
-		private Item _ImportLanguage;
-		public Item ImportLanguage {
+		private Language _ImportToLanguage;
+		public Language ImportToLanguage {
 			get {
-				return _ImportLanguage;
+				return _ImportToLanguage;
 			}
 			set {
-				_ImportLanguage = value;
+				_ImportToLanguage = value;
 			}
 		}
 
@@ -279,8 +280,9 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 			//more properties
             ItemNameDataField = importItem.Fields["Pull Item Name from What Fields"].Value;
 			ItemNameMaxLength = int.Parse(importItem.Fields["Item Name Max Length"].Value);
-			ImportLanguage = SitecoreDB.GetItem(importItem.Fields["Import Language"].Value);
-			if(ImportLanguage == null)
+			Item iLang = SitecoreDB.GetItem(importItem.Fields["Import To Language"].Value);
+			ImportToLanguage = LanguageManager.GetLanguage(iLang.Name);
+			if (ImportToLanguage == null)
                 Log("Error", "The 'Import Language' field is not set");
 
 			//foldering information
@@ -477,10 +479,8 @@ namespace Sitecore.SharedSource.DataImporter.Providers
                         Log("Error", "The 'Import To What Template' item is null");
                         break;
                     }
-
-					Language l;
-					Language.TryParse(ImportLanguage.Name, out l);			
-					using (new LanguageSwitcher(l)) {
+			
+					using (new LanguageSwitcher(ImportToLanguage)) {
 						//get the parent in the specific language
 						thisParent = SitecoreDB.GetItem(thisParent.ID);
 						

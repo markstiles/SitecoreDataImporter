@@ -15,6 +15,8 @@ using Sitecore.Collections;
 using System.IO;
 using Sitecore.Data.Fields;
 using System.Configuration;
+using Sitecore.Globalization;
+using Sitecore.Data.Managers;
 
 namespace Sitecore.SharedSource.DataImporter.Providers
 {
@@ -34,6 +36,16 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 			}
 		}
 		private List<IBaseProperty> _propDefinitions = new List<IBaseProperty>();
+
+		private Language _ImportFromLanguage;
+		public Language ImportFromLanguage {
+			get {
+				return _ImportFromLanguage;
+			}
+			set {
+				_ImportFromLanguage = value;
+			}
+		}
 		
 		#endregion Properties
 
@@ -41,6 +53,9 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 
 		public SitecoreDataMap(Database db, string connectionString, Item importItem) : base(db, connectionString, importItem) {
 
+			Item fLang = SitecoreDB.GetItem(importItem.Fields["Import From Language"].Value);
+			ImportFromLanguage = LanguageManager.GetLanguage(fLang.Name);
+			
             //deal with sitecore properties if any
             Item Props = GetItemByTemplate(importItem, PropertiesFolderID);
             if (Props.IsNotNull()) {
@@ -122,9 +137,11 @@ namespace Sitecore.SharedSource.DataImporter.Providers
         /// <returns></returns>
         protected override string GetFieldValue(object importRow, string fieldName)
         {
-            Item item = importRow as Item;
-            Field f = item.Fields[fieldName];
-            return (f != null) ? item[fieldName] : string.Empty;
+			Item item = importRow as Item;
+			Item langItem = SitecoreDB.GetItem(item.ID, ImportFromLanguage);
+
+			Field f = langItem.Fields[fieldName];
+			return (f != null) ? langItem[fieldName] : string.Empty;
         }
 		
         #endregion Override Methods
