@@ -42,6 +42,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -50,6 +51,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MySql.Data, Version=5.2.5.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
@@ -84,6 +86,7 @@
     <Compile Include="Mappings\Fields\IBaseField.cs" />
     <Compile Include="Mappings\Fields\ToDate.cs" />
     <Compile Include="Mappings\Fields\UrlToLink.cs" />
+    <Compile Include="Mappings\Templates\TemplateMapping.cs" />
     <Compile Include="Providers\BaseDataMap.cs" />
     <Compile Include="Mappings\Fields\ListToGuid.cs" />
     <Compile Include="Mappings\Fields\ToText.cs" />

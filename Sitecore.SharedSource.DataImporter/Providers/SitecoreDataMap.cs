@@ -17,6 +17,7 @@ using Sitecore.Data.Fields;
 using System.Configuration;
 using Sitecore.Globalization;
 using Sitecore.Data.Managers;
+using Sitecore.SharedSource.DataImporter.Mappings.Templates;
 
 namespace Sitecore.SharedSource.DataImporter.Providers
 {
@@ -36,6 +37,29 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 			}
 		}
 		private List<IBaseProperty> _propDefinitions = new List<IBaseProperty>();
+
+		/// <summary>
+		/// template id of the properties folder
+		/// </summary>
+		public static readonly string PropertiesFolderID = "{8452785D-FFE7-47F3-911E-F219F5BDEA3A}";
+
+		/// <summary>
+		/// List of template mappings
+		/// </summary>
+		public Dictionary<string, TemplateMapping> TemplateMappingDefinitions {
+			get {
+				return _tempMapDefinitions;
+			}
+			set {
+				_tempMapDefinitions = value;
+			}
+		}
+		private Dictionary<string, TemplateMapping> _tempMapDefinitions = new Dictionary<string, TemplateMapping>();
+
+		/// <summary>
+		/// template id of the templates folder
+		/// </summary>
+		public static readonly string TemplatesFolderID = "{3D915406-97F6-4E94-AC50-B7CAF468A50F}";
 
 		private Language _ImportFromLanguage;
 		public Language ImportFromLanguage {
@@ -100,7 +124,27 @@ namespace Sitecore.SharedSource.DataImporter.Providers
                 } else {
                     Log("Warn", "there are no properties to import");
                 }
-            } 
+            }
+
+			Item Temps = GetItemByTemplate(importItem, TemplatesFolderID);
+			if (Temps.IsNotNull()) {
+				ChildList c = Temps.GetChildren();
+				if (c.Any()) {
+					foreach (Item child in c) {
+						//create an item to get the class / assembly name from
+						TemplateMapping tm = new TemplateMapping(child);
+						if (string.IsNullOrEmpty(tm.FromWhatTemplate)) {
+							Log("Error", string.Format("the template mapping field 'FromWhatTemplate' on '{0}' is not defined", child.Name));
+							break;
+						}
+						if (string.IsNullOrEmpty(tm.ToWhatTemplate)) {
+							Log("Error", string.Format("the template mapping field 'ToWhatTemplate' on '{0}' is not defined", child.Name));
+							break;
+						}
+						TemplateMappingDefinitions.Add(tm.FromWhatTemplate, tm);
+					}
+				}
+			}
 		}
 
 		#endregion Constructor
@@ -174,7 +218,19 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 			Field f = langItem.Fields[fieldName];
 			return (f != null) ? langItem[fieldName] : string.Empty;
         }
-		
+
+		public override CustomItemBase GetNewItemTemplate(object importRow) {
+
+			Item iRow = (Item)importRow;
+			string tID = iRow.TemplateID.ToString();
+			if(!TemplateMappingDefinitions.ContainsKey(tID))
+				return base.GetNewItemTemplate(importRow);
+
+			TemplateMapping tm = TemplateMappingDefinitions[tID];
+			BranchItem b = (BranchItem)SitecoreDB.Items[tm.ToWhatTemplate];
+			return (CustomItemBase)b;
+		}
+
         #endregion Override Methods
 
         #region Methods

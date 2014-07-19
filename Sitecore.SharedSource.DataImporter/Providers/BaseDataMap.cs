@@ -39,11 +39,6 @@ namespace Sitecore.SharedSource.DataImporter.Providers
         /// </summary>
         public static readonly string FieldsFolderID = "{98EF4356-8BFE-4F6A-A697-ADFD0AAD0B65}";
 
-        /// <summary>
-        /// template id of the properties folder
-        /// </summary>
-        public static readonly string PropertiesFolderID = "{8452785D-FFE7-47F3-911E-F219F5BDEA3A}";
-
 		private Item _Parent;
 		/// <summary>
 		/// the parent item where the new items will be imported into
@@ -480,10 +475,8 @@ namespace Sitecore.SharedSource.DataImporter.Providers
         }
 
 		public void CreateNewItem(Item parent, object importRow, string newItemName) {
-			
-			//Create new item
-			if (NewItemTemplate == null || NewItemTemplate.InnerItem.IsNull()) 
-				throw new NullReferenceException("The 'Import To What Template' item is null");
+
+			CustomItemBase nItemTemplate = GetNewItemTemplate(importRow);
 			
 			using (new LanguageSwitcher(ImportToLanguage)) {
 				//get the parent in the specific language
@@ -497,10 +490,10 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 
 				//if not found then create one
 				if (newItem == null) {
-					if (NewItemTemplate is BranchItem)
-						newItem = parent.Add(newItemName, (BranchItem)NewItemTemplate);
+					if (nItemTemplate is BranchItem)
+						newItem = parent.Add(newItemName, (BranchItem)nItemTemplate);
 					else
-						newItem = parent.Add(newItemName, (TemplateItem)NewItemTemplate);
+						newItem = parent.Add(newItemName, (TemplateItem)nItemTemplate);
 				}
 
 				if (newItem == null)
@@ -517,6 +510,13 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 					ProcessCustomData(ref newItem, importRow);
 				}
 			}
+		}
+
+		public virtual CustomItemBase GetNewItemTemplate(object importRow) {
+			//Create new item
+			if (NewItemTemplate == null || NewItemTemplate.InnerItem.IsNull())
+				throw new NullReferenceException("The 'Import To What Template' item is null");
+			return NewItemTemplate;
 		}
 
         /// <summary>
