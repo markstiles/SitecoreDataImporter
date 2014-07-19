@@ -455,69 +455,23 @@ namespace Sitecore.SharedSource.DataImporter.Providers
                 Log("Connection Error", ex.Message);
             }
             
-            //Loop through the data source
-            foreach (object importRow in importItems)
-            {
-                if (!this.NameFields.Any()) {
-                    Log("Error", "there are no 'Name' fields specified");
-                    break;
-                }
-                
-                string newItemName = GetNewItemName(importRow);
-                if (string.IsNullOrEmpty(newItemName))
-                    continue;
+			try {
+				//Loop through the data source
+				foreach (object importRow in importItems) {
+					string newItemName = GetNewItemName(importRow);
+					if (string.IsNullOrEmpty(newItemName))
+						continue;
 
-                Item thisParent = GetParentNode(importRow, newItemName);
-                if (thisParent.IsNull()) {
-                    Log("Error", "The new item's parent is null");   
-                    break;
-                }
+					Item thisParent = GetParentNode(importRow, newItemName);
+					if (thisParent.IsNull())
+						throw new NullReferenceException("The new item's parent is null");
+					
+					CreateNewItem(thisParent, importRow, newItemName);
+				}
+			} catch (Exception ex) {
+				Log("Error", ex.Message);
+			}
 
-                try {
-                    //Create new item
-                    if(NewItemTemplate == null || NewItemTemplate.InnerItem.IsNull()) {
-                        Log("Error", "The 'Import To What Template' item is null");
-                        break;
-                    }
-			
-					using (new LanguageSwitcher(ImportToLanguage)) {
-						//get the parent in the specific language
-						thisParent = SitecoreDB.GetItem(thisParent.ID);
-						
-						Item newItem;
-						//search for the child by name
-						newItem = thisParent.GetChildren()[newItemName];
-						if(newItem != null) //add version for lang
-							newItem = newItem.Versions.AddVersion();
-
-						//if not found then create one
-						if (newItem == null) {
-							if (NewItemTemplate is BranchItem)
-								newItem = thisParent.Add(newItemName, (BranchItem)NewItemTemplate);
-							else
-								newItem = thisParent.Add(newItemName, (TemplateItem)NewItemTemplate);
-						}
-
-						if (newItem == null) {
-							Log("Error", "the new item created was null");
-							continue;
-						}
-
-						using (new EditContext(newItem, true, false)) {
-							//add in the field mappings
-							foreach (IBaseField d in this.FieldDefinitions) {
-								IEnumerable<string> values = GetFieldValues(d.GetExistingFieldNames(), importRow);
-								d.FillField(this, ref newItem, String.Join(d.GetFieldValueDelimiter(), values));
-							}
-
-							//calls the subclass method to handle custom fields and properties
-							ProcessCustomData(ref newItem, importRow);
-						}
-					}
-                } catch (Exception ex) {
-                    Log("Error", ex.Message);
-                }
-            }
             //if no messages then you're good
             if (log.Length < 1 || !log.ToString().Contains("Error")) 
                 Log("Success", "the import completed successfully");
@@ -525,19 +479,62 @@ namespace Sitecore.SharedSource.DataImporter.Providers
             return log.ToString();
         }
 
+		public void CreateNewItem(Item parent, object importRow, string newItemName) {
+			
+			//Create new item
+			if (NewItemTemplate == null || NewItemTemplate.InnerItem.IsNull()) 
+				throw new NullReferenceException("The 'Import To What Template' item is null");
+			
+			using (new LanguageSwitcher(ImportToLanguage)) {
+				//get the parent in the specific language
+				parent = SitecoreDB.GetItem(parent.ID);
+
+				Item newItem;
+				//search for the child by name
+				newItem = parent.GetChildren()[newItemName];
+				if (newItem != null) //add version for lang
+					newItem = newItem.Versions.AddVersion();
+
+				//if not found then create one
+				if (newItem == null) {
+					if (NewItemTemplate is BranchItem)
+						newItem = parent.Add(newItemName, (BranchItem)NewItemTemplate);
+					else
+						newItem = parent.Add(newItemName, (TemplateItem)NewItemTemplate);
+				}
+
+				if (newItem == null)
+					throw new NullReferenceException("the new item created was null");
+
+				using (new EditContext(newItem, true, false)) {
+					//add in the field mappings
+					foreach (IBaseField d in this.FieldDefinitions) {
+						IEnumerable<string> values = GetFieldValues(d.GetExistingFieldNames(), importRow);
+						d.FillField(this, ref newItem, String.Join(d.GetFieldValueDelimiter(), values));
+					}
+
+					//calls the subclass method to handle custom fields and properties
+					ProcessCustomData(ref newItem, importRow);
+				}
+			}
+		}
+
         /// <summary>
         /// creates an item name based on the name field values in the importRow
         /// </summary>
         public string GetNewItemName(object importRow) {
-            StringBuilder strItemName = new StringBuilder();
+			if (!NameFields.Any())
+				throw new NullReferenceException("there are no 'Name' fields specified");
+
+			StringBuilder strItemName = new StringBuilder();
             foreach (string nameField in NameFields) {
                 try {
                     strItemName.Append(GetFieldValue(importRow, nameField));
                 } catch (ArgumentException ex) {
                     if (string.IsNullOrEmpty(this.ItemNameDataField))
-                        Log("Field Error", "the 'Name' field is empty");
+						throw new NullReferenceException("the 'Name' field is empty");
                     else
-                        Log("Field Error", string.Format("the field name: '{0}' does not exist in the import row", nameField));
+						throw new NullReferenceException(string.Format("the field name: '{0}' does not exist in the import row", nameField));
                 } 
             }
             return StringUtility.GetNewItemName(strItemName.ToString(), this.ItemNameMaxLength);

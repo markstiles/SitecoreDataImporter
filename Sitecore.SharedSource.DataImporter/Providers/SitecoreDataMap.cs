@@ -46,6 +46,16 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 				_ImportFromLanguage = value;
 			}
 		}
+
+		private bool _RecursivelyFetchChildren;
+		public bool RecursivelyFetchChildren {
+			get {
+				return _RecursivelyFetchChildren;
+			}
+			set {
+				_RecursivelyFetchChildren = value;
+			}
+		}
 		
 		#endregion Properties
 
@@ -55,7 +65,10 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 
 			Item fLang = SitecoreDB.GetItem(importItem.Fields["Import From Language"].Value);
 			ImportFromLanguage = LanguageManager.GetLanguage(fLang.Name);
-			
+
+			CheckboxField cf = importItem.Fields["Recursively Fetch Children"];
+			RecursivelyFetchChildren = cf.Checked;
+
             //deal with sitecore properties if any
             Item Props = GetItemByTemplate(importItem, PropertiesFolderID);
             if (Props.IsNotNull()) {
@@ -127,7 +140,25 @@ namespace Sitecore.SharedSource.DataImporter.Providers
             //add in the property mappings
             foreach (IBaseProperty d in this.PropertyDefinitions)
                 d.FillField(this, ref newItem, row);
+
+			//recursively get children
+			if (RecursivelyFetchChildren)
+				ProcessChildren(ref newItem, ref row);
         }
+
+		protected virtual void ProcessChildren(ref Item newParent, ref Item oldParent){
+			if (!oldParent.HasChildren)
+				return;
+
+			foreach (Item importRow in oldParent.GetChildren()) {
+				
+				string newItemName = GetNewItemName(importRow);
+				if (string.IsNullOrEmpty(newItemName))
+					continue;
+
+				CreateNewItem(newParent, importRow, newItemName);
+			}
+		}
         
         /// <summary>
         /// gets a field value from an item
