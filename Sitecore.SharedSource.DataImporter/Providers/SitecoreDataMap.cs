@@ -212,6 +212,10 @@ namespace Sitecore.SharedSource.DataImporter.Providers
         /// <returns></returns>
         protected override string GetFieldValue(object importRow, string fieldName)
         {
+			//check for tokens
+			if (fieldName.Equals("$name"))
+				return ((Item)importRow).Name;
+
 			Item item = importRow as Item;
 			Item langItem = SitecoreDB.GetItem(item.ID, ImportFromLanguage);
 

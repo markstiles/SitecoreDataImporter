@@ -63,68 +63,14 @@ namespace Sitecore.SharedSource.DataImporter.Utility
 
         public static string StripInvalidChars(string val)
         {
-            string newVal = val.Trim()
-                .Replace(" - ", " ")
-                .Replace("—", "")
-                //.Replace("–", "_")
-                .Replace("–", "")
-                //.Replace(" ", "-")
-                .Replace("-", "")
-                .Replace("+", "")
-                .Replace("!", "")
-                .Replace("@", "")
-                .Replace("#", "")
-                .Replace("$", "")
-                .Replace("%", "")
-                .Replace("^", "")
-                .Replace("*", "")
-                .Replace("=", "")
-                .Replace("<", "")
-                .Replace(">", "")
-                .Replace("&", "")
-                .Replace(",", "")
-                .Replace("/", "")
-                .Replace(@"\", "")
-                .Replace("|", "")
-                .Replace(";", "")
-                .Replace(":", "")
-                .Replace("\"", "")
-                .Replace("’", "")
-                .Replace("é", "e")
-                .Replace("(", "")
-                .Replace(")", "")
-                .Replace("]", "")
-                .Replace("[", "")
-                .Replace("}", "")
-                .Replace("{", "")
-                .Replace("'", "")
-                .Replace(".", "")
-                .Replace("?", "")
-                .Replace("&", "")
-                .Replace("`", "")
-                .Replace("?", "")
-                .Replace("“", "")
-                .Replace("”", "")
-                .Replace("‘", "")
-                .Replace("§", "")
-                .Replace("€", "")
-
-                //Cleanup double underscores
-                .Replace("      ", " ")
-                .Replace("     ", " ")
-                .Replace("    ", " ")
-                .Replace("   ", " ")
-                .Replace("  ", " ")
-                .Replace("___", "")
-                .Replace("__", "")
-                .Replace("   ", " ")
-                .Replace("  ", " ")
-
-                //Remove all underscores
-                .Replace("_", "");
-
-            char[] c = new char[] { '-', '-' };
-            return newVal.Trim(c).Trim();
+			StringBuilder sb = new StringBuilder();
+			Dictionary<char,char> invalid = Sitecore.Configuration.Settings.InvalidItemNameChars.ToDictionary<char, char>(a => a);
+			foreach(char c in val){
+				if(!invalid.ContainsKey(c))
+					sb.Append(c);
+			}
+			
+            return sb.ToString().Trim();
         }
     }
 }
