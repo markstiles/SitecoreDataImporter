@@ -24,7 +24,30 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 	public class SitecoreDataMap : BaseDataMap {
 		
 		#region Properties
-		
+
+		private Database _FromDB;
+		public Database FromDB {
+			get {
+				if (_FromDB == null) {
+					var csNames = from ConnectionStringSettings c in ConfigurationManager.ConnectionStrings
+						where c.ConnectionString.Equals(DatabaseConnectionString)
+						select c.Name;
+					if(!csNames.Any())
+						throw new NullReferenceException("The database connection string wasn't found.");
+					
+					List<Database> dbs = Sitecore.Configuration.Factory.GetDatabases()
+						.Where(a => a.ConnectionStringName.Equals(csNames.First()))
+						.ToList();
+					
+					if(!dbs.Any())
+						throw new NullReferenceException("No database in the Sitecore configuration using the connection string was found.");
+
+					_FromDB = dbs.First();
+				}
+				return _FromDB;
+			}
+		}
+
         /// <summary>
         /// List of properties
         /// </summary>
@@ -157,20 +180,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers
         /// <returns></returns>
         public override IEnumerable<object> GetImportData()
         {
-			var csNames = from ConnectionStringSettings c in ConfigurationManager.ConnectionStrings
-					where c.ConnectionString.Equals(DatabaseConnectionString)
-					select c.Name;
-			if(!csNames.Any()) {
-				Log("Warn", "The connection string wasn't found.");
-				return Enumerable.Empty<object>();
-			}
-			
-			List<Database> dbs = Sitecore.Configuration.Factory.GetDatabases().Where(a => a.ConnectionStringName.Equals(csNames.First())).ToList();
-			if(!dbs.Any()) {
-				Log("Warn", "No database in the Sitecore configuration using the connection string was found.");
-				return Enumerable.Empty<object>();
-			}
-			return dbs.First().SelectItems(StringUtility.CleanXPath(this.Query));
+			return FromDB.SelectItems(StringUtility.CleanXPath(this.Query));
         }
 
         /// <summary>
@@ -217,7 +227,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 				return ((Item)importRow).Name;
 
 			Item item = importRow as Item;
-			Item langItem = SitecoreDB.GetItem(item.ID, ImportFromLanguage);
+			Item langItem = FromDB.GetItem(item.ID, ImportFromLanguage);
 
 			Field f = langItem.Fields[fieldName];
 			return (f != null) ? langItem[fieldName] : string.Empty;
