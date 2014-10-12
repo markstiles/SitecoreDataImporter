@@ -10,19 +10,32 @@ using System.Data.SqlClient;
 using System.Web;
 using Sitecore.SharedSource.DataImporter.Mappings.Fields;
 using System.IO;
+using System.Reflection;
+using System.Runtime.Remoting;
+using Sitecore.Web.UI.WebControls;
 
 namespace Sitecore.SharedSource.DataImporter.Providers {
 	public class CSVDataMap : BaseDataMap {
 
 		#region Properties
-		
-		private static ASCIIEncoding _encoding = null;
-		public static ASCIIEncoding encoding {
+
+		private string _FieldDelimiter = string.Empty;
+		public string FieldDelimiter {
 			get {
-				if (_encoding == null) {
-					_encoding = new System.Text.ASCIIEncoding();
-				}
-				return _encoding;
+				return (_FieldDelimiter.Equals(string.Empty)) ? "," : _FieldDelimiter;
+			}
+			set {
+				_FieldDelimiter = value;
+			}
+		}
+
+		private string _EncodingType = string.Empty;
+		public string EncodingType {
+			get {
+				return _EncodingType;
+			}
+			set {
+				_EncodingType = value;
 			}
 		}
 
@@ -32,7 +45,10 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
 
 		public CSVDataMap(Database db, string ConnectionString, Item importItem)
             : base(db, ConnectionString, importItem) {
-        }
+
+			FieldDelimiter = importItem["Field Delimiter"];
+			EncodingType = importItem["Encoding Type"];
+		}
 
         #endregion Constructor
 
@@ -44,11 +60,25 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
 		/// <returns></returns>
         public override IEnumerable<object> GetImportData() {
 
-			if (!File.Exists(this.Query))
+			if (!File.Exists(this.Query)) {
+				Log("Error", string.Format("the file: '{0}' could not be found. Try moving the file under the webroot.", this.Query));
 				return Enumerable.Empty<object>();
+			}
+
+			Encoding et = Encoding.GetEncoding(1252);
+			int ei = -1;
+			if(!EncodingType.Equals("")) {
+				Encoding eTemp; 
+				if(int.TryParse(EncodingType, out ei))
+					eTemp = Encoding.GetEncoding(ei);
+				else
+					eTemp = Encoding.GetEncoding(EncodingType);
+				if (eTemp != null)
+					et = eTemp;
+			}
 
 			byte[] bytes = GetFileBytes(this.Query);
-			string data = encoding.GetString(bytes);
+			string data = et.GetString(bytes);
 
 			//split urls by breaklines
 			List<string> lines = SplitString(data, "\n");
@@ -73,12 +103,12 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
 		protected override string GetFieldValue(object importRow, string fieldName) {
 			
 			string item = importRow as string;
-			List<string> lines = SplitString(item, ",");
+			List<string> cols = SplitString(item, FieldDelimiter);
 			
 			int pos = -1;
 			string s = string.Empty;
-			if(int.TryParse(fieldName, out pos) && (lines[pos] != null))
-				s = lines[pos];
+			if(int.TryParse(fieldName, out pos) && (cols[pos] != null))
+				s = cols[pos];
 			return s;
 		}
 
