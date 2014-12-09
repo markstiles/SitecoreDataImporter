@@ -3,7 +3,7 @@
     <metadata>
       <PackageName>DataImporter-package</PackageName>
       <Author />
-      <Version />
+      <Version>1.13</Version>
       <Revision />
       <License />
       <Comment />
@@ -46,10 +46,6 @@
     <xitems>
       <Entries>
         <x-item>/master/sitecore/system/Modules/Data Imports/{236FDA64-D3DB-43EC-BE1D-9D0297FF4492}/invariant/0</x-item>
-        <x-item>/master/sitecore/system/Modules/Data Imports/301 CSV Import/{A037E11A-AC7C-4B01-BB40-3C8F1B7B82D7}/invariant/0</x-item>
-        <x-item>/master/sitecore/system/Modules/Data Imports/301 CSV Import/Fields/{5084B1E2-C458-42B9-A005-5ECB37B74EC0}/invariant/0</x-item>
-        <x-item>/master/sitecore/system/Modules/Data Imports/301 CSV Import/Fields/Redirect To/{B6D33096-0F53-41A2-BA35-D1526310843A}/invariant/0</x-item>
-        <x-item>/master/sitecore/system/Modules/Data Imports/301 CSV Import/Fields/Requested Url/{E6A91993-2DAC-4C03-A973-2F1D81C47864}/invariant/0</x-item>
         <x-item>/master/sitecore/templates/Modules/Data Import/{F0E080DF-8BFD-4CB8-B4A0-F950DA61559C}/invariant/0</x-item>
         <x-item>/master/sitecore/templates/Modules/Data Import/Branches/{FD063A78-69FF-40A1-8CAA-67B0BCBEB746}/invariant/0</x-item>
         <x-item>/master/sitecore/templates/Modules/Data Import/Branches/CSV Import Map/$name/{20B1F9C1-9C09-49C9-B760-6FFDE99C35EA}/invariant/0</x-item>
