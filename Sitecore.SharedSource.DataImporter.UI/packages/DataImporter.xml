@@ -1,0 +1,214 @@
+<project>
+  <Metadata>
+    <metadata>
+      <PackageName>DataImporter-package</PackageName>
+      <Author />
+      <Version>1.13</Version>
+      <Revision />
+      <License />
+      <Comment />
+      <Attributes />
+      <Readme />
+      <Publisher />
+      <PostStep />
+      <PackageID />
+    </metadata>
+  </Metadata>
+  <SaveProject>True</SaveProject>
+  <Sources>
+    <xitems>
+      <Entries>
+        <x-item>/core/sitecore/content/Applications/Content Editor/Editors/Modules/DataImporter/{65306E24-53AF-461B-B9D9-95062715485A}/invariant/0</x-item>
+        <x-item>/core/sitecore/content/Applications/Content Editor/Editors/Modules/DataImporter/DataImporter/{6ABC057D-F83F-470B-B0C6-01EB9CB1B03E}/invariant/0</x-item>
+        <x-item>/core/sitecore/content/Applications/Modules/DataImporter/{E6ADD2AC-3592-4901-84CD-0101C50CC0B4}/invariant/0</x-item>
+        <x-item>/core/sitecore/content/Applications/Modules/DataImporter/Data Import/{DD542739-912F-4418-9D1A-D7B9C532D076}/invariant/0</x-item>
+        <x-item>/core/sitecore/content/Documents and settings/All users/Start menu/Right/Development Tools/Data Import/{F1875F2F-082D-46AA-B71C-01E3C6D090A8}/invariant/0</x-item>
+      </Entries>
+      <SkipVersions>False</SkipVersions>
+      <Converter>
+        <ItemToEntryConverter>
+          <Transforms>
+            <InstallerConfigurationTransform>
+              <Options>
+                <BehaviourOptions>
+                  <ItemMode>Undefined</ItemMode>
+                  <ItemMergeMode>Undefined</ItemMergeMode>
+                </BehaviourOptions>
+              </Options>
+            </InstallerConfigurationTransform>
+          </Transforms>
+        </ItemToEntryConverter>
+      </Converter>
+      <Include />
+      <Exclude />
+      <Name>Core Items</Name>
+    </xitems>
+    <xitems>
+      <Entries>
+        <x-item>/master/sitecore/system/Modules/Data Imports/{236FDA64-D3DB-43EC-BE1D-9D0297FF4492}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/{F0E080DF-8BFD-4CB8-B4A0-F950DA61559C}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Branches/{FD063A78-69FF-40A1-8CAA-67B0BCBEB746}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Branches/CSV Import Map/$name/{20B1F9C1-9C09-49C9-B760-6FFDE99C35EA}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Branches/CSV Import Map/$name/Fields/{091BA226-27A5-4F4D-91FF-8686E870AF18}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Branches/CSV Import Map/{5ABC6EBE-627E-40D3-BBC0-1F614611505C}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Branches/MySQL Import Map/$name/{8DE76477-71D7-4F68-9BD2-E189B438A8C1}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Branches/MySQL Import Map/$name/Fields/{A62AB566-2CE3-4477-93D3-CA741D1D9CEE}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Branches/MySQL Import Map/{641E3E7A-FA92-486E-B764-FF6482B0DC1D}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Branches/Sitecore Import Map/$name/{2ABCE595-486F-4CE8-AC44-CB04374E7A42}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Branches/Sitecore Import Map/$name/Fields/{6CAC3A5F-8BBD-4D00-AB71-D48CE31E783C}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Branches/Sitecore Import Map/$name/Properties/{6C8D68BB-6820-4AD2-AC9B-3D80C9879873}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Branches/Sitecore Import Map/$name/Templates/{E3A78C31-76D0-48E2-B31D-B8F44E4C5DBF}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Branches/Sitecore Import Map/{F1199728-0560-43DB-80AA-46EC0B5D0ECE}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Branches/SQL Import Map/$name/{5782DE89-958B-4990-B060-41CFE115FF17}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Branches/SQL Import Map/$name/Fields/{5A2B2EEB-E944-413C-A994-DDACD0AD4B88}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Branches/SQL Import Map/{8280F7C8-30DD-497D-A1B6-DEBF745F2D8D}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Folders/{36D08DB6-263A-439A-9BE7-2F23AC188AC1}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Folders/Data Import Folder/__Standard Values/{12B3EA0E-4433-462D-93F3-3DF1F8CE7348}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Folders/Data Import Folder/{FAE089B9-D8B8-438F-B66F-B8E6D9C1A8B1}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Folders/Field Folder/__Standard Values/{0D36AE5A-E2BA-4DE5-B930-CD1BEF43C7F8}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Folders/Field Folder/{98EF4356-8BFE-4F6A-A697-ADFD0AAD0B65}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Folders/Import Map Folder/__Standard Values/{AA7A2463-461D-4709-A604-113B99D3CD63}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Folders/Import Map Folder/{8D3BC5BD-3F77-4EFF-98AB-31B5DE84F31E}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Folders/Property Folder/__Standard Values/{48EA713A-500E-4DA9-A067-33A1E8E2FAD6}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Folders/Property Folder/{8452785D-FFE7-47F3-911E-F219F5BDEA3A}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Folders/Template Folder/__Standard Values/{7CAE13D9-AB1A-4D52-A503-195CBF1E2DB1}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Folders/Template Folder/{3D915406-97F6-4E94-AC50-B7CAF468A50F}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Mappings/{091BCA6C-A946-40E0-9B79-8CEE92C71B1B}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Mappings/Base Mapping/__Standard Values/{198B60CE-1875-4CE9-8A31-9C3BDF9B9378}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Mappings/Base Mapping/{91D02640-32D5-45FF-A3D2-A5B3402A36E4}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Mappings/Base Mapping/Base Fields/{62A4DC04-B2B2-4D59-AF8C-B82AF9D66586}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Mappings/Base Mapping/Base Fields/To What Field/{093D915A-4306-4A68-B64A-07CC2A7E4EE5}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Mappings/Base Mapping/Handler/{9DAFAE49-18BD-4BE4-9B17-671593011006}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Mappings/Base Mapping/Handler/Handler Assembly/{BDF8732C-C239-4762-A3E0-ADA23EF44775}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Mappings/Base Mapping/Handler/Handler Class/{FA7B99B1-6BB9-469C-B786-F8A9D52D2F0A}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Mappings/Fields/{D95C4E80-484B-4057-BF4F-B358A580B311}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Mappings/Fields/ListToGuid/__Standard Values/{937D62B3-69F0-4160-8C62-006142BA1691}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Mappings/Fields/ListToGuid/{EC4E9590-F027-4C6F-AC08-DCABD8877F1B}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Mappings/Fields/ListToGuid/Droplink Mapping/{5FEF5EEC-092D-42E7-A008-57D76294DD87}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Mappings/Fields/ListToGuid/Droplink Mapping/Source List/{76F71014-CC36-4507-B623-9BBD2851E8CE}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Mappings/Fields/ToDate/__Standard Values/{F80A6889-CCA5-4946-BEB5-764E32BAAA0A}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Mappings/Fields/ToDate/{E5AC18C6-CFDE-4E63-8AE6-AED5F10EAEB2}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Mappings/Fields/ToStaticValue/__Standard Values/{36AA9559-7969-4ED6-A583-C45D7EEF762A}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Mappings/Fields/ToStaticValue/{BD069A3B-1C64-4644-9D1A-F1F12CC00186}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Mappings/Fields/ToStaticValue/Value Mapping/{8671D862-1A86-494F-ACBC-7895BC7888F6}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Mappings/Fields/ToStaticValue/Value Mapping/Value/{97E16F71-04EC-4940-B73C-EBAA2BDFAEDC}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Mappings/Fields/ToText/__Standard Values/{609D92EF-9589-4CB9-A0CF-86A7FBCED55E}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Mappings/Fields/ToText/{C1017482-5549-4245-91F6-D960DE3B00E2}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Mappings/Fields/ToText/Field Mapping/{A996EE5A-440C-4533-B65E-47B8897A486B}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Mappings/Fields/ToText/Field Mapping/Delimiter/{EBB47640-52E2-4BC3-8231-AF6FC5113DA3}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Mappings/Fields/ToText/Field Mapping/From What Fields/{A534B62B-9C6B-449F-8B88-93753EFE6AEC}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Mappings/Fields/UrlToLink/__Standard Values/{A6F2B438-30BE-4439-A38F-BA221AA983A0}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Mappings/Fields/UrlToLink/{E929A1D8-DE99-44CA-A5FB-A87DB718A316}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Mappings/Fields/UrlToReference/__Standard Values/{6E7F8924-943F-4336-A20F-5C3F96DA0ED1}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Mappings/Fields/UrlToReference/{0F528C70-E771-4F2F-8D80-103A57104519}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Mappings/Fields/UrlToReference/UrlToReference/{3FF2005E-D373-4B82-9121-748994E85BB8}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Mappings/Fields/UrlToReference/UrlToReference/SiteHomeItem/{C521A3FC-E04F-4DC8-9AD5-8AC2C4E365FF}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Mappings/Properties/{F9A8A341-36D4-4F6B-A31C-28261393B763}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Mappings/Properties/PathToText/__Standard Values/{CB50C13B-B28B-4102-8484-45BC0C1D3605}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Mappings/Properties/PathToText/{3C255ADA-989B-4B8C-BDD8-42C0E74749B7}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Mappings/Properties/UrlToText/__Standard Values/{BA95E19F-BFF5-4DC9-A250-7653722584EA}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Mappings/Properties/UrlToText/{0348E554-4E39-4CDE-A1B7-5A7E6E80E712}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Mappings/Templates/{2DDA4CA9-9447-4BD2-90BA-14CDA33D6148}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Mappings/Templates/TemplateMapping/{BF0CCC61-C4BF-4D26-A0E8-8F71BFE66012}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Mappings/Templates/TemplateMapping/Template Mapping/{A39DC7E0-2B88-4F0E-814B-214ED4E75801}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Mappings/Templates/TemplateMapping/Template Mapping/From What Template/{F897D6AB-3399-4AEC-B7C0-0057F14F34AD}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Mappings/Templates/TemplateMapping/Template Mapping/To What Template/{A49DD11F-990F-41AC-9E6D-DEB92E197BE2}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Providers/{7D365363-98DE-4D91-8360-4E01E1301943}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Providers/Base Import Map/__Standard Values/{393947C0-92FC-44C0-B22E-3CF1BA831747}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Providers/Base Import Map/{FFB11C18-4EC6-434B-BA51-C81B640539B4}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Providers/Base Import Map/Handler/{7A4269FE-55EC-47F5-9142-EFCEDCFA5CDD}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Providers/Base Import Map/Handler/Handler Assembly/{0639F8E7-44AB-41CE-AE67-9987BAF47E96}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Providers/Base Import Map/Handler/Handler Class/{0790A745-13E8-44F1-AA17-469E8FC7D20E}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Providers/Base Import Map/Import Information/{2B7ED962-3FAE-492A-9FDE-B2BB212A99C0}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Providers/Base Import Map/Import Information/Import To Language/{56C326EF-F5DA-4818-AE74-E85130B60B84}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Providers/Base Import Map/Import Information/Import To What Template/{8954B459-083B-446F-B8C0-40B90CE2E210}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Providers/Base Import Map/Import Information/Import To Where/{D01499F0-1E31-4CD6-A2F4-EE17BD095AB1}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Providers/Base Import Map/Import Information/Item Name Max Length/{02BAB16B-D351-4502-A579-F3D6E0EDB4F8}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Providers/Base Import Map/Import Information/Pull Item Name from What Fields/{A7C05D14-EBC8-4F08-A8C7-183FAB7061CC}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Providers/Base Import Map/Import Information/Query/{1F03F44C-DD3A-4148-BEE7-0724310827B8}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Providers/Base Import Map/Item Foldering/{89611CC2-5781-4CE6-8107-0E986EDF7CFA}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Providers/Base Import Map/Item Foldering/Date Field/{B40C055B-3A62-4DD6-8CBD-88045E42F80D}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Providers/Base Import Map/Item Foldering/Folder By Date/{2D49A4E9-C26D-435B-9207-4A8D1E3CF044}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Providers/Base Import Map/Item Foldering/Folder By Name/{1CB87007-972B-4D25-ABD1-F85107D29637}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Providers/Base Import Map/Item Foldering/Folder Template/{346D949C-B439-40BF-AECA-D43B7D7639C1}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Providers/CSV Import Map/__Standard Values/{93A6BB07-9802-40C4-A0CC-9FE2BE332153}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Providers/CSV Import Map/{E70ADEF9-B551-4648-9FCA-3EFB17B491B1}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Providers/CSV Import Map/CSV Import Map/{BD3FFF3F-5B33-497F-AF66-62D133005CAD}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Providers/CSV Import Map/CSV Import Map/Encoding Type/{67362E7C-1030-4E5C-B13F-1312E761F7FC}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Providers/CSV Import Map/CSV Import Map/Field Delimiter/{A8E914BE-49FD-4325-A1CE-DAA3148091ED}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Providers/MySQL Import Map/__Standard Values/{CE57BDF6-DBB7-4E2A-9727-AE540113F71E}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Providers/MySQL Import Map/{84FBB783-2320-481B-876A-256E58C43FAD}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Providers/Sitecore Import Map/__Standard Values/{513731D1-5ABF-45F8-ACB2-EDEB737B3285}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Providers/Sitecore Import Map/{96AAC80C-CE36-43C5-93EB-EDA101794AAC}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Providers/Sitecore Import Map/Sitecore Import Map/{F37DF260-906A-4F0A-9B64-F2BB8BA9DC65}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Providers/Sitecore Import Map/Sitecore Import Map/Import From Language/{F8B6F833-D85A-48E7-A17F-C926E39D9E65}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Providers/Sitecore Import Map/Sitecore Import Map/Recursively Fetch Children/{690AE01B-8B70-4597-BDCD-6134C4F810B4}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Providers/SQL Import Map/__Standard Values/{DA4C9CC2-B726-48F5-A222-9E7130CFD4F6}/invariant/0</x-item>
+        <x-item>/master/sitecore/templates/Modules/Data Import/Providers/SQL Import Map/{2BBA4065-AA42-4509-A750-4AC2879D06EA}/invariant/0</x-item>
+      </Entries>
+      <SkipVersions>False</SkipVersions>
+      <Converter>
+        <ItemToEntryConverter>
+          <Transforms>
+            <InstallerConfigurationTransform>
+              <Options>
+                <BehaviourOptions>
+                  <ItemMode>Undefined</ItemMode>
+                  <ItemMergeMode>Undefined</ItemMergeMode>
+                </BehaviourOptions>
+              </Options>
+            </InstallerConfigurationTransform>
+          </Transforms>
+        </ItemToEntryConverter>
+      </Converter>
+      <Include />
+      <Exclude />
+      <Name>Master Items</Name>
+    </xitems>
+    <xfiles>
+      <Entries>
+        <x-item>/bin/MySql.Data.dll</x-item>
+        <x-item>/bin/MySql.Data.pdb</x-item>
+        <x-item>/bin/MySql.Data.XML</x-item>
+        <x-item>/bin/Sitecore.SharedSource.DataImporter.dll</x-item>
+        <x-item>/bin/Sitecore.SharedSource.DataImporter.Launcher.exe</x-item>
+        <x-item>/bin/Sitecore.SharedSource.DataImporter.Launcher.exe.config</x-item>
+        <x-item>/bin/Sitecore.SharedSource.DataImporter.Launcher.pdb</x-item>
+        <x-item>/bin/Sitecore.SharedSource.DataImporter.pdb</x-item>
+        <x-item>/bin/Sitecore.SharedSource.DataImporter.UI.dll</x-item>
+        <x-item>/bin/Sitecore.SharedSource.DataImporter.UI.pdb</x-item>
+        <x-item>/sitecore modules/Shell/Data Import/css/global.css</x-item>
+        <x-item>/sitecore modules/Shell/Data Import/Default.aspx</x-item>
+        <x-item>/sitecore modules/Shell/Data Import/Default.aspx.cs</x-item>
+        <x-item>/sitecore modules/Shell/Data Import/Default.aspx.designer.cs</x-item>
+        <x-item>/sitecore modules/Shell/Data Import/scripts/Sample.bat</x-item>
+      </Entries>
+      <Converter>
+        <FileToEntryConverter>
+          <Root>/</Root>
+          <Transforms>
+            <InstallerConfigurationTransform>
+              <Options>
+                <BehaviourOptions>
+                  <ItemMode>Undefined</ItemMode>
+                  <ItemMergeMode>Undefined</ItemMergeMode>
+                </BehaviourOptions>
+              </Options>
+            </InstallerConfigurationTransform>
+          </Transforms>
+        </FileToEntryConverter>
+      </Converter>
+      <Include />
+      <Exclude />
+      <Name>Files</Name>
+    </xfiles>
+  </Sources>
+  <Converter>
+    <TrivialConverter>
+      <Transforms />
+    </TrivialConverter>
+  </Converter>
+  <Include />
+  <Exclude />
+  <Name />
+</project>
