@@ -449,10 +449,15 @@ namespace Sitecore.SharedSource.DataImporter.Providers
                 importItems = Enumerable.Empty<object>();
                 Log("Connection Error", ex.Message);
             }
-            
+
+            long line = 0;
+
 			try {
-				//Loop through the data source
-				foreach (object importRow in importItems) {
+                //Loop through the data source
+				foreach (object importRow in importItems)
+				{
+				    line++;
+
 					string newItemName = GetNewItemName(importRow);
 					if (string.IsNullOrEmpty(newItemName))
 						continue;
@@ -464,7 +469,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 					CreateNewItem(thisParent, importRow, newItemName);
 				}
 			} catch (Exception ex) {
-				Log("Error", ex.Message);
+                Log("Error (line: " + line + ")", ex.Message);
 			}
 
             //if no messages then you're good
@@ -503,7 +508,8 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 					//add in the field mappings
 					foreach (IBaseField d in this.FieldDefinitions) {
 						IEnumerable<string> values = GetFieldValues(d.GetExistingFieldNames(), importRow);
-						d.FillField(this, ref newItem, String.Join(d.GetFieldValueDelimiter(), values));
+
+					    d.FillField(this, ref newItem, String.Join(d.GetFieldValueDelimiter(), values));
 					}
 
 					//calls the subclass method to handle custom fields and properties
