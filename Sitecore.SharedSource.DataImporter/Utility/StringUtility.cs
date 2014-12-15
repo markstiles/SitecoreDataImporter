@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace Sitecore.SharedSource.DataImporter.Utility
 {
-    class StringUtility
+    public static class StringUtility
     {
         /// <summary>
         /// This method checks to see if there are any sections in the xpath that contain dashes and wraps them in pound signs if it does unless it's a guid
