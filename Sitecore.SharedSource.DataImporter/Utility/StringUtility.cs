@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using Sitecore.Data.Items;
 
 namespace Sitecore.SharedSource.DataImporter.Utility
 {
@@ -52,7 +53,9 @@ namespace Sitecore.SharedSource.DataImporter.Utility
         /// </summary>
         public static string GetNewItemName(string nameValue, int maxLength)
         {
-            return TrimText(StripInvalidChars(nameValue), maxLength, string.Empty);
+            string newItemName = StripInvalidChars(ItemUtil.ProposeValidItemName(nameValue));
+
+            return TrimText(newItemName, maxLength, string.Empty);
         }
 
         public static string TrimText(string val, int maxLength, string endingString)
