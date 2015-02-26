@@ -61,9 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="sitecore modules\Editors\css\global.css" />
-    <Content Include="sitecore modules\Editors\Default.aspx">
-      <SubType>ASPXCodeBehind</SubType>
-    </Content>
+    <Content Include="sitecore modules\Editors\Default.aspx" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Sitecore.SharedSource.DataImporter\Sitecore.SharedSource.DataImporter.csproj">
@@ -73,8 +71,10 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy /Y "$(ProjectDir)\packages\DataImporter-package.zip" "$(SolutionDir)\data\packages\DataImporter-package.zip"
-start xcopy /S /Y "$(ProjectDir)\sitecore modules\Editors\*" "$(SolutionDir)\sitecore modules\shell\Data Import\"</PostBuildEvent>
+    <PostBuildEvent>start xcopy /S /Y "$(ProjectDir)\packages\DataImporter-package.zip" "$(SolutionDir)\data\packages\DataImporter-package.zip"
+start xcopy /S /Y "$(ProjectDir)\sitecore modules\Editors\css\*.css" "$(SolutionDir)\Website\sitecore modules\shell\Data Import\css"
+start xcopy /S /Y "$(ProjectDir)\sitecore modules\Editors\scripts\*.bat" "$(SolutionDir)\Website\sitecore modules\shell\Data Import\scripts"
+start xcopy /S /Y "$(ProjectDir)\sitecore modules\Editors\*.aspx" "$(SolutionDir)\Website\sitecore modules\shell\Data Import"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

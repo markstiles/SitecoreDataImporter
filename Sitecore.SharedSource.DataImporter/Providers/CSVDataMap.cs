@@ -91,8 +91,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
 		/// </summary>
 		/// <param name="newItem"></param>
 		/// <param name="importRow"></param>
-		public override void ProcessCustomData(ref Item newItem, object importRow) {
-		}
+		public override void ProcessCustomData(ref Item newItem, object importRow) { }
 
 		/// <summary>
 		/// gets a field value from an item
@@ -117,7 +116,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
         #region Methods
 		
 		protected List<string> SplitString(string str, string splitter){
-			return str.Split(new string[] { splitter }, StringSplitOptions.RemoveEmptyEntries).ToList();
+			return str.Split(new string[] { splitter }, StringSplitOptions.None).ToList();
 		}
 
 		protected byte[] GetFileBytes(string filePath) {

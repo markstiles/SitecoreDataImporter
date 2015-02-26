@@ -61,6 +61,10 @@ public partial class Default : Page
         } 
     }
 
+    protected void Log(string message) {
+        log.Append(message).AppendLine().AppendLine();
+    }
+
     protected void Log(string errorType, string message)
     {
         log.AppendFormat("{0} : {1}", errorType, message).AppendLine().AppendLine();
@@ -68,31 +72,53 @@ public partial class Default : Page
 
 	protected void btnImport_Click(object sender, EventArgs e) {
 		
-		if (importItem != null) {
+		HandleImport();
 
-			//new import
-            TextField hc = importItem.Fields["Handler Class"];
-            TextField ha = importItem.Fields["Handler Assembly"];
-            if (ha != null && !string.IsNullOrEmpty(ha.Value)) {
-                if (hc != null && !string.IsNullOrEmpty(hc.Value)) {
-                    BaseDataMap map = null;
-                    try {
-                        map = (BaseDataMap)Sitecore.Reflection.ReflectionUtil.CreateObject(ha.Value, hc.Value, new object[] { currentDB, ddlConnStr.SelectedValue, importItem });
-                    } catch (FileNotFoundException fnfe) {
-                        Log("Error", "the binary specified could not be found");
-                    }
-                    if (map != null)
-                    log.Append(map.Process());
-                    else
-                        Log("Error", "the data map provided could not be instantiated");
-                } else {
-                    Log("Error", "import handler class is not defined");
-                }
-            } else {
-                Log("Error", "import handler assembly is not defined");
-            }
-
-			txtMessage.Text = log.ToString();
-		}
+		txtMessage.Text = log.ToString();
 	}
+
+    protected void HandleImport() {
+        
+        //check import item
+        if (importItem == null) {
+            Log("Error", "Import item is null");
+            return;
+        }
+
+        //check handler class
+        TextField ha = importItem.Fields["Handler Assembly"];
+        if (ha == null || string.IsNullOrEmpty(ha.Value)) {
+            Log("Error", "Import handler assembly is not defined");
+            return;
+        }
+
+        TextField hc = importItem.Fields["Handler Class"];
+        if (hc == null || string.IsNullOrEmpty(hc.Value)) {
+            Log("Error", "Import handler class is not defined");
+            return;
+        }
+
+        if(currentDB == null){
+            Log("Error", "Database is null");
+            return;
+        }
+
+        if(string.IsNullOrEmpty(ddlConnStr.SelectedValue)){
+            Log("Error", "Connection string is empty");
+            return;
+        }
+
+        BaseDataMap map = null;
+        try {
+            map = (BaseDataMap)Sitecore.Reflection.ReflectionUtil.CreateObject(ha.Value, hc.Value, new object[] { currentDB, ddlConnStr.SelectedValue, importItem });
+        } catch (FileNotFoundException fnfe) {
+            Log("Error", string.Format("the binary {0} could not be found", ha.Value));
+            return;
+        }
+        
+        if (map != null)
+            Log(map.Process());
+        else
+            Log("Error", "the data map provided could not be instantiated");
+    }
 }
