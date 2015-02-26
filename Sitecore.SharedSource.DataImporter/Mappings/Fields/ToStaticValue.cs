@@ -9,57 +9,52 @@ using Sitecore.SharedSource.DataImporter.Providers;
 using Sitecore.Data.Fields;
 
 namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
-	
+
     /// <summary>
     /// this is used to set a field to a specific predetermined value when importing data.
     /// </summary>
     public class ToStaticValue : BaseMapping, IBaseField {
 
-		#region Properties
+        #region Properties
 
-		private string _Value;
-		/// <summary>
-		/// value to import
-		/// </summary>
+        private string _Value;
+        /// <summary>
+        /// value to import
+        /// </summary>
         public string Value {
-			get {
-				return _Value;
-			}
-			set {
-				_Value = value;
-			}
-		}
+            get {
+                return _Value;
+            }
+            set {
+                _Value = value;
+            }
+        }
 
-		#endregion Properties
+        #endregion Properties
 
-		#region Constructor
+        #region Constructor
 
-		public ToStaticValue(Item i) : base(i) {
-			Value = i.Fields["Value"].Value;
-		}
+        public ToStaticValue(Item i)
+            : base(i) {
+            Value = GetItemField(i, "Value");
+        }
 
-		#endregion Constructor
-
-		#region Methods
-
-        public void FillField(BaseDataMap map, ref Item newItem, string importValue)
-        {
-            //ignore import value and store value provided
-            Field f = newItem.Fields[NewItemField];
-            if(f != null)
-                f.Value = Value;
-		}
-
-		#endregion Methods
+        #endregion Constructor
 
         #region IBaseField Methods
+
+        public void FillField(BaseDataMap map, ref Item newItem, string importValue) {
+            //ignore import value and store value provided
+            Field f = newItem.Fields[NewItemField];
+            if (f != null)
+                f.Value = Value;
+        }
 
         /// <summary>
         /// doesn't provide any existing fields
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<string> GetExistingFieldNames()
-        {
+        public IEnumerable<string> GetExistingFieldNames() {
             return Enumerable.Empty<string>();
         }
 
@@ -67,11 +62,10 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
         /// doesn't need any delimiter
         /// </summary>
         /// <returns></returns>
-        public string GetFieldValueDelimiter()
-        {
+        public string GetFieldValueDelimiter() {
             return string.Empty;
         }
 
         #endregion IBaseField Methods
-	}
+    }
 }

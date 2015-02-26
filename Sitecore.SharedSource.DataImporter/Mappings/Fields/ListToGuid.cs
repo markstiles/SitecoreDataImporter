@@ -13,40 +13,41 @@ using Sitecore.SharedSource.DataImporter.Utility;
 using Sitecore.Data.Fields;
 
 namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
-	
+
     /// <summary>
     /// This uses imported values to match by name an existing content item in the list provided
     /// then stores the GUID of the existing item
     /// </summary>
     public class ListToGuid : ToText {
 
-		#region Properties
+        #region Properties
 
-		private string _SourceList;
-		/// <summary>
-		/// This is the list that you will compare the imported values against
-		/// </summary>
+        private string _SourceList;
+        /// <summary>
+        /// This is the list that you will compare the imported values against
+        /// </summary>
         public string SourceList {
-			get {
-				return _SourceList;
-			}
-			set {
-				_SourceList = value;
-			}
-		}
+            get {
+                return _SourceList;
+            }
+            set {
+                _SourceList = value;
+            }
+        }
 
-		#endregion Properties
+        #endregion Properties
 
-		#region Constructor
+        #region Constructor
 
-		public ListToGuid(Item i) : base(i) {
-			//stores the source list value
-            SourceList = i.Fields["Source List"].Value;
-		}
+        public ListToGuid(Item i)
+            : base(i) {
+            //stores the source list value
+            SourceList = GetItemField(i, "Source List");
+        }
 
-		#endregion Constructor
+        #endregion Constructor
 
-		#region Methods
+        #region Methods
 
         /// <summary>
         /// uses the import value to search for a matching item in the SourceList and then stores the GUID
@@ -54,11 +55,10 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
         /// <param name="map">provides settings for the import</param>
         /// <param name="newItem">newly created item</param>
         /// <param name="importValue">imported value to match</param>
-        public override void FillField(BaseDataMap map, ref Item newItem, string importValue)
-        {
+        public override void FillField(BaseDataMap map, ref Item newItem, string importValue) {
             //get parent item of list to search
             Item i = newItem.Database.GetItem(SourceList);
-			if (i != null) {
+            if (i != null) {
                 //loop through children and look for anything that matches by name
                 IEnumerable<Item> t = from Item c in i.GetChildren()
                                       where c.DisplayName.Equals(StringUtility.GetNewItemName(importValue, map.ItemNameMaxLength))
@@ -66,12 +66,12 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
                 //if you find one then store the id
                 if (t.Any()) {
                     Field f = newItem.Fields[NewItemField];
-                    if(f != null)
+                    if (f != null)
                         f.Value = t.First().ID.ToString();
                 }
-			}
-		}
+            }
+        }
 
-		#endregion Methods
-	}
+        #endregion Methods
+    }
 }

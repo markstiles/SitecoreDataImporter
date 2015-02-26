@@ -43,8 +43,5 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Templates {
 			FromWhatTemplate = i.Fields["From What Template"].Value;
 			ToWhatTemplate = i.Fields["To What Template"].Value;
 		}
-
-		
-
 	}
 }

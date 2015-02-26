@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Sitecore.Data.Items;
+using Sitecore.Data.Fields;
 
 namespace Sitecore.SharedSource.DataImporter.Mappings {
 	
@@ -57,14 +58,28 @@ namespace Sitecore.SharedSource.DataImporter.Mappings {
 		#region Constructor
 
 		public BaseMapping(Item i) {
-			NewItemField = i.Fields["To What Field"].Value;
-			HandlerClass = i.Fields["Handler Class"].Value;
-			HandlerAssembly = i.Fields["Handler Assembly"].Value;
+			NewItemField = GetItemField(i, "To What Field");
+			HandlerClass = GetItemField(i, "Handler Class");
+			HandlerAssembly = GetItemField(i, "Handler Assembly");
 		}
 
 		#endregion Constructor
 
 		#region Methods
+
+        public string GetItemField(Item i, string fieldName) {
+            //check item
+            if (i == null) 
+                return string.Empty;
+
+            //check field
+            Field f = i.Fields[fieldName];
+            if (f == null)
+                return string.Empty;
+            
+            //check value
+            return f.Value;
+        }
 
 		#endregion Methods
 	}

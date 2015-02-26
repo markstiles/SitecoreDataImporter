@@ -8,13 +8,12 @@ using System.Data;
 using System.Collections;
 using Sitecore.SharedSource.DataImporter.Providers;
 
-namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
-{
+namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
     /// <summary>
     /// Class form importing ReferenceFields like DropList
     /// </summary>
-    public class UrlToReference: ToText {
-		#region Properties 
+    public class UrlToReference : ToText {
+        #region Properties
 
         private const string SiteHomeItemFieldName = "SiteHomeItem";
 
@@ -23,65 +22,56 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
         /// </summary>
         public string SiteHomeItemID { get; set; }
 
-		#endregion Properties
-		
-		#region Constructor
+        #endregion Properties
 
-		//constructor
+        #region Constructor
+
+        //constructor
         public UrlToReference(Item i)
-			: base(i) {
-                SiteHomeItemID = i.Fields[SiteHomeItemFieldName].Value;
-		}
+            : base(i) {
+            SiteHomeItemID = GetItemField(i, SiteHomeItemFieldName);
+        }
 
-		#endregion Constructor
-		
-		#region Methods
+        #endregion Constructor
 
-        public override void FillField(BaseDataMap map, ref Item newItem, string importValue)
-        {
+        #region Methods
+
+        public override void FillField(BaseDataMap map, ref Item newItem, string importValue) {
             //get the field as a link field and store the url
             ReferenceField lf = newItem.Fields[NewItemField];
 
-            if(lf != null)
-            {
+            if (lf != null) {
                 //Try to get link using and item path
                 //i.e: /sitecore/content/sitename/path-to-target
                 Item importItem = map.SitecoreDB.GetItem(importValue);
 
                 //Try to get link from URL
                 string pathFromUrl = string.Empty;
-                if(importItem == null && importValue.StartsWith("http"))
-                {
+                if (importItem == null && importValue.StartsWith("http")) {
                     pathFromUrl = GetItemPathFromUrl(map, importValue);
                     importItem = map.SitecoreDB.GetItem(pathFromUrl);
                 }
 
-                if(importItem != null)
+                if (importItem != null)
                     lf.Value = importItem.ID.ToString();
-                else
-                {
+                else {
                     string errorMessage = string.Format("Could not find item at the following locations for field: {0}: \n", NewItemField);
                     errorMessage += string.Format("Original Value: {0}\n", importValue);
 
-                    if(!string.IsNullOrEmpty(pathFromUrl))
+                    if (!string.IsNullOrEmpty(pathFromUrl))
                         errorMessage += string.Format("Path from URL: {0}\n", pathFromUrl);
 
                     throw new Exception(errorMessage);
                 }
-                    
-
-                
             }
-		}
+        }
 
 
         // if you have the full URL with protocol and host
-        private string GetItemPathFromUrl(BaseDataMap map, string url)
-        {
+        private string GetItemPathFromUrl(BaseDataMap map, string url) {
             Item homeItem = map.SitecoreDB.GetItem(SiteHomeItemID);
 
-            if (homeItem == null)
-            {
+            if (homeItem == null) {
                 throw new Exception(string.Format("For URL importing {0} must have a value and point to a valid item. Current Value: '{1}'", SiteHomeItemFieldName, SiteHomeItemID));
             }
 
@@ -97,8 +87,7 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
         }
 
         // if you have just the path after the hostname
-        private Item GetItemFromPath(BaseDataMap map, string path)
-        {
+        private Item GetItemFromPath(BaseDataMap map, string path) {
             // remove query string
             if (path.Contains("?"))
                 path = path.Split('?')[0];
@@ -135,6 +124,6 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
         //    return map.SitecoreDB.GetItem(path);
         //}
 
-		#endregion Methods
-	}
+        #endregion Methods
+    }
 }

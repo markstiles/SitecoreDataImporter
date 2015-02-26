@@ -46,8 +46,8 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
 		public CSVDataMap(Database db, string ConnectionString, Item importItem)
             : base(db, ConnectionString, importItem) {
 
-			FieldDelimiter = importItem["Field Delimiter"];
-			EncodingType = importItem["Encoding Type"];
+			FieldDelimiter = GetImportItemField("Field Delimiter");
+			EncodingType = GetImportItemField("Encoding Type");
 		}
 
         #endregion Constructor

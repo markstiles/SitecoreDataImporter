@@ -28,8 +28,6 @@ public partial class Default : Page
     protected StringBuilder log;
 	protected Item importItem; 
 
-    protected readonly string BaseImportMapID = "{FFB11C18-4EC6-434B-BA51-C81B640539B4}";
-
 	/* Querystring Params available
 		id=%7b59A62A95-9E5D-4478-BDC9-1E793823C48F%7d
 		la=en
@@ -65,8 +63,7 @@ public partial class Default : Page
         log.Append(message).AppendLine().AppendLine();
     }
 
-    protected void Log(string errorType, string message)
-    {
+    protected void Log(string errorType, string message) {
         log.AppendFormat("{0} : {1}", errorType, message).AppendLine().AppendLine();
     }
 
@@ -85,29 +82,33 @@ public partial class Default : Page
             return;
         }
 
-        //check handler class
+        //check handler assembly
         TextField ha = importItem.Fields["Handler Assembly"];
         if (ha == null || string.IsNullOrEmpty(ha.Value)) {
             Log("Error", "Import handler assembly is not defined");
             return;
         }
 
+        //check handler class
         TextField hc = importItem.Fields["Handler Class"];
         if (hc == null || string.IsNullOrEmpty(hc.Value)) {
             Log("Error", "Import handler class is not defined");
             return;
         }
 
+        //check db
         if(currentDB == null){
             Log("Error", "Database is null");
             return;
         }
 
+        //check conn str
         if(string.IsNullOrEmpty(ddlConnStr.SelectedValue)){
             Log("Error", "Connection string is empty");
             return;
         }
 
+        //try to instantiate object
         BaseDataMap map = null;
         try {
             map = (BaseDataMap)Sitecore.Reflection.ReflectionUtil.CreateObject(ha.Value, hc.Value, new object[] { currentDB, ddlConnStr.SelectedValue, importItem });
@@ -116,6 +117,7 @@ public partial class Default : Page
             return;
         }
         
+        //run process
         if (map != null)
             Log(map.Process());
         else

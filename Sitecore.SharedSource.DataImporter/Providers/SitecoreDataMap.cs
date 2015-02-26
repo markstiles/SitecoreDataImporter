@@ -22,7 +22,21 @@ using Sitecore.SharedSource.DataImporter.Mappings.Templates;
 namespace Sitecore.SharedSource.DataImporter.Providers
 {
 	public class SitecoreDataMap : BaseDataMap {
-		
+
+        #region Static IDs
+
+        /// <summary>
+        /// template id of the properties folder
+        /// </summary>
+        public static readonly string PropertiesFolderTemplateID = "{8452785D-FFE7-47F3-911E-F219F5BDEA3A}";
+
+        /// <summary>
+        /// template id of the templates folder
+        /// </summary>
+        public static readonly string TemplatesFolderTemplateID = "{3D915406-97F6-4E94-AC50-B7CAF468A50F}";
+
+        #endregion Static IDs
+
 		#region Properties
 
 		private Database _FromDB;
@@ -62,11 +76,6 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 		private List<IBaseProperty> _propDefinitions = new List<IBaseProperty>();
 
 		/// <summary>
-		/// template id of the properties folder
-		/// </summary>
-		public static readonly string PropertiesFolderID = "{8452785D-FFE7-47F3-911E-F219F5BDEA3A}";
-
-		/// <summary>
 		/// List of template mappings
 		/// </summary>
 		public Dictionary<string, TemplateMapping> TemplateMappingDefinitions {
@@ -78,11 +87,6 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 			}
 		}
 		private Dictionary<string, TemplateMapping> _tempMapDefinitions = new Dictionary<string, TemplateMapping>();
-
-		/// <summary>
-		/// template id of the templates folder
-		/// </summary>
-		public static readonly string TemplatesFolderID = "{3D915406-97F6-4E94-AC50-B7CAF468A50F}";
 
 		private Language _ImportFromLanguage;
 		public Language ImportFromLanguage {
@@ -110,64 +114,17 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 
 		public SitecoreDataMap(Database db, string connectionString, Item importItem) : base(db, connectionString, importItem) {
 
-			Item fLang = SitecoreDB.GetItem(importItem.Fields["Import From Language"].Value);
-			ImportFromLanguage = LanguageManager.GetLanguage(fLang.Name);
+            //get 'from' language
+            ImportFromLanguage = GetImportItemLanguage("Import From Language");
 
-			CheckboxField cf = importItem.Fields["Recursively Fetch Children"];
-			RecursivelyFetchChildren = cf.Checked;
+            //get recursive setting
+            RecursivelyFetchChildren = GetImportItemBool("Recursively Fetch Children");
+            
+            //populate property definitions
+            GetPropDefinitions(ImportItem);
 
-            //deal with sitecore properties if any
-            Item Props = GetItemByTemplate(importItem, PropertiesFolderID);
-            if (Props.IsNotNull()) {
-                ChildList c = Props.GetChildren();
-                if (c.Any()) {
-                    foreach (Item child in c) {
-                        //create an item to get the class / assembly name from
-                        BaseMapping bm = new BaseMapping(child);
-                        if (!string.IsNullOrEmpty(bm.HandlerAssembly)) {
-                            if (!string.IsNullOrEmpty(bm.HandlerClass)) {
-                                //create the object from the class and cast as base field to add it to field definitions
-                                IBaseProperty bp = null;
-                                try {
-                                    bp = (IBaseProperty)Sitecore.Reflection.ReflectionUtil.CreateObject(bm.HandlerAssembly, bm.HandlerClass, new object[] { child });
-                                } catch (FileNotFoundException fnfe) {
-                                    Log("Error", string.Format("the property:{0} binary {1} specified could not be found", child.Name, bm.HandlerAssembly));
-                                }
-                                if (bp != null)
-                                    PropertyDefinitions.Add(bp);
-                                else
-                                    Log("Error", string.Format("the property: '{0}' class type {1} could not be instantiated", child.Name, bm.HandlerClass));
-                            } else {
-                                Log("Error", string.Format("the property: '{0}' Handler Class {1} is not defined", child.Name, bm.HandlerClass));
-                            }
-                        } else {
-                            Log("Error", string.Format("the property: '{0}' Handler Assembly {1} is not defined", child.Name, bm.HandlerAssembly));
-                        }
-                    }
-                } else {
-                    Log("Warn", "there are no properties to import");
-                }
-            }
-
-			Item Temps = GetItemByTemplate(importItem, TemplatesFolderID);
-			if (Temps.IsNotNull()) {
-				ChildList c = Temps.GetChildren();
-				if (c.Any()) {
-					foreach (Item child in c) {
-						//create an item to get the class / assembly name from
-						TemplateMapping tm = new TemplateMapping(child);
-						if (string.IsNullOrEmpty(tm.FromWhatTemplate)) {
-							Log("Error", string.Format("the template mapping field 'FromWhatTemplate' on '{0}' is not defined", child.Name));
-							break;
-						}
-						if (string.IsNullOrEmpty(tm.ToWhatTemplate)) {
-							Log("Error", string.Format("the template mapping field 'ToWhatTemplate' on '{0}' is not defined", child.Name));
-							break;
-						}
-						TemplateMappingDefinitions.Add(tm.FromWhatTemplate, tm);
-					}
-				}
-			}
+            //populate template definitions
+            GetTemplateDefinitions(ImportItem);
 		}
 
 		#endregion Constructor
@@ -248,6 +205,89 @@ namespace Sitecore.SharedSource.DataImporter.Providers
         #endregion Override Methods
 
         #region Methods
+
+        public void GetPropDefinitions(Item i) {
+            
+            //check for properties folder
+            Item Props = GetItemByTemplate(i, PropertiesFolderTemplateID);
+            if (Props.IsNull()) {
+                Log("Warn", "there is no 'Properties' folder");
+                return;
+            }
+
+            //check for any children
+            if (!Props.HasChildren) {
+                Log("Warn", "there are no properties to import");
+                return;
+            }
+
+            ChildList c = Props.GetChildren();
+            foreach (Item child in c) {
+                //create an item to get the class / assembly name from
+                BaseMapping bm = new BaseMapping(child);
+
+                //check for assembly
+                if (string.IsNullOrEmpty(bm.HandlerAssembly)) {
+                    Log("Error", string.Format("the 'Handler Assembly' {1} is not defined for the '{0}' property", child.Name, bm.HandlerAssembly));
+                    continue;
+                }
+
+                //check for class
+                if (string.IsNullOrEmpty(bm.HandlerClass)) {
+                    Log("Error", string.Format("the Handler Class {1} is not defined for the '{0}' property", child.Name, bm.HandlerClass));
+                    continue;
+                }
+                 
+                //create the object from the class and cast as base field to add it to field definitions
+                IBaseProperty bp = null;
+                try {
+                    bp = (IBaseProperty)Sitecore.Reflection.ReflectionUtil.CreateObject(bm.HandlerAssembly, bm.HandlerClass, new object[] { child });
+                } catch (FileNotFoundException fnfe) {
+                    Log("Error", string.Format("the binary {1} specified could not be found for the '{0}' property", child.Name, bm.HandlerAssembly));
+                }
+
+                if (bp != null)
+                    PropertyDefinitions.Add(bp);
+                else
+                    Log("Error", string.Format("the class type {1} could not be instantiated for the '{0}' property ", child.Name, bm.HandlerClass));
+            }
+        }
+
+        public void GetTemplateDefinitions(Item i) {
+            
+            //check for templates folder
+            Item Temps = GetItemByTemplate(i, TemplatesFolderTemplateID);
+			if (Temps.IsNull()) {
+                Log("Warn", "there is no 'Templates' folder");
+                return;
+            }
+
+            //check for any children
+            if (!Temps.HasChildren) {
+                Log("Warn", "there are no templates mappings to import");
+                return;
+            }
+
+			ChildList c = Temps.GetChildren();
+			foreach (Item child in c) {
+				//create an item to get the class / assembly name from
+				TemplateMapping tm = new TemplateMapping(child);
+				
+                //check for 'from' template
+                if (string.IsNullOrEmpty(tm.FromWhatTemplate)) {
+					Log("Error", string.Format("the template mapping field 'FromWhatTemplate' on '{0}' is not defined", child.Name));
+					continue;
+				}
+
+                //check for 'to' template
+				if (string.IsNullOrEmpty(tm.ToWhatTemplate)) {
+					Log("Error", string.Format("the template mapping field 'ToWhatTemplate' on '{0}' is not defined", child.Name));
+					continue;
+				}
+
+				TemplateMappingDefinitions.Add(tm.FromWhatTemplate, tm);
+			}
+        }
 
         #endregion Methods
 	}
