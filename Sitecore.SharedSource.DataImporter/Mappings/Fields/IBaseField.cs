@@ -16,6 +16,12 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
 		#region Methods
 
         /// <summary>
+        /// Used to differentiate fields from each other
+        /// </summary>
+        /// <returns></returns>
+        string Name { get; set; }
+
+        /// <summary>
         /// This uses the imported value to modify the newly created item. 
         /// </summary>
         /// <param name="map">provides settings related to the import</param>

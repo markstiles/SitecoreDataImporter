@@ -28,7 +28,7 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
 
         #endregion Constructor
 
-        #region Methods
+        #region IBaseField
 
         public override void FillField(BaseDataMap map, ref Item newItem, string importValue) {
             //get the field as a link field and store the url
@@ -37,6 +37,6 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
                 lf.Url = importValue;
         }
 
-        #endregion Methods
+        #endregion IBaseField
     }
 }

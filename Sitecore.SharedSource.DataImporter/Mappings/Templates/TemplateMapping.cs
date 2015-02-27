@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Sitecore.Data.Items;
+using Sitecore.SharedSource.DataImporter.Mappings.Fields;
+using Sitecore.SharedSource.DataImporter.Mappings.Properties;
 
 namespace Sitecore.SharedSource.DataImporter.Mappings.Templates {
 	public class TemplateMapping {
@@ -35,6 +37,32 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Templates {
 				_ToWhatTemplate = value;
 			}
 		}
+
+        private List<IBaseField> _fieldDefinitions = new List<IBaseField>();
+        /// <summary>
+        /// the definitions of fields to import
+        /// </summary>
+        public List<IBaseField> FieldDefinitions {
+            get {
+                return _fieldDefinitions;
+            }
+            set {
+                _fieldDefinitions = value;
+            }
+        }
+
+        /// <summary>
+        /// List of properties
+        /// </summary>
+        public List<IBaseProperty> PropertyDefinitions {
+            get {
+                return _propDefinitions;
+            }
+            set {
+                _propDefinitions = value;
+            }
+        }
+        private List<IBaseProperty> _propDefinitions = new List<IBaseProperty>();
 
 		#endregion
 

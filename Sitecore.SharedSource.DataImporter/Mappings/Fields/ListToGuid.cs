@@ -47,7 +47,7 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
 
         #endregion Constructor
 
-        #region Methods
+        #region IBaseField
 
         /// <summary>
         /// uses the import value to search for a matching item in the SourceList and then stores the GUID
@@ -72,6 +72,6 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
             }
         }
 
-        #endregion Methods
+        #endregion IBaseField
     }
 }

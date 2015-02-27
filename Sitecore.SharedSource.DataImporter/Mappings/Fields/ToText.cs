@@ -62,7 +62,9 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
 
         #endregion Constructor
 
-        #region IBaseField Methods
+        #region IBaseField
+
+        public string Name { get; set; }
 
         public virtual void FillField(BaseDataMap map, ref Item newItem, string importValue) {
             //store the imported value as is
@@ -87,6 +89,6 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
             return Delimiter;
         }
 
-        #endregion IBaseField Methods
+        #endregion IBaseField
     }
 }

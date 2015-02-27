@@ -11,6 +11,8 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Properties {
 
 		#region Methods
 
+        string Name { get; set; }
+
         void FillField(BaseDataMap map, ref Item newItem, Item importRow);
 
 		#endregion Methods

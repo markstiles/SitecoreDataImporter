@@ -19,9 +19,8 @@ using Sitecore.Globalization;
 using Sitecore.Data.Managers;
 using Sitecore.SharedSource.DataImporter.Mappings.Templates;
 
-namespace Sitecore.SharedSource.DataImporter.Providers
-{
-	public class SitecoreDataMap : BaseDataMap {
+namespace Sitecore.SharedSource.DataImporter.Providers {
+    public class SitecoreDataMap : BaseDataMap {
 
         #region Static IDs
 
@@ -37,97 +36,98 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 
         #endregion Static IDs
 
-		#region Properties
+        #region Properties
 
-		private Database _FromDB;
-		public Database FromDB {
-			get {
-				if (_FromDB == null) {
-					var csNames = from ConnectionStringSettings c in ConfigurationManager.ConnectionStrings
-						where c.ConnectionString.Equals(DatabaseConnectionString)
-						select c.Name;
-					if(!csNames.Any())
-						throw new NullReferenceException("The database connection string wasn't found.");
-					
-					List<Database> dbs = Sitecore.Configuration.Factory.GetDatabases()
-						.Where(a => a.ConnectionStringName.Equals(csNames.First()))
-						.ToList();
-					
-					if(!dbs.Any())
-						throw new NullReferenceException("No database in the Sitecore configuration using the connection string was found.");
+        private Database _FromDB;
+        public Database FromDB {
+            get {
+                if (_FromDB == null) {
+                    var csNames = from ConnectionStringSettings c in ConfigurationManager.ConnectionStrings
+                                  where c.ConnectionString.Equals(DatabaseConnectionString)
+                                  select c.Name;
+                    if (!csNames.Any())
+                        throw new NullReferenceException("The database connection string wasn't found.");
 
-					_FromDB = dbs.First();
-				}
-				return _FromDB;
-			}
-		}
+                    List<Database> dbs = Sitecore.Configuration.Factory.GetDatabases()
+                        .Where(a => a.ConnectionStringName.Equals(csNames.First()))
+                        .ToList();
+
+                    if (!dbs.Any())
+                        throw new NullReferenceException("No database in the Sitecore configuration using the connection string was found.");
+
+                    _FromDB = dbs.First();
+                }
+                return _FromDB;
+            }
+        }
 
         /// <summary>
         /// List of properties
         /// </summary>
-		public List<IBaseProperty> PropertyDefinitions {
-			get {
-				return _propDefinitions;
-			}
-			set {
-				_propDefinitions = value;
-			}
-		}
-		private List<IBaseProperty> _propDefinitions = new List<IBaseProperty>();
+        public List<IBaseProperty> PropertyDefinitions {
+            get {
+                return _propDefinitions;
+            }
+            set {
+                _propDefinitions = value;
+            }
+        }
+        private List<IBaseProperty> _propDefinitions = new List<IBaseProperty>();
 
-		/// <summary>
-		/// List of template mappings
-		/// </summary>
-		public Dictionary<string, TemplateMapping> TemplateMappingDefinitions {
-			get {
-				return _tempMapDefinitions;
-			}
-			set {
-				_tempMapDefinitions = value;
-			}
-		}
-		private Dictionary<string, TemplateMapping> _tempMapDefinitions = new Dictionary<string, TemplateMapping>();
+        /// <summary>
+        /// List of template mappings
+        /// </summary>
+        public Dictionary<string, TemplateMapping> TemplateMappingDefinitions {
+            get {
+                return _tempMapDefinitions;
+            }
+            set {
+                _tempMapDefinitions = value;
+            }
+        }
+        private Dictionary<string, TemplateMapping> _tempMapDefinitions = new Dictionary<string, TemplateMapping>();
 
-		private Language _ImportFromLanguage;
-		public Language ImportFromLanguage {
-			get {
-				return _ImportFromLanguage;
-			}
-			set {
-				_ImportFromLanguage = value;
-			}
-		}
+        private Language _ImportFromLanguage;
+        public Language ImportFromLanguage {
+            get {
+                return _ImportFromLanguage;
+            }
+            set {
+                _ImportFromLanguage = value;
+            }
+        }
 
-		private bool _RecursivelyFetchChildren;
-		public bool RecursivelyFetchChildren {
-			get {
-				return _RecursivelyFetchChildren;
-			}
-			set {
-				_RecursivelyFetchChildren = value;
-			}
-		}
-		
-		#endregion Properties
+        private bool _RecursivelyFetchChildren;
+        public bool RecursivelyFetchChildren {
+            get {
+                return _RecursivelyFetchChildren;
+            }
+            set {
+                _RecursivelyFetchChildren = value;
+            }
+        }
 
-		#region Constructor
+        #endregion Properties
 
-		public SitecoreDataMap(Database db, string connectionString, Item importItem) : base(db, connectionString, importItem) {
+        #region Constructor
+
+        public SitecoreDataMap(Database db, string connectionString, Item importItem)
+            : base(db, connectionString, importItem) {
 
             //get 'from' language
             ImportFromLanguage = GetImportItemLanguage("Import From Language");
 
             //get recursive setting
             RecursivelyFetchChildren = GetImportItemBool("Recursively Fetch Children");
-            
+
             //populate property definitions
-            GetPropDefinitions(ImportItem);
+            PropertyDefinitions = GetPropDefinitions(ImportItem);
 
             //populate template definitions
-            GetTemplateDefinitions(ImportItem);
-		}
+            TemplateMappingDefinitions = GetTemplateDefinitions(ImportItem);
+        }
 
-		#endregion Constructor
+        #endregion Constructor
 
         #region Override Methods
 
@@ -135,9 +135,8 @@ namespace Sitecore.SharedSource.DataImporter.Providers
         /// uses the sitecore database and xpath query to retrieve data
         /// </summary>
         /// <returns></returns>
-        public override IEnumerable<object> GetImportData()
-        {
-			return FromDB.SelectItems(StringUtility.CleanXPath(this.Query));
+        public override IEnumerable<object> GetImportData() {
+            return FromDB.SelectItems(StringUtility.CleanXPath(Query));
         }
 
         /// <summary>
@@ -145,80 +144,130 @@ namespace Sitecore.SharedSource.DataImporter.Providers
         /// </summary>
         /// <param name="newItem"></param>
         /// <param name="importRow"></param>
-        public override void ProcessCustomData(ref Item newItem, object importRow)
-        {
+        public override void ProcessCustomData(ref Item newItem, object importRow) {
             Item row = importRow as Item;
+
+            List<IBaseProperty> l = GetPropDefinitionsByRow(importRow);
+            
             //add in the property mappings
-            foreach (IBaseProperty d in this.PropertyDefinitions)
+            foreach (IBaseProperty d in l)
                 d.FillField(this, ref newItem, row);
 
-			//recursively get children
-			if (RecursivelyFetchChildren)
-				ProcessChildren(ref newItem, ref row);
+            //recursively get children
+            if (RecursivelyFetchChildren)
+                ProcessChildren(ref newItem, ref row);
         }
 
-		protected virtual void ProcessChildren(ref Item newParent, ref Item oldParent){
-			if (!oldParent.HasChildren)
-				return;
+        protected virtual void ProcessChildren(ref Item newParent, ref Item oldParent) {
+            if (!oldParent.HasChildren)
+                return;
 
-			foreach (Item importRow in oldParent.GetChildren()) {
-				
-				string newItemName = GetNewItemName(importRow);
-				if (string.IsNullOrEmpty(newItemName))
-					continue;
+            foreach (Item importRow in oldParent.GetChildren()) {
 
-				CreateNewItem(newParent, importRow, newItemName);
-			}
-		}
-        
+                string newItemName = GetNewItemName(importRow);
+                if (string.IsNullOrEmpty(newItemName))
+                    continue;
+
+                CreateNewItem(newParent, importRow, newItemName);
+            }
+        }
+
         /// <summary>
         /// gets a field value from an item
         /// </summary>
         /// <param name="importRow"></param>
         /// <param name="fieldName"></param>
         /// <returns></returns>
-        protected override string GetFieldValue(object importRow, string fieldName)
-        {
-			//check for tokens
-			if (fieldName.Equals("$name"))
-				return ((Item)importRow).Name;
+        protected override string GetFieldValue(object importRow, string fieldName) {
+            //check for tokens
+            if (fieldName.Equals("$name"))
+                return ((Item)importRow).Name;
 
-			Item item = importRow as Item;
-			Item langItem = FromDB.GetItem(item.ID, ImportFromLanguage);
+            Item item = importRow as Item;
+            Item langItem = FromDB.GetItem(item.ID, ImportFromLanguage);
 
-			Field f = langItem.Fields[fieldName];
-			return (f != null) ? langItem[fieldName] : string.Empty;
+            Field f = langItem.Fields[fieldName];
+            return (f != null) ? langItem[fieldName] : string.Empty;
         }
 
-		public override CustomItemBase GetNewItemTemplate(object importRow) {
+        public override CustomItemBase GetNewItemTemplate(object importRow) {
 
-			Item iRow = (Item)importRow;
-			string tID = iRow.TemplateID.ToString();
-			if(!TemplateMappingDefinitions.ContainsKey(tID))
-				return base.GetNewItemTemplate(importRow);
+            TemplateMapping tm = GetTemplateMapping((Item)importRow);
+            if (tm == null)
+                return base.GetNewItemTemplate(importRow);
 
-			TemplateMapping tm = TemplateMappingDefinitions[tID];
-			BranchItem b = (BranchItem)SitecoreDB.Items[tm.ToWhatTemplate];
-			return (CustomItemBase)b;
-		}
+            BranchItem b = (BranchItem)SitecoreDB.Items[tm.ToWhatTemplate];
+            return (CustomItemBase)b;
+        }
+
+        public TemplateMapping GetTemplateMapping(Item item) {
+            string tID = item.TemplateID.ToString();
+            return (TemplateMappingDefinitions.ContainsKey(tID))
+                ? TemplateMappingDefinitions[tID]
+                : null;
+        }
+
+        public List<IBaseProperty> GetPropDefinitionsByRow(object importRow) {
+            List<IBaseProperty> l = new List<IBaseProperty>();
+            TemplateMapping tm = GetTemplateMapping((Item)importRow);
+            if (tm == null) 
+                return PropertyDefinitions;
+
+            //get the template fields
+            List<IBaseProperty> tempProps = tm.PropertyDefinitions;
+
+            //filter duplicates in template fields from global fields
+            List<string> names = tempProps.Select(a => a.Name).ToList();
+            l.AddRange(tempProps);
+            l.AddRange(PropertyDefinitions.Where(a => !names.Contains(a.Name)));
+            
+            return l;
+        }
+
+        /// <summary>
+        /// if a template definition has custom field imports then use that before the global field definitions
+        /// </summary>
+        /// <param name="importRow"></param>
+        /// <returns></returns>
+        public override List<IBaseField> GetFieldDefinitionsByRow(object importRow) {
+
+            List<IBaseField> l = new List<IBaseField>();
+
+            //get the template
+            TemplateMapping tm = GetTemplateMapping((Item)importRow);
+            if (tm == null)
+                return FieldDefinitions;
+
+            //get the template fields
+            List<IBaseField> tempFields = tm.FieldDefinitions;
+            
+            //filter duplicates in template fields from global fields
+            List<string> names = tempFields.Select(a => a.Name).ToList();
+            l.AddRange(tempFields);
+            l.AddRange(FieldDefinitions.Where(a => !names.Contains(a.Name)));
+            
+            return l;
+        }
 
         #endregion Override Methods
 
         #region Methods
 
-        public void GetPropDefinitions(Item i) {
-            
+        public List<IBaseProperty> GetPropDefinitions(Item i) {
+
+            List<IBaseProperty> l = new List<IBaseProperty>();
+
             //check for properties folder
             Item Props = GetItemByTemplate(i, PropertiesFolderTemplateID);
             if (Props.IsNull()) {
                 Log("Warn", "there is no 'Properties' folder");
-                return;
+                return l;
             }
 
             //check for any children
             if (!Props.HasChildren) {
                 Log("Warn", "there are no properties to import");
-                return;
+                return l;
             }
 
             ChildList c = Props.GetChildren();
@@ -237,7 +286,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers
                     Log("Error", string.Format("the Handler Class {1} is not defined for the '{0}' property", child.Name, bm.HandlerClass));
                     continue;
                 }
-                 
+
                 //create the object from the class and cast as base field to add it to field definitions
                 IBaseProperty bp = null;
                 try {
@@ -247,48 +296,56 @@ namespace Sitecore.SharedSource.DataImporter.Providers
                 }
 
                 if (bp != null)
-                    PropertyDefinitions.Add(bp);
+                    l.Add(bp);
                 else
                     Log("Error", string.Format("the class type {1} could not be instantiated for the '{0}' property ", child.Name, bm.HandlerClass));
             }
+
+            return l;
         }
 
-        public void GetTemplateDefinitions(Item i) {
-            
+        public Dictionary<string, TemplateMapping> GetTemplateDefinitions(Item i) {
+
+            Dictionary<string, TemplateMapping> d = new Dictionary<string, TemplateMapping>();
+
             //check for templates folder
             Item Temps = GetItemByTemplate(i, TemplatesFolderTemplateID);
-			if (Temps.IsNull()) {
+            if (Temps.IsNull()) {
                 Log("Warn", "there is no 'Templates' folder");
-                return;
+                return d;
             }
 
             //check for any children
             if (!Temps.HasChildren) {
                 Log("Warn", "there are no templates mappings to import");
-                return;
+                return d;
             }
 
-			ChildList c = Temps.GetChildren();
-			foreach (Item child in c) {
-				//create an item to get the class / assembly name from
-				TemplateMapping tm = new TemplateMapping(child);
-				
+            ChildList c = Temps.GetChildren();
+            foreach (Item child in c) {
+                //create an item to get the class / assembly name from
+                TemplateMapping tm = new TemplateMapping(child);
+                tm.FieldDefinitions = GetFieldDefinitions(child);
+                tm.PropertyDefinitions = GetPropDefinitions(child);
+
                 //check for 'from' template
                 if (string.IsNullOrEmpty(tm.FromWhatTemplate)) {
-					Log("Error", string.Format("the template mapping field 'FromWhatTemplate' on '{0}' is not defined", child.Name));
-					continue;
-				}
+                    Log("Error", string.Format("the template mapping field 'FromWhatTemplate' on '{0}' is not defined", child.Name));
+                    continue;
+                }
 
                 //check for 'to' template
-				if (string.IsNullOrEmpty(tm.ToWhatTemplate)) {
-					Log("Error", string.Format("the template mapping field 'ToWhatTemplate' on '{0}' is not defined", child.Name));
-					continue;
-				}
+                if (string.IsNullOrEmpty(tm.ToWhatTemplate)) {
+                    Log("Error", string.Format("the template mapping field 'ToWhatTemplate' on '{0}' is not defined", child.Name));
+                    continue;
+                }
 
-				TemplateMappingDefinitions.Add(tm.FromWhatTemplate, tm);
-			}
+                d.Add(tm.FromWhatTemplate, tm);
+            }
+
+            return d;
         }
 
         #endregion Methods
-	}
+    }
 }

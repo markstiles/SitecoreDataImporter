@@ -264,7 +264,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
             FolderTemplate = GetImportFolderTemplate();
 
             //populate field definitions
-            GetFieldDefinitions(ImportItem);
+            FieldDefinitions = GetFieldDefinitions(ImportItem);
         }
 
         #endregion Constructor
@@ -414,19 +414,21 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
             return (fTemplate == null) ? defaultTemplate : fTemplate;
         }
 
-        public void GetFieldDefinitions(Item i) {
+        public List<IBaseField> GetFieldDefinitions(Item i) {
+            
+            List<IBaseField> l = new List<IBaseField>();
 
             //check for fields folder
             Item Fields = GetItemByTemplate(i, FieldsFolderTemplateID);
             if (Fields.IsNull()) {
                 Log("Warn", "there is no 'Fields' folder");
-                return;
+                return l;
             }
 
             //check for any children
             if (!Fields.HasChildren) {
                 Log("Warn", "there are no fields to import");
-                return;
+                return l;
             }
 
             ChildList c = Fields.GetChildren();
@@ -455,10 +457,12 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
                 }
 
                 if (bf != null)
-                    FieldDefinitions.Add(bf);
+                    l.Add(bf);
                 else
                     Log("Error", string.Format("the field: '{0}' class type {1} could not be instantiated", child.Name, bm.HandlerClass));
             }
+
+            return l;
         }
 
         #endregion Constructor Helpers
@@ -610,7 +614,8 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
 
                 using (new EditContext(newItem, true, false)) {
                     //add in the field mappings
-                    foreach (IBaseField d in this.FieldDefinitions) {
+                    List<IBaseField> fieldDefs = GetFieldDefinitionsByRow(importRow);
+                    foreach (IBaseField d in fieldDefs) {
                         IEnumerable<string> values = GetFieldValues(d.GetExistingFieldNames(), importRow);
 
                         d.FillField(this, ref newItem, String.Join(d.GetFieldValueDelimiter(), values));
@@ -620,6 +625,10 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
                     ProcessCustomData(ref newItem, importRow);
                 }
             }
+        }
+
+        public virtual List<IBaseField> GetFieldDefinitionsByRow(object importRow) {
+            return this.FieldDefinitions;
         }
 
         public virtual CustomItemBase GetNewItemTemplate(object importRow) {

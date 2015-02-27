@@ -23,7 +23,9 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Properties {
 
 		#endregion Constructor
 
-		#region Methods
+		#region IBaseProperty
+
+        public string Name { get; set; }
 
 		//fills it's own field
         public void FillField(BaseDataMap map, ref Item newItem, Item importRow)
@@ -31,8 +33,8 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Properties {
             Field f = newItem.Fields[NewItemField];
             if(f != null)
                 f.Value = LinkManager.GetDynamicUrl(importRow);
-		}
+        }
 
-		#endregion Methods
-	}
+        #endregion IBaseProperty
+    }
 }
