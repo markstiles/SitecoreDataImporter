@@ -232,13 +232,13 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
             //check for properties folder
             Item Props = GetItemByTemplate(i, PropertiesFolderTemplateID);
             if (Props.IsNull()) {
-                Log("Warn", "there is no 'Properties' folder");
+                Log("Warn", string.Format("there is no 'Properties' folder on '{0}'", i.DisplayName));
                 return l;
             }
 
             //check for any children
             if (!Props.HasChildren) {
-                Log("Warn", "there are no properties to import");
+                Log("Warn", string.Format("there are no properties to import on '{0}'", i.DisplayName));
                 return l;
             }
 
@@ -283,13 +283,13 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
             //check for templates folder
             Item Temps = GetItemByTemplate(i, TemplatesFolderTemplateID);
             if (Temps.IsNull()) {
-                Log("Warn", "there is no 'Templates' folder");
+                Log("Warn", string.Format("there is no 'Templates' folder on '{0}'", i.DisplayName));
                 return d;
             }
 
             //check for any children
             if (!Temps.HasChildren) {
-                Log("Warn", "there are no templates mappings to import");
+                Log("Warn", string.Format("there are no templates mappings to import on '{0}'", i.DisplayName));
                 return d;
             }
 

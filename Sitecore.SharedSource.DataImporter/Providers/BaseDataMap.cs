@@ -186,7 +186,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
             //check value
             string s = f.Value;
             if (string.IsNullOrEmpty(s))
-                Log("Warn", string.Format("the '{0}' field was not set", fieldName));
+                Log("Warn", string.Format("the '{0}' field was not set on '{1}'", fieldName, i.DisplayName));
 
             return s;
         }
@@ -198,7 +198,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
             //check field value
             string toWhereID = GetImportItemField("Import To Where");
             if (string.IsNullOrEmpty(toWhereID)) {
-                Log("Error", "the 'To Where' field is not set");
+                Log("Error", string.Format("the 'To Where' field is not set on '{0}'", ImportItem.DisplayName));
                 return null;
             }
 
@@ -290,13 +290,13 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
             //check for fields folder
             Item Fields = GetItemByTemplate(i, FieldsFolderTemplateID);
             if (Fields.IsNull()) {
-                Log("Warn", "there is no 'Fields' folder");
+                Log("Warn", string.Format("there is no 'Fields' folder on '{0}'", i.DisplayName));
                 return l;
             }
 
             //check for any children
             if (!Fields.HasChildren) {
-                Log("Warn", "there are no fields to import");
+                Log("Warn", string.Format("there are no fields to import on '{0}'", i.DisplayName));
                 return l;
             }
 
