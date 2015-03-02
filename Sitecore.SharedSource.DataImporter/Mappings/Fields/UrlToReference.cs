@@ -13,6 +13,7 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
     /// Class form importing ReferenceFields like DropList
     /// </summary>
     public class UrlToReference : ToText {
+       
         #region Properties
 
         private const string SiteHomeItemFieldName = "SiteHomeItem";
@@ -36,20 +37,20 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
 
         #region IBaseField
 
-        public override void FillField(BaseDataMap map, ref Item newItem, string importValue) {
+        public override void FillField(IDataMap map, ref Item newItem, string importValue) {
             //get the field as a link field and store the url
             ReferenceField lf = newItem.Fields[NewItemField];
 
             if (lf != null) {
                 //Try to get link using and item path
                 //i.e: /sitecore/content/sitename/path-to-target
-                Item importItem = map.SitecoreDB.GetItem(importValue);
+                Item importItem = map.ToDB.GetItem(importValue);
 
                 //Try to get link from URL
                 string pathFromUrl = string.Empty;
                 if (importItem == null && importValue.StartsWith("http")) {
                     pathFromUrl = GetItemPathFromUrl(map, importValue);
-                    importItem = map.SitecoreDB.GetItem(pathFromUrl);
+                    importItem = map.ToDB.GetItem(pathFromUrl);
                 }
 
                 if (importItem != null)
@@ -66,10 +67,9 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
             }
         }
 
-
         // if you have the full URL with protocol and host
-        private string GetItemPathFromUrl(BaseDataMap map, string url) {
-            Item homeItem = map.SitecoreDB.GetItem(SiteHomeItemID);
+        private string GetItemPathFromUrl(IDataMap map, string url) {
+            Item homeItem = map.ToDB.GetItem(SiteHomeItemID);
 
             if (homeItem == null) {
                 throw new Exception(string.Format("For URL importing {0} must have a value and point to a valid item. Current Value: '{1}'", SiteHomeItemFieldName, SiteHomeItemID));
@@ -87,20 +87,20 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
         }
 
         // if you have just the path after the hostname
-        private Item GetItemFromPath(BaseDataMap map, string path) {
+        private Item GetItemFromPath(IDataMap map, string path) {
             // remove query string
             if (path.Contains("?"))
                 path = path.Split('?')[0];
 
             path = path.Replace(".aspx", "");
 
-            return map.SitecoreDB.GetItem(path);
+            return map.ToDB.GetItem(path);
         }
 
         //// if you have the full URL with protocol and host
-        //private Item GetItemFromUrl(BaseDataMap map, string url)
+        //private Item GetItemFromUrl(IDataMap map, string url)
         //{
-        //    Item homeItem = map.SitecoreDB.GetItem(SiteHomeItemID);
+        //    Item homeItem = map.ToDB.GetItem(SiteHomeItemID);
 
         //    if(homeItem == null)
         //    {
@@ -113,7 +113,7 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
         //}
 
         //// if you have just the path after the hostname
-        //private Item GetItemFromPath(BaseDataMap map, string path)
+        //private Item GetItemFromPath(IDataMap map, string path)
         //{
         //    // remove query string
         //    if (path.Contains("?"))
@@ -121,7 +121,7 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
 
         //    path = path.Replace(".aspx", "");
 
-        //    return map.SitecoreDB.GetItem(path);
+        //    return map.ToDB.GetItem(path);
         //}
 
         #endregion IBaseField

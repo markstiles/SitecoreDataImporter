@@ -84,7 +84,7 @@ namespace Sitecore.SharedSource.DataImporter.Launcher {
 			}
 
 			using (new SecurityDisabler()) {
-				BaseDataMap map = (BaseDataMap)Sitecore.Reflection.ReflectionUtil.CreateObject(assemblyName, className, new object[] { scDB, connStr, importDefItem });
+                IDataMap map = (IDataMap)Sitecore.Reflection.ReflectionUtil.CreateObject(assemblyName, className, new object[] { scDB, connStr, importDefItem });
 				string message = map.Process();
 				Console.WriteLine(message);
 			}

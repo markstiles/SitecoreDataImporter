@@ -64,50 +64,22 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
         /// <summary>
         /// List of properties
         /// </summary>
-        public List<IBaseProperty> PropertyDefinitions {
-            get {
-                return _propDefinitions;
-            }
-            set {
-                _propDefinitions = value;
-            }
-        }
-        private List<IBaseProperty> _propDefinitions = new List<IBaseProperty>();
-
+        public List<IBaseProperty> PropertyDefinitions { get; set; }
+        
         /// <summary>
         /// List of template mappings
         /// </summary>
-        public Dictionary<string, TemplateMapping> TemplateMappingDefinitions {
-            get {
-                return _tempMapDefinitions;
-            }
-            set {
-                _tempMapDefinitions = value;
-            }
-        }
-        private Dictionary<string, TemplateMapping> _tempMapDefinitions = new Dictionary<string, TemplateMapping>();
-
-        private Language _ImportFromLanguage;
-        public Language ImportFromLanguage {
-            get {
-                return _ImportFromLanguage;
-            }
-            set {
-                _ImportFromLanguage = value;
-            }
-        }
-
-        private bool _RecursivelyFetchChildren;
-        public bool RecursivelyFetchChildren {
-            get {
-                return _RecursivelyFetchChildren;
-            }
-            set {
-                _RecursivelyFetchChildren = value;
-            }
-        }
-
+        public Dictionary<string, TemplateMapping> TemplateMappingDefinitions { get; set; }
+        
         #endregion Properties
+
+        #region Fields
+
+        public Language ImportFromLanguage { get; set; }
+
+        public bool RecursivelyFetchChildren { get; set; }
+
+        #endregion Fields
 
         #region Constructor
 
@@ -129,7 +101,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
 
         #endregion Constructor
 
-        #region Override Methods
+        #region IDataMap Methods
 
         /// <summary>
         /// uses the sitecore database and xpath query to retrieve data
@@ -158,6 +130,28 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
                 ProcessChildren(ref newItem, ref row);
         }
 
+        /// <summary>
+        /// gets a field value from an item
+        /// </summary>
+        /// <param name="importRow"></param>
+        /// <param name="fieldName"></param>
+        /// <returns></returns>
+        public override string GetFieldValue(object importRow, string fieldName) {
+            //check for tokens
+            if (fieldName.Equals("$name"))
+                return ((Item)importRow).Name;
+
+            Item item = importRow as Item;
+            Item langItem = FromDB.GetItem(item.ID, ImportFromLanguage);
+
+            Field f = langItem.Fields[fieldName];
+            return (f != null) ? langItem[fieldName] : string.Empty;
+        }
+
+        #endregion IDataMap Methods
+
+        #region Methods
+
         protected virtual void ProcessChildren(ref Item newParent, ref Item oldParent) {
             if (!oldParent.HasChildren)
                 return;
@@ -172,42 +166,24 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
             }
         }
 
-        /// <summary>
-        /// gets a field value from an item
-        /// </summary>
-        /// <param name="importRow"></param>
-        /// <param name="fieldName"></param>
-        /// <returns></returns>
-        protected override string GetFieldValue(object importRow, string fieldName) {
-            //check for tokens
-            if (fieldName.Equals("$name"))
-                return ((Item)importRow).Name;
-
-            Item item = importRow as Item;
-            Item langItem = FromDB.GetItem(item.ID, ImportFromLanguage);
-
-            Field f = langItem.Fields[fieldName];
-            return (f != null) ? langItem[fieldName] : string.Empty;
-        }
-
-        public override CustomItemBase GetNewItemTemplate(object importRow) {
+        protected override CustomItemBase GetNewItemTemplate(object importRow) {
 
             TemplateMapping tm = GetTemplateMapping((Item)importRow);
             if (tm == null)
                 return base.GetNewItemTemplate(importRow);
 
-            BranchItem b = (BranchItem)SitecoreDB.Items[tm.ToWhatTemplate];
+            BranchItem b = (BranchItem)ToDB.Items[tm.ToWhatTemplate];
             return (CustomItemBase)b;
         }
 
-        public TemplateMapping GetTemplateMapping(Item item) {
+        protected TemplateMapping GetTemplateMapping(Item item) {
             string tID = item.TemplateID.ToString();
             return (TemplateMappingDefinitions.ContainsKey(tID))
                 ? TemplateMappingDefinitions[tID]
                 : null;
         }
 
-        public List<IBaseProperty> GetPropDefinitionsByRow(object importRow) {
+        protected List<IBaseProperty> GetPropDefinitionsByRow(object importRow) {
             List<IBaseProperty> l = new List<IBaseProperty>();
             TemplateMapping tm = GetTemplateMapping((Item)importRow);
             if (tm == null) 
@@ -229,7 +205,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
         /// </summary>
         /// <param name="importRow"></param>
         /// <returns></returns>
-        public override List<IBaseField> GetFieldDefinitionsByRow(object importRow) {
+        protected override List<IBaseField> GetFieldDefinitionsByRow(object importRow) {
 
             List<IBaseField> l = new List<IBaseField>();
 
@@ -249,11 +225,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
             return l;
         }
 
-        #endregion Override Methods
-
-        #region Methods
-
-        public List<IBaseProperty> GetPropDefinitions(Item i) {
+        protected List<IBaseProperty> GetPropDefinitions(Item i) {
 
             List<IBaseProperty> l = new List<IBaseProperty>();
 
@@ -304,7 +276,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
             return l;
         }
 
-        public Dictionary<string, TemplateMapping> GetTemplateDefinitions(Item i) {
+        protected Dictionary<string, TemplateMapping> GetTemplateDefinitions(Item i) {
 
             Dictionary<string, TemplateMapping> d = new Dictionary<string, TemplateMapping>();
 

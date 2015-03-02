@@ -33,9 +33,9 @@ namespace Sitecore.SharedSource.DataImporter.Tests {
 
 		}
 
-		#region BaseDataMap Tests
+        #region IDataMap Tests
 
-		//constructor / property 
+        //constructor / property 
 
 		//GetDateParentNode 
 
@@ -55,13 +55,13 @@ namespace Sitecore.SharedSource.DataImporter.Tests {
 
 		//GetFieldValues test or maybe just rely on instances to implement the sub-method
 
-		//GetParentNode 
+        //GetParentNode 
 
-		#endregion BaseDataMap Tests
+        #endregion IDataMap Tests
 
-		#region CSVDataMap Tests
+        #region CSVDataMap Tests
 
-		//constructor / property 
+        //constructor / property 
 		[Test]
 		public void CSV_ConstructorTest() {
 			if (MasterDB == null)
@@ -88,7 +88,7 @@ namespace Sitecore.SharedSource.DataImporter.Tests {
 				Assert.IsNull(hc.Value, "Import file doesn't exist");
 
 			CSVDataMap map = new CSVDataMap(MasterDB, CSVFile, importItem);
-			//CATCH EXCEPTIONS WITH ALL FIELDS. BASEDATAMAP IS THROWING EXCEPTIONS BECAUSE OF EMPTY FIELDS. PULL LOG AND DUMP IT AS ERROR.
+            //CATCH EXCEPTIONS WITH ALL FIELDS. IDataMap IS THROWING EXCEPTIONS BECAUSE OF EMPTY FIELDS. PULL LOG AND DUMP IT AS ERROR.
 			if (map == null)
 				Assert.IsNull(map, "the data map provided could not be instantiated");
 

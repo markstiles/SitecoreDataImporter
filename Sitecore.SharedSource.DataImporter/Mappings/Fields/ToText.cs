@@ -23,31 +23,15 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
         /// </summary>
         public char[] comSplitr = { ',' };
 
-        private IEnumerable<string> _existingDataNames;
         /// <summary>
         /// the existing data fields you want to import
         /// </summary>
-        public IEnumerable<string> ExistingDataNames {
-            get {
-                return _existingDataNames;
-            }
-            set {
-                _existingDataNames = value;
-            }
-        }
+        public IEnumerable<string> ExistingDataNames { get; set; }
 
-        private string _delimiter;
         /// <summary>
         /// the delimiter you want to separate imported data with
         /// </summary>
-        public string Delimiter {
-            get {
-                return _delimiter;
-            }
-            set {
-                _delimiter = value;
-            }
-        }
+        public string Delimiter { get; set; }
 
         #endregion Properties
 
@@ -66,7 +50,7 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
 
         public string Name { get; set; }
 
-        public virtual void FillField(BaseDataMap map, ref Item newItem, string importValue) {
+        public virtual void FillField(IDataMap map, ref Item newItem, string importValue) {
             //store the imported value as is
             Field f = newItem.Fields[NewItemField];
             if (f != null)

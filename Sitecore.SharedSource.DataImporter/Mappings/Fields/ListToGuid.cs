@@ -22,18 +22,10 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
 
         #region Properties
 
-        private string _SourceList;
         /// <summary>
         /// This is the list that you will compare the imported values against
         /// </summary>
-        public string SourceList {
-            get {
-                return _SourceList;
-            }
-            set {
-                _SourceList = value;
-            }
-        }
+        public string SourceList { get; set; }
 
         #endregion Properties
 
@@ -55,7 +47,7 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
         /// <param name="map">provides settings for the import</param>
         /// <param name="newItem">newly created item</param>
         /// <param name="importValue">imported value to match</param>
-        public override void FillField(BaseDataMap map, ref Item newItem, string importValue) {
+        public override void FillField(IDataMap map, ref Item newItem, string importValue) {
             //get parent item of list to search
             Item i = newItem.Database.GetItem(SourceList);
             if (i != null) {

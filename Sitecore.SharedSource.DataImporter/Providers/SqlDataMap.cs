@@ -25,7 +25,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
 
         #endregion Constructor
 
-        #region Override Methods
+        #region IDataMap Methods
 
         /// <summary>
         /// uses a SqlConnection to get data
@@ -51,8 +51,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
         /// </summary>
         /// <param name="newItem"></param>
         /// <param name="importRow"></param>
-        public override void ProcessCustomData(ref Item newItem, object importRow) {
-        }
+        public override void ProcessCustomData(ref Item newItem, object importRow) { }
 
         /// <summary>
         /// gets custom data from a DataRow
@@ -60,13 +59,13 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
         /// <param name="importRow"></param>
         /// <param name="fieldName"></param>
         /// <returns></returns>
-        protected override string GetFieldValue(object importRow, string fieldName) {
+        public override string GetFieldValue(object importRow, string fieldName) {
             DataRow item = importRow as DataRow;
             object f = item[fieldName];
             return (f != null) ? f.ToString() : string.Empty;
         }
 
-        #endregion Override Methods
+        #endregion IDataMap Methods
 
         #region Methods
 

@@ -17,18 +17,10 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
 
         #region Properties
 
-        private string _Value;
         /// <summary>
         /// value to import
         /// </summary>
-        public string Value {
-            get {
-                return _Value;
-            }
-            set {
-                _Value = value;
-            }
-        }
+        public string Value { get; set; }
 
         #endregion Properties
 
@@ -45,7 +37,7 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
 
         public string Name { get; set; }
 
-        public void FillField(BaseDataMap map, ref Item newItem, string importValue) {
+        public void FillField(IDataMap map, ref Item newItem, string importValue) {
             //ignore import value and store value provided
             Field f = newItem.Fields[NewItemField];
             if (f != null)

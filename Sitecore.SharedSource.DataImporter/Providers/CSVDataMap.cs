@@ -15,29 +15,13 @@ using System.Runtime.Remoting;
 using Sitecore.Web.UI.WebControls;
 
 namespace Sitecore.SharedSource.DataImporter.Providers {
-	public class CSVDataMap : BaseDataMap {
+    public class CSVDataMap : BaseDataMap {
 
 		#region Properties
 
-		private string _FieldDelimiter = string.Empty;
-		public string FieldDelimiter {
-			get {
-				return (_FieldDelimiter.Equals(string.Empty)) ? "," : _FieldDelimiter;
-			}
-			set {
-				_FieldDelimiter = value;
-			}
-		}
+		public string FieldDelimiter { get; set; }
 
-		private string _EncodingType = string.Empty;
-		public string EncodingType {
-			get {
-				return _EncodingType;
-			}
-			set {
-				_EncodingType = value;
-			}
-		}
+		public string EncodingType { get; set; }
 
 		#endregion Properties
 
@@ -52,9 +36,9 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
 
         #endregion Constructor
 
-        #region Override Methods
+        #region IDataMap Methods
 
-		/// <summary>
+        /// <summary>
 		/// uses the query field to retrieve file data
 		/// </summary>
 		/// <returns></returns>
@@ -91,7 +75,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
 		/// </summary>
 		/// <param name="newItem"></param>
 		/// <param name="importRow"></param>
-		public override void ProcessCustomData(ref Item newItem, object importRow) { }
+        public override void ProcessCustomData(ref Item newItem, object importRow) { }
 
 		/// <summary>
 		/// gets a field value from an item
@@ -99,7 +83,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
 		/// <param name="importRow"></param>
 		/// <param name="fieldName"></param>
 		/// <returns></returns>
-		protected override string GetFieldValue(object importRow, string fieldName) {
+        public override string GetFieldValue(object importRow, string fieldName) {
 			
 			string item = importRow as string;
 			List<string> cols = SplitString(item, FieldDelimiter);
@@ -111,11 +95,11 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
 			return s;
 		}
 
-		#endregion Override Methods
+        #endregion IDataMap Methods
 
         #region Methods
-		
-		protected List<string> SplitString(string str, string splitter){
+
+        protected List<string> SplitString(string str, string splitter){
 			return str.Split(new string[] { splitter }, StringSplitOptions.None).ToList();
 		}
 

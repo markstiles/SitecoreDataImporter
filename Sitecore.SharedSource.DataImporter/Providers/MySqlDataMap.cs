@@ -28,7 +28,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
 
         #endregion Constructor
 
-        #region Override Methods
+        #region IDataMap Methods
 
         /// <summary>
         /// uses a MySqlConnection to retrieve data
@@ -51,7 +51,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
                     select dr).Cast<object>();
         }
 
-        #endregion Override Methods
+        #endregion IDataMap Methods
 
         #region Methods
 

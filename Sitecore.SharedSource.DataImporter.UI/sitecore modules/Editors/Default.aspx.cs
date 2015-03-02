@@ -109,9 +109,9 @@ public partial class Default : Page
         }
 
         //try to instantiate object
-        BaseDataMap map = null;
+        IDataMap map = null;
         try {
-            map = (BaseDataMap)Sitecore.Reflection.ReflectionUtil.CreateObject(ha.Value, hc.Value, new object[] { currentDB, ddlConnStr.SelectedValue, importItem });
+            map = (IDataMap)Sitecore.Reflection.ReflectionUtil.CreateObject(ha.Value, hc.Value, new object[] { currentDB, ddlConnStr.SelectedValue, importItem });
         } catch (FileNotFoundException fnfe) {
             Log("Error", string.Format("the binary {0} could not be found", ha.Value));
             return;

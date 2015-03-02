@@ -32,7 +32,7 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
 
         #region IBaseField
 
-        public override void FillField(BaseDataMap map, ref Item newItem, string importValue) {
+        public override void FillField(IDataMap map, ref Item newItem, string importValue) {
             //try to parse date value
             DateTime date = DateTime.Parse(importValue);
             Field f = newItem.Fields[NewItemField];

@@ -14,44 +14,20 @@ namespace Sitecore.SharedSource.DataImporter.Mappings {
 
 		#region Properties
 
-		private string _newItemField;
 		/// <summary>
 		/// the field on the new item that the imported data should be stored in
 		/// </summary>
-        public string NewItemField {
-			get {
-				return _newItemField;
-			}
-			set {
-				_newItemField = value;
-			}
-		}
+        public string NewItemField { get; set; }
 
-		private string _HandlerClass;
 		/// <summary>
 		/// the class that represents the field
 		/// </summary>
-        public string HandlerClass {
-			get {
-				return _HandlerClass;
-			}
-			set {
-			_HandlerClass = value;
-			}
-		}
+        public string HandlerClass { get; set; }
 
-		private string _HandlerAssembly;
 		/// <summary>
 		/// the assembly that the class representing this field is stored in
 		/// </summary>
-        public string HandlerAssembly {
-			get {
-				return _HandlerAssembly;
-			}
-			set {
-				_HandlerAssembly = value;
-			}
-		}
+        public string HandlerAssembly { get; set; }
 
 		#endregion Properties
 

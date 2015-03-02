@@ -9,29 +9,29 @@ using Sitecore.Links;
 using Sitecore.Data.Fields;
 
 namespace Sitecore.SharedSource.DataImporter.Mappings.Properties {
-	public class UrlToText : BaseMapping, IBaseProperty {
-		#region Properties
+    public class UrlToText : BaseMapping, IBaseProperty {
 
-		#endregion Properties
+        #region Properties
 
-		#region Constructor
+        #endregion Properties
 
-		//constructor
-		public UrlToText(Item i)
-			: base(i) {
-		}
+        #region Constructor
 
-		#endregion Constructor
+        //constructor
+        public UrlToText(Item i)
+            : base(i) {
+        }
 
-		#region IBaseProperty
+        #endregion Constructor
+
+        #region IBaseProperty
 
         public string Name { get; set; }
 
-		//fills it's own field
-        public void FillField(BaseDataMap map, ref Item newItem, Item importRow)
-        {
+        //fills it's own field
+        public void FillField(IDataMap map, ref Item newItem, Item importRow) {
             Field f = newItem.Fields[NewItemField];
-            if(f != null)
+            if (f != null)
                 f.Value = LinkManager.GetDynamicUrl(importRow);
         }
 

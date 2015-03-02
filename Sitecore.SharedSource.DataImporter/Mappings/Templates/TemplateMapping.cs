@@ -12,58 +12,26 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Templates {
 
 		#region Properties
 
-		private string _FromWhatTemplate;
 		/// <summary>
 		/// the template the old item is from
 		/// </summary>
-		public string FromWhatTemplate {
-			get {
-				return _FromWhatTemplate;
-			}
-			set {
-				_FromWhatTemplate = value;
-			}
-		}
+        public string FromWhatTemplate { get; set; }
 
-		private string _ToWhatTemplate;
 		/// <summary>
 		/// the template the new item is going to
 		/// </summary>
-		public string ToWhatTemplate {
-			get {
-				return _ToWhatTemplate;
-			}
-			set {
-				_ToWhatTemplate = value;
-			}
-		}
+        public string ToWhatTemplate { get; set; }
 
-        private List<IBaseField> _fieldDefinitions = new List<IBaseField>();
         /// <summary>
         /// the definitions of fields to import
         /// </summary>
-        public List<IBaseField> FieldDefinitions {
-            get {
-                return _fieldDefinitions;
-            }
-            set {
-                _fieldDefinitions = value;
-            }
-        }
+        public List<IBaseField> FieldDefinitions { get; set; }
 
         /// <summary>
         /// List of properties
         /// </summary>
-        public List<IBaseProperty> PropertyDefinitions {
-            get {
-                return _propDefinitions;
-            }
-            set {
-                _propDefinitions = value;
-            }
-        }
-        private List<IBaseProperty> _propDefinitions = new List<IBaseProperty>();
-
+        public List<IBaseProperty> PropertyDefinitions { get; set; }
+        
 		#endregion
 
 		//constructor

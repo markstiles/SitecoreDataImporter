@@ -7,14 +7,14 @@ using System.Data;
 using Sitecore.SharedSource.DataImporter.Providers;
 
 namespace Sitecore.SharedSource.DataImporter.Mappings.Properties {
-	public interface IBaseProperty {
+    public interface IBaseProperty {
 
-		#region Methods
+        #region Methods
 
         string Name { get; set; }
 
-        void FillField(BaseDataMap map, ref Item newItem, Item importRow);
+        void FillField(IDataMap map, ref Item newItem, Item importRow);
 
-		#endregion Methods
-	}
+        #endregion Methods
+    }
 }
