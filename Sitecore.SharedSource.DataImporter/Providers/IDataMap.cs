@@ -1,6 +1,7 @@
 ﻿using Sitecore.Data;
 using Sitecore.Data.Items;
 using Sitecore.Globalization;
+using Sitecore.SharedSource.DataImporter.Logger;
 using Sitecore.SharedSource.DataImporter.Mappings.Fields;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,8 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
     public interface IDataMap {
 
         #region Properties 
+
+        ILogger Logger { get; set; }
 
         Database ToDB { get; set; }
 
@@ -64,10 +67,39 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
         string GetFieldValue(object importRow, string fieldName);
 
         /// <summary>
-        /// The method that process the import
+        /// Gets the template type for the new item that will house the importRow data
         /// </summary>
-        /// <returns>Log message of the import</returns>
-        string Process();
+        /// <param name="importRow"></param>
+        /// <returns></returns>
+        CustomItemBase GetNewItemTemplate(object importRow);
+
+        /// <summary>
+        /// Gets the field definitions for any given row of imported data
+        /// </summary>
+        /// <param name="importRow"></param>
+        /// <returns></returns>
+        List<IBaseField> GetFieldDefinitionsByRow(object importRow);
+
+        /// <summary>
+        /// creates an item name based on the name field values in the data map pulled from the 
+        /// </summary>
+        string BuildNewItemName(object importRow);
+
+        /// <summary>
+        /// Creates new items for the import row based on the language, name, folder etc. settings
+        /// </summary>
+        /// <param name="parent"></param>
+        /// <param name="importRow"></param>
+        /// <param name="newItemName"></param>
+        void CreateNewItem(Item parent, object importRow, string newItemName);
+
+        /// <summary>
+        /// Determines what the new parent item should be for the current import row based on foldering settings.
+        /// </summary>
+        /// <param name="importRow"></param>
+        /// <param name="newItemName"></param>
+        /// <returns></returns>
+        Item GetParentNode(object importRow, string newItemName);
 
         #endregion Methods
     }

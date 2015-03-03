@@ -10,6 +10,7 @@ using System.Data.SqlClient;
 using System.Web;
 using Sitecore.SharedSource.DataImporter.Mappings.Fields;
 using MySql.Data.MySqlClient;
+using Sitecore.SharedSource.DataImporter.Logger;
 
 namespace Sitecore.SharedSource.DataImporter.Providers {
     //To use this you'll need the .NET MySQL connector: http://dev.mysql.com/downloads/connector/net/
@@ -22,8 +23,8 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
 
         #region Constructor
 
-        public MySqlDataMap(Database db, string ConnectionString, Item importItem)
-            : base(db, ConnectionString, importItem) {
+        public MySqlDataMap(Database db, string ConnectionString, Item importItem, ILogger l)
+            : base(db, ConnectionString, importItem, l) {
         }
 
         #endregion Constructor

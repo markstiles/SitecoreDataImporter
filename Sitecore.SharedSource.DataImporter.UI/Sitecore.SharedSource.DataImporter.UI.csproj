@@ -61,7 +61,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="sitecore modules\Editors\css\global.css" />
-    <Content Include="sitecore modules\Editors\Default.aspx" />
+    <Content Include="sitecore modules\Editors\Default.aspx">
+      <SubType>ASPXCodeBehind</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Sitecore.SharedSource.DataImporter\Sitecore.SharedSource.DataImporter.csproj">

@@ -19,6 +19,7 @@ using System.IO;
 using Sitecore.Globalization;
 using Sitecore.Data.Managers;
 using Sitecore.Configuration;
+using Sitecore.SharedSource.DataImporter.Logger;
 
 namespace Sitecore.SharedSource.DataImporter.Providers {
     /// <summary>
@@ -37,16 +38,13 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
 
         #region Properties
 
-        /// <summary>
-        /// the log is returned with any messages indicating the status of the import
-        /// </summary>
-        protected StringBuilder log;
-
         public Item ImportItem { get; set; }
 
         #endregion Properties
 
         #region IDataMap Properties
+
+        public ILogger Logger { get; set; }
 
         /// <summary>
         /// the reference to the sitecore database that you'll import into
@@ -112,9 +110,12 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
 
         #region Constructor
 
-        public BaseDataMap(Database db, string connectionString, Item importItem) {
+        public BaseDataMap(Database db, string connectionString, Item importItem, ILogger l) {
+            if (l == null)
+                throw new Exception("The provided Logger is null");
+
             //instantiate log
-            log = new StringBuilder();
+            Logger = l;
 
             //setup import details
             ToDB = db;
@@ -125,7 +126,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
             ItemNameMaxLength = GetNameLength();
 
             //get query
-            Query = GetImportItemField("Query");
+            Query = ImportItem.GetItemField("Query", Logger);
 
             //get parent item
             ImportToWhere = GetImportToWhereItem();
@@ -134,15 +135,15 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
             ImportToWhatTemplate = GetImportToTemplate();
 
             //get item name field
-            ItemNameFields = GetImportItemField("Pull Item Name from What Fields").Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
+            ItemNameFields = ImportItem.GetItemField("Pull Item Name from What Fields", Logger).Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
 
             //get import language
             ImportToLanguage = GetImportItemLanguage("Import To Language");
 
             //foldering information
-            FolderByDate = GetImportItemBool("Folder By Date");
-            FolderByName = GetImportItemBool("Folder By Name");
-            DateField = GetImportItemField("Date Field");
+            FolderByDate = ImportItem.GetItemBool("Folder By Date");
+            FolderByName = ImportItem.GetItemBool("Folder By Name");
+            DateField = ImportItem.GetItemField("Date Field", Logger);
             FolderTemplate = GetImportFolderTemplate();
 
             //populate field definitions
@@ -160,52 +161,21 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
                 : 100;
         }
 
-        public bool GetImportItemBool(string fieldName) {
-            CheckboxField cb = (CheckboxField)ImportItem.Fields[fieldName];
-            return (cb == null) ? false : cb.Checked;
-        }
-
-        public string GetImportItemField(string fieldName) {
-            return GetItemField(ImportItem, fieldName);
-        }
-
-        public string GetItemField(Item i, string fieldName) {
-            //check item
-            if (i == null) {
-                Log("Error", "the item is null");
-                return string.Empty;
-            }
-
-            //check field
-            Field f = i.Fields[fieldName];
-            if (f == null) {
-                Log("Error", string.Format("the field '{0}' on the item '{1}' is null", fieldName, i.DisplayName));
-                return string.Empty;
-            }
-
-            //check value
-            string s = f.Value;
-            if (string.IsNullOrEmpty(s))
-                Log("Warn", string.Format("the '{0}' field was not set on '{1}'", fieldName, i.DisplayName));
-
-            return s;
-        }
-
         public Item GetImportToWhereItem() {
 
             Item toWhere = null;
 
             //check field value
-            string toWhereID = GetImportItemField("Import To Where");
+            string toWhereID = ImportItem.GetItemField("Import To Where", Logger);
             if (string.IsNullOrEmpty(toWhereID)) {
-                Log("Error", string.Format("the 'To Where' field is not set on '{0}'", ImportItem.DisplayName));
+                Logger.LogError("Error", string.Format("the 'To Where' field is not set on '{0}'", ImportItem.DisplayName));
                 return null;
             }
 
             //check item
             toWhere = ToDB.Items[toWhereID];
             if (toWhere.IsNull())
-                Log("Error", "the 'To Where' item is null");
+                Logger.LogError("Error", "the 'To Where' item is null");
 
             return toWhere;
         }
@@ -215,16 +185,16 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
             CustomItemBase template = null;
 
             //check field value
-            string templateID = GetImportItemField("Import To What Template");
+            string templateID = ImportItem.GetItemField("Import To What Template", Logger);
             if (string.IsNullOrEmpty(templateID)) {
-                Log("Error", "the 'To What Template' field is not set");
+                Logger.LogError("Error", "the 'To What Template' field is not set");
                 return null;
             }
 
             //check template item
             Item templateItem = ToDB.Items[templateID];
             if (templateItem.IsNull()) {
-                Log("Error", "the 'To What Template' item is null");
+                Logger.LogError("Error", "the 'To What Template' item is null");
                 return null;
             }
 
@@ -243,23 +213,23 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
             Language l = LanguageManager.DefaultLanguage;
 
             //check the field
-            string langID = GetImportItemField(fieldName);
+            string langID = ImportItem.GetItemField(fieldName, Logger);
             if (string.IsNullOrEmpty(langID)) {
-                Log("Error", "The 'Import Language' field is not set");
+                Logger.LogError("Error", "The 'Import Language' field is not set");
                 return l;
             }
 
             //check item
             Item iLang = ToDB.GetItem(langID);
             if (iLang.IsNull()) {
-                Log("Error", "The 'Import Language' Item is null");
+                Logger.LogError("Error", "The 'Import Language' Item is null");
                 return l;
             }
 
             //check language
             l = LanguageManager.GetLanguage(iLang.Name);
             if (l == null) {
-                Log("Error", "The 'Import Language' name is not valid");
+                Logger.LogError("Error", "The 'Import Language' name is not valid");
             }
 
             return l;
@@ -274,7 +244,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
             TemplateItem defaultTemplate = ToDB.Templates[CommonFolderTemplateID];
 
             //if they specify a type then use that
-            string folderID = GetImportItemField("Folder Template");
+            string folderID = ImportItem.GetItemField("Folder Template", Logger);
             if (string.IsNullOrEmpty(folderID))
                 return defaultTemplate;
 
@@ -283,20 +253,24 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
             return (fTemplate == null) ? defaultTemplate : fTemplate;
         }
 
-        public List<IBaseField> GetFieldDefinitions(Item i) {
-            
+        #endregion Constructor Helpers
+
+        #region Methods
+
+        protected virtual List<IBaseField> GetFieldDefinitions(Item i) {
+
             List<IBaseField> l = new List<IBaseField>();
 
             //check for fields folder
-            Item Fields = GetItemByTemplate(i, FieldsFolderTemplateID);
+            Item Fields = i.GetChildByTemplate(FieldsFolderTemplateID);
             if (Fields.IsNull()) {
-                Log("Warn", string.Format("there is no 'Fields' folder on '{0}'", i.DisplayName));
+                Logger.Log("Warn", string.Format("there is no 'Fields' folder on '{0}'", i.DisplayName));
                 return l;
             }
 
             //check for any children
             if (!Fields.HasChildren) {
-                Log("Warn", string.Format("there are no fields to import on '{0}'", i.DisplayName));
+                Logger.Log("Warn", string.Format("there are no fields to import on '{0}'", i.DisplayName));
                 return l;
             }
 
@@ -307,13 +281,13 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
 
                 //check for assembly
                 if (string.IsNullOrEmpty(bm.HandlerAssembly)) {
-                    Log("Error", string.Format("the field: '{0}' Handler Assembly {1} is not defined", child.Name, bm.HandlerAssembly));
+                    Logger.LogError("Error", string.Format("the field: '{0}' Handler Assembly {1} is not defined", child.Name, bm.HandlerAssembly));
                     continue;
                 }
 
                 //check for class
                 if (string.IsNullOrEmpty(bm.HandlerClass)) {
-                    Log("Error", string.Format("the field: '{0}' Handler Class {1} is not defined", child.Name, bm.HandlerClass));
+                    Logger.LogError("Error", string.Format("the field: '{0}' Handler Class {1} is not defined", child.Name, bm.HandlerClass));
                     continue;
                 }
 
@@ -322,89 +296,33 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
                 try {
                     bf = (IBaseField)Sitecore.Reflection.ReflectionUtil.CreateObject(bm.HandlerAssembly, bm.HandlerClass, new object[] { child });
                 } catch (FileNotFoundException fnfe) {
-                    Log("Error", string.Format("the field:{0} binary {1} specified could not be found", child.Name, bm.HandlerAssembly));
+                    Logger.LogError("Error", string.Format("the field:{0} binary {1} specified could not be found", child.Name, bm.HandlerAssembly));
                 }
 
                 if (bf != null)
                     l.Add(bf);
                 else
-                    Log("Error", string.Format("the field: '{0}' class type {1} could not be instantiated", child.Name, bm.HandlerClass));
+                    Logger.LogError("Error", string.Format("the field: '{0}' class type {1} could not be instantiated", child.Name, bm.HandlerClass));
             }
 
             return l;
         }
 
-        #endregion Constructor Helpers
-
-        #region IDataMap Methods
-
         /// <summary>
-        /// gets the data to be imported
+        /// retrieves all the import field values specified
         /// </summary>
-        /// <returns></returns>
-        public abstract IEnumerable<object> GetImportData();
-
-        /// <summary>
-        /// this is used to process custom fields or properties
-        /// </summary>
-        public abstract void ProcessCustomData(ref Item newItem, object importRow);
-
-        /// <summary>
-        /// Defines how the subclass will retrieve a field value
-        /// </summary>
-        public abstract string GetFieldValue(object importRow, string fieldName);
-
-        /// <summary>
-        /// processes each field against the data provided by subclasses
-        /// </summary>
-        public string Process() {
-            IEnumerable<object> importItems;
-            try {
-                importItems = GetImportData();
-            } catch (Exception ex) {
-                importItems = Enumerable.Empty<object>();
-                Log("Import Error", ex.Message);
-            }
-
-            long line = 0;
-
-            try {
-                //Loop through the data source
-                foreach (object importRow in importItems) {
-                    line++;
-
-                    string newItemName = GetNewItemName(importRow);
-                    if (string.IsNullOrEmpty(newItemName))
-                        continue;
-
-                    Item thisParent = GetParentNode(importRow, newItemName);
-                    if (thisParent.IsNull())
-                        throw new NullReferenceException("The new item's parent is null");
-
-                    CreateNewItem(thisParent, importRow, newItemName);
+        protected virtual IEnumerable<string> GetFieldValues(IEnumerable<string> fieldNames, object importRow) {
+            List<string> list = new List<string>();
+            foreach (string f in fieldNames) {
+                try {
+                    list.Add(GetFieldValue(importRow, f));
+                } catch (ArgumentException ex) {
+                    Logger.LogError("Field Error", (string.IsNullOrEmpty(f))
+                        ? "the 'From' field name is empty"
+                        : string.Format("the field name: '{0}' does not exist in the import row", f));
                 }
-            } catch (Exception ex) {
-                Log("Error (line: " + line + ")", ex.Message);
             }
-
-            //if no messages then you're good
-            if (log.Length < 1 || !log.ToString().Contains("Error"))
-                Log("Success", "the import completed successfully");
-
-            return log.ToString();
-        }
-
-        #endregion IDataMap Methods
-
-        #region Methods
-
-        /// <summary>
-        /// Used to log status information while the import is processed
-        /// </summary>
-        /// <param name="errorType"></param>
-        /// <param name="message"></param>
-        protected void Log(string errorType, string message) {
-            log.AppendFormat("{0} : {1}", errorType, message).AppendLine().AppendLine();
+            return list;
         }
 
         /// <summary>
@@ -455,68 +373,45 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
         protected Item GetNameParentNode(Item parentNode, string letter, TemplateItem folderType) {
             //get letter folder
             Item letterItem = parentNode.Children[letter];
-            if (letterItem == null) {
-                //build year folder if you have to
+            if (letterItem == null) //build year folder if you have to
                 letterItem = parentNode.Add(letter, folderType);
-            }
+
             //set the parent to year
             return letterItem;
         }
 
-        /// <summary>
-        /// gets the parent of the new item created. will create folders based on name or date if configured to
-        /// </summary>
-        protected Item GetParentNode(object importRow, string newItemName) {
-            Item thisParent = ImportToWhere;
-            if (FolderByDate) {
-                DateTime date = DateTime.Now;
-                string dateValue = string.Empty;
-                try {
-                    dateValue = GetFieldValue(importRow, DateField);
-                } catch (ArgumentException ex) {
-                    if (string.IsNullOrEmpty(DateField))
-                        Log("Field Error", "the date name field is empty");
-                    else
-                        Log("Field Error", string.Format("the field name: '{0}' does not exist in the import row", DateField));
-                }
-                if (!string.IsNullOrEmpty(dateValue)) {
-                    if (DateTime.TryParse(dateValue, out date))
-                        thisParent = GetDateParentNode(ImportToWhere, date, FolderTemplate);
-                    else
-                        Log("Error", "the date value could not be parsed");
-                } else {
-                    Log("Error", "the date value was empty");
-                }
-            } else if (FolderByName) {
-                thisParent = GetNameParentNode(ImportToWhere, newItemName.Substring(0, 1), FolderTemplate);
-            }
-            return thisParent;
-        }
+        #endregion Methods
+
+        #region IDataMap Methods
 
         /// <summary>
-        /// searches under the parent for an item whose template matches the id provided
+        /// gets the data to be imported
         /// </summary>
-        /// <param name="parent"></param>
-        /// <param name="TemplateID"></param>
         /// <returns></returns>
-        protected Item GetItemByTemplate(Item parent, string TemplateID) {
-            IEnumerable<Item> x = from Item i in parent.GetChildren()
-                                  where i.Template.IsID(TemplateID)
-                                  select i;
-            return (x.Any()) ? x.First() : null;
-        }
+        public abstract IEnumerable<object> GetImportData();
 
-        protected virtual CustomItemBase GetNewItemTemplate(object importRow) {
+        /// <summary>
+        /// this is used to process custom fields or properties
+        /// </summary>
+        public abstract void ProcessCustomData(ref Item newItem, object importRow);
+
+        /// <summary>
+        /// Defines how the subclass will retrieve a field value
+        /// </summary>
+        public abstract string GetFieldValue(object importRow, string fieldName);
+
+        public virtual CustomItemBase GetNewItemTemplate(object importRow) {
             //Create new item
             if (ImportToWhatTemplate == null || ImportToWhatTemplate.InnerItem.IsNull())
                 throw new NullReferenceException("The 'Import To What Template' item is null");
             return ImportToWhatTemplate;
         }
 
-        /// <summary>
-        /// creates an item name based on the name field values in the importRow
-        /// </summary>
-        protected string GetNewItemName(object importRow) {
+        public virtual List<IBaseField> GetFieldDefinitionsByRow(object importRow) {
+            return FieldDefinitions;
+        }
+
+        public string BuildNewItemName(object importRow) {
             if (!ItemNameFields.Any())
                 throw new NullReferenceException("there are no 'Name' fields specified");
 
@@ -528,11 +423,11 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
                     throw new NullReferenceException(string.Format("the field name: '{0}' does not exist in the import row", nameField));
                 }
             }
-            
-            return StringUtility.GetNewItemName(strItemName.ToString(), ItemNameMaxLength);
+
+            return StringUtility.GetValidItemName(strItemName.ToString(), ItemNameMaxLength);
         }
 
-        protected void CreateNewItem(Item parent, object importRow, string newItemName) {
+        public void CreateNewItem(Item parent, object importRow, string newItemName) {
 
             CustomItemBase nItemTemplate = GetNewItemTemplate(importRow);
 
@@ -562,7 +457,6 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
                     List<IBaseField> fieldDefs = GetFieldDefinitionsByRow(importRow);
                     foreach (IBaseField d in fieldDefs) {
                         IEnumerable<string> values = GetFieldValues(d.GetExistingFieldNames(), importRow);
-
                         d.FillField(this, ref newItem, String.Join(d.GetFieldValueDelimiter(), values));
                     }
 
@@ -572,28 +466,41 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
             }
         }
 
-        protected virtual List<IBaseField> GetFieldDefinitionsByRow(object importRow) {
-            return FieldDefinitions;
-        }
-
         /// <summary>
-        /// retrieves all the import field values specified
+        /// gets the parent of the new item created. will create folders based on name or date if configured to
         /// </summary>
-        protected IEnumerable<string> GetFieldValues(IEnumerable<string> fieldNames, object importRow) {
-            List<string> list = new List<string>();
-            foreach (string f in fieldNames) {
+        public virtual Item GetParentNode(object importRow, string newItemName) {
+            Item thisParent = ImportToWhere;
+            if (FolderByDate) {
+                DateTime date = DateTime.Now;
+                string dateValue = string.Empty;
+
                 try {
-                    list.Add(GetFieldValue(importRow, f));
+                    dateValue = GetFieldValue(importRow, DateField);
                 } catch (ArgumentException ex) {
-                    if (string.IsNullOrEmpty(f))
-                        Log("Field Error", "the 'From' field name is empty");
-                    else
-                        Log("Field Error", string.Format("the field name: '{0}' does not exist in the import row", f));
+                    Logger.LogError("Field Error", (string.IsNullOrEmpty(DateField))
+                        ? "the date name field is empty"
+                        : string.Format("the field name: '{0}' does not exist in the import row", DateField)
+                    );
                 }
+
+                if (string.IsNullOrEmpty(dateValue)) {
+                    Logger.LogError("Error", "Couldn't folder by date. The date value was empty");
+                    return thisParent;
+                }
+
+                if (!DateTime.TryParse(dateValue, out date)) {
+                    Logger.LogError("Error", "Couldn't folder by date. The date value could not be parsed");
+                    return thisParent;
+                }
+
+                thisParent = GetDateParentNode(ImportToWhere, date, FolderTemplate);
+            } else if (FolderByName) {
+                thisParent = GetNameParentNode(ImportToWhere, newItemName.Substring(0, 1), FolderTemplate);
             }
-            return list;
+            return thisParent;
         }
 
-        #endregion Methods
+        #endregion IDataMap Methods
     }
 }

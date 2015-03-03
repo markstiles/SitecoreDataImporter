@@ -13,6 +13,8 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.Remoting;
 using Sitecore.Web.UI.WebControls;
+using Sitecore.SharedSource.DataImporter.Extensions;
+using Sitecore.SharedSource.DataImporter.Logger;
 
 namespace Sitecore.SharedSource.DataImporter.Providers {
     public class CSVDataMap : BaseDataMap {
@@ -27,11 +29,11 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
 
         #region Constructor
 
-		public CSVDataMap(Database db, string ConnectionString, Item importItem)
-            : base(db, ConnectionString, importItem) {
+		public CSVDataMap(Database db, string ConnectionString, Item importItem, ILogger l)
+            : base(db, ConnectionString, importItem, l) {
 
-			FieldDelimiter = GetImportItemField("Field Delimiter");
-			EncodingType = GetImportItemField("Encoding Type");
+			FieldDelimiter = ImportItem.GetItemField("Field Delimiter", Logger);
+            EncodingType = ImportItem.GetItemField("Encoding Type", Logger);
 		}
 
         #endregion Constructor
@@ -45,7 +47,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
         public override IEnumerable<object> GetImportData() {
 
 			if (!File.Exists(this.Query)) {
-				Log("Error", string.Format("the file: '{0}' could not be found. Try moving the file under the webroot.", this.Query));
+				Logger.LogError("Error", string.Format("the file: '{0}' could not be found. Try moving the file under the webroot.", this.Query));
 				return Enumerable.Empty<object>();
 			}
 

@@ -51,7 +51,7 @@ namespace Sitecore.SharedSource.DataImporter.Utility
         /// <summary>
         /// This is used to get a trimmed down name suitable for Sitecore
         /// </summary>
-        public static string GetNewItemName(string nameValue, int maxLength)
+        public static string GetValidItemName(string nameValue, int maxLength)
         {
             string newItemName = StripInvalidChars(ItemUtil.ProposeValidItemName(nameValue));
 

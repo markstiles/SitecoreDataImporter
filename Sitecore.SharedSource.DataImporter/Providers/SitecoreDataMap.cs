@@ -18,6 +18,7 @@ using System.Configuration;
 using Sitecore.Globalization;
 using Sitecore.Data.Managers;
 using Sitecore.SharedSource.DataImporter.Mappings.Templates;
+using Sitecore.SharedSource.DataImporter.Logger;
 
 namespace Sitecore.SharedSource.DataImporter.Providers {
     public class SitecoreDataMap : BaseDataMap {
@@ -83,14 +84,14 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
 
         #region Constructor
 
-        public SitecoreDataMap(Database db, string connectionString, Item importItem)
-            : base(db, connectionString, importItem) {
+        public SitecoreDataMap(Database db, string connectionString, Item importItem, ILogger l)
+            : base(db, connectionString, importItem, l) {
 
             //get 'from' language
             ImportFromLanguage = GetImportItemLanguage("Import From Language");
 
             //get recursive setting
-            RecursivelyFetchChildren = GetImportItemBool("Recursively Fetch Children");
+            RecursivelyFetchChildren = ImportItem.GetItemBool("Recursively Fetch Children");
 
             //populate property definitions
             PropertyDefinitions = GetPropDefinitions(ImportItem);
@@ -148,6 +149,41 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
             return (f != null) ? langItem[fieldName] : string.Empty;
         }
 
+        public override CustomItemBase GetNewItemTemplate(object importRow) {
+
+            TemplateMapping tm = GetTemplateMapping((Item)importRow);
+            if (tm == null)
+                return base.GetNewItemTemplate(importRow);
+
+            BranchItem b = (BranchItem)ToDB.Items[tm.ToWhatTemplate];
+            return (CustomItemBase)b;
+        }
+
+        /// <summary>
+        /// if a template definition has custom field imports then use that before the global field definitions
+        /// </summary>
+        /// <param name="importRow"></param>
+        /// <returns></returns>
+        public override List<IBaseField> GetFieldDefinitionsByRow(object importRow) {
+
+            List<IBaseField> l = new List<IBaseField>();
+
+            //get the template
+            TemplateMapping tm = GetTemplateMapping((Item)importRow);
+            if (tm == null)
+                return FieldDefinitions;
+
+            //get the template fields
+            List<IBaseField> tempFields = tm.FieldDefinitions;
+
+            //filter duplicates in template fields from global fields
+            List<string> names = tempFields.Select(a => a.Name).ToList();
+            l.AddRange(tempFields);
+            l.AddRange(FieldDefinitions.Where(a => !names.Contains(a.Name)));
+
+            return l;
+        }
+
         #endregion IDataMap Methods
 
         #region Methods
@@ -158,22 +194,12 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
 
             foreach (Item importRow in oldParent.GetChildren()) {
 
-                string newItemName = GetNewItemName(importRow);
+                string newItemName = BuildNewItemName(importRow);
                 if (string.IsNullOrEmpty(newItemName))
                     continue;
 
                 CreateNewItem(newParent, importRow, newItemName);
             }
-        }
-
-        protected override CustomItemBase GetNewItemTemplate(object importRow) {
-
-            TemplateMapping tm = GetTemplateMapping((Item)importRow);
-            if (tm == null)
-                return base.GetNewItemTemplate(importRow);
-
-            BranchItem b = (BranchItem)ToDB.Items[tm.ToWhatTemplate];
-            return (CustomItemBase)b;
         }
 
         protected TemplateMapping GetTemplateMapping(Item item) {
@@ -200,45 +226,20 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
             return l;
         }
 
-        /// <summary>
-        /// if a template definition has custom field imports then use that before the global field definitions
-        /// </summary>
-        /// <param name="importRow"></param>
-        /// <returns></returns>
-        protected override List<IBaseField> GetFieldDefinitionsByRow(object importRow) {
-
-            List<IBaseField> l = new List<IBaseField>();
-
-            //get the template
-            TemplateMapping tm = GetTemplateMapping((Item)importRow);
-            if (tm == null)
-                return FieldDefinitions;
-
-            //get the template fields
-            List<IBaseField> tempFields = tm.FieldDefinitions;
-            
-            //filter duplicates in template fields from global fields
-            List<string> names = tempFields.Select(a => a.Name).ToList();
-            l.AddRange(tempFields);
-            l.AddRange(FieldDefinitions.Where(a => !names.Contains(a.Name)));
-            
-            return l;
-        }
-
         protected List<IBaseProperty> GetPropDefinitions(Item i) {
 
             List<IBaseProperty> l = new List<IBaseProperty>();
 
             //check for properties folder
-            Item Props = GetItemByTemplate(i, PropertiesFolderTemplateID);
+            Item Props = i.GetChildByTemplate(PropertiesFolderTemplateID);
             if (Props.IsNull()) {
-                Log("Warn", string.Format("there is no 'Properties' folder on '{0}'", i.DisplayName));
+                Logger.Log("Warn", string.Format("there is no 'Properties' folder on '{0}'", i.DisplayName));
                 return l;
             }
 
             //check for any children
             if (!Props.HasChildren) {
-                Log("Warn", string.Format("there are no properties to import on '{0}'", i.DisplayName));
+                Logger.Log("Warn", string.Format("there are no properties to import on '{0}'", i.DisplayName));
                 return l;
             }
 
@@ -249,13 +250,13 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
 
                 //check for assembly
                 if (string.IsNullOrEmpty(bm.HandlerAssembly)) {
-                    Log("Error", string.Format("the 'Handler Assembly' {1} is not defined for the '{0}' property", child.Name, bm.HandlerAssembly));
+                    Logger.LogError("Error", string.Format("the 'Handler Assembly' {1} is not defined for the '{0}' property", child.Name, bm.HandlerAssembly));
                     continue;
                 }
 
                 //check for class
                 if (string.IsNullOrEmpty(bm.HandlerClass)) {
-                    Log("Error", string.Format("the Handler Class {1} is not defined for the '{0}' property", child.Name, bm.HandlerClass));
+                    Logger.LogError("Error", string.Format("the Handler Class {1} is not defined for the '{0}' property", child.Name, bm.HandlerClass));
                     continue;
                 }
 
@@ -264,13 +265,13 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
                 try {
                     bp = (IBaseProperty)Sitecore.Reflection.ReflectionUtil.CreateObject(bm.HandlerAssembly, bm.HandlerClass, new object[] { child });
                 } catch (FileNotFoundException fnfe) {
-                    Log("Error", string.Format("the binary {1} specified could not be found for the '{0}' property", child.Name, bm.HandlerAssembly));
+                    Logger.LogError("Error", string.Format("the binary {1} specified could not be found for the '{0}' property", child.Name, bm.HandlerAssembly));
                 }
 
                 if (bp != null)
                     l.Add(bp);
                 else
-                    Log("Error", string.Format("the class type {1} could not be instantiated for the '{0}' property ", child.Name, bm.HandlerClass));
+                    Logger.LogError("Error", string.Format("the class type {1} could not be instantiated for the '{0}' property ", child.Name, bm.HandlerClass));
             }
 
             return l;
@@ -281,15 +282,15 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
             Dictionary<string, TemplateMapping> d = new Dictionary<string, TemplateMapping>();
 
             //check for templates folder
-            Item Temps = GetItemByTemplate(i, TemplatesFolderTemplateID);
+            Item Temps = i.GetChildByTemplate(TemplatesFolderTemplateID);
             if (Temps.IsNull()) {
-                Log("Warn", string.Format("there is no 'Templates' folder on '{0}'", i.DisplayName));
+                Logger.Log("Warn", string.Format("there is no 'Templates' folder on '{0}'", i.DisplayName));
                 return d;
             }
 
             //check for any children
             if (!Temps.HasChildren) {
-                Log("Warn", string.Format("there are no templates mappings to import on '{0}'", i.DisplayName));
+                Logger.Log("Warn", string.Format("there are no templates mappings to import on '{0}'", i.DisplayName));
                 return d;
             }
 
@@ -302,13 +303,13 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
 
                 //check for 'from' template
                 if (string.IsNullOrEmpty(tm.FromWhatTemplate)) {
-                    Log("Error", string.Format("the template mapping field 'FromWhatTemplate' on '{0}' is not defined", child.Name));
+                    Logger.LogError("Error", string.Format("the template mapping field 'FromWhatTemplate' on '{0}' is not defined", child.Name));
                     continue;
                 }
 
                 //check for 'to' template
                 if (string.IsNullOrEmpty(tm.ToWhatTemplate)) {
-                    Log("Error", string.Format("the template mapping field 'ToWhatTemplate' on '{0}' is not defined", child.Name));
+                    Logger.LogError("Error", string.Format("the template mapping field 'ToWhatTemplate' on '{0}' is not defined", child.Name));
                     continue;
                 }
 

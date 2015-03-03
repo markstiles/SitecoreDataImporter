@@ -77,8 +77,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Extensions\ItemExtensions.cs" />
+    <Compile Include="Extensions\SitecoreExtensions.cs" />
     <Compile Include="Extensions\SystemExtensions.cs" />
     <Compile Include="Extensions\TemplateExtensions.cs" />
+    <Compile Include="ImportProcessor.cs" />
+    <Compile Include="Logger\ILogger.cs" />
+    <Compile Include="Logger\DefaultLogger.cs" />
     <Compile Include="Mappings\BaseMapping.cs" />
     <Compile Include="Mappings\Fields\IBaseField.cs" />
     <Compile Include="Mappings\Fields\ToDate.cs" />
@@ -98,6 +102,7 @@
     <Compile Include="Providers\SitecoreDataMap.cs" />
     <Compile Include="Providers\SqlDataMap.cs" />
     <Compile Include="Mappings\Fields\ToStaticValue.cs" />
+    <Compile Include="Utility\SitecoreUtility.cs" />
     <Compile Include="Utility\StringUtility.cs" />
   </ItemGroup>
   <ItemGroup>

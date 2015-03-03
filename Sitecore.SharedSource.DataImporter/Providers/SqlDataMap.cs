@@ -11,6 +11,7 @@ using System.Web;
 using Sitecore.SharedSource.DataImporter.Mappings.Fields;
 using Sitecore.SharedSource.DataImporter.Extensions;
 using System.Collections;
+using Sitecore.SharedSource.DataImporter.Logger;
 
 namespace Sitecore.SharedSource.DataImporter.Providers {
     public class SqlDataMap : BaseDataMap {
@@ -21,7 +22,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
 
         #region Constructor
 
-        public SqlDataMap(Database db, string connectionString, Item importItem) : base(db, connectionString, importItem) { }
+        public SqlDataMap(Database db, string connectionString, Item importItem, ILogger l) : base(db, connectionString, importItem, l) { }
 
         #endregion Constructor
 

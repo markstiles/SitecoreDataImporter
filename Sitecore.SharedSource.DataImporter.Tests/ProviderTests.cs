@@ -9,6 +9,7 @@ using Sitecore.Data;
 using Sitecore.Data.Fields;
 using Sitecore.Data.Items;
 using Sitecore.SharedSource.DataImporter.Providers;
+using Sitecore.SharedSource.DataImporter.Logger;
 
 namespace Sitecore.SharedSource.DataImporter.Tests {
 	[TestFixture, Category("Provider Tests")]
@@ -28,10 +29,12 @@ namespace Sitecore.SharedSource.DataImporter.Tests {
 			}
 		}
 
-		[SetUp]
-		public void SetUp() {
+        protected DefaultLogger l;
 
-		}
+        [SetUp]
+        public void Setup() {
+            l = new DefaultLogger();
+        }
 
         #region IDataMap Tests
 
@@ -87,7 +90,7 @@ namespace Sitecore.SharedSource.DataImporter.Tests {
 			if (!File.Exists(CSVFile))
 				Assert.IsNull(hc.Value, "Import file doesn't exist");
 
-			CSVDataMap map = new CSVDataMap(MasterDB, CSVFile, importItem);
+			CSVDataMap map = new CSVDataMap(MasterDB, CSVFile, importItem, l);
             //CATCH EXCEPTIONS WITH ALL FIELDS. IDataMap IS THROWING EXCEPTIONS BECAUSE OF EMPTY FIELDS. PULL LOG AND DUMP IT AS ERROR.
 			if (map == null)
 				Assert.IsNull(map, "the data map provided could not be instantiated");
