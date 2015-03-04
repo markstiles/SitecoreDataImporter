@@ -51,11 +51,20 @@ namespace Sitecore.SharedSource.DataImporter.Tests {
 
         [Test]
         public void ImportProcessor_NullParentTest() {
-            UTDataMap dm = new UTDataMap();
+            NullParentDataMap dm = new NullParentDataMap();
             ImportProcessor p = new ImportProcessor(dm, l);
             p.Process();
 
             Assert.IsTrue(l.GetLog().Contains("Get Parent Error"));
+        }
+
+        [Test]
+        public void ImportProcessor_SuccessTest() {
+            UTDataMap dm = new UTDataMap();
+            ImportProcessor p = new ImportProcessor(dm, l);
+            p.Process();
+
+            Assert.IsTrue(l.GetLog().Contains("Success"));
         }
     }
 }

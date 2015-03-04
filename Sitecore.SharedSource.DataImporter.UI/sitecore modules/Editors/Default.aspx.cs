@@ -21,6 +21,8 @@ using Sitecore.SharedSource.DataImporter.Extensions;
 using System.Text;
 using System.IO;
 using Sitecore.Web;
+using Sitecore.SharedSource.DataImporter.Logger;
+using Sitecore.SharedSource.DataImporter;
 
 public partial class Default : Page
 {
@@ -111,16 +113,24 @@ public partial class Default : Page
         //try to instantiate object
         IDataMap map = null;
         try {
-            map = (IDataMap)Sitecore.Reflection.ReflectionUtil.CreateObject(ha.Value, hc.Value, new object[] { currentDB, ddlConnStr.SelectedValue, importItem });
+            DefaultLogger l = new DefaultLogger();
+            map = (IDataMap)Sitecore.Reflection.ReflectionUtil.CreateObject(
+                ha.Value, 
+                hc.Value, 
+                new object[] { currentDB, ddlConnStr.SelectedValue, importItem, l }
+            );
+            //run process
+            if (map == null) {
+                Log("Error", "the data map provided could not be instantiated");
+                return;
+            }
+
+            ImportProcessor p = new ImportProcessor(map, l);
+            p.Process();
+            Log(l.GetLog());
         } catch (FileNotFoundException fnfe) {
             Log("Error", string.Format("the binary {0} could not be found", ha.Value));
             return;
         }
-        
-        //run process
-        if (map != null)
-            Log(map.Process());
-        else
-            Log("Error", "the data map provided could not be instantiated");
     }
 }

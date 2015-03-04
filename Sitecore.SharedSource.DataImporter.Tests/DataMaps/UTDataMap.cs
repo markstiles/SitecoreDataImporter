@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Sitecore.SharedSource.DataImporter.Logger;
+using Sitecore.SharedSource.DataImporter.Tests.Items;
 
 namespace Sitecore.SharedSource.DataImporter.Tests.DataMaps {
     public class UTDataMap : IDataMap {
@@ -56,7 +57,7 @@ namespace Sitecore.SharedSource.DataImporter.Tests.DataMaps {
         #region Methods
 
         public virtual IEnumerable<object> GetImportData() {
-            return new List<object>();
+            return new List<object>() { "string" };
         }
 
         public virtual void ProcessCustomData(ref Item newItem, object importRow) {
@@ -84,7 +85,7 @@ namespace Sitecore.SharedSource.DataImporter.Tests.DataMaps {
         }
 
         public virtual Item GetParentNode(object importRow, string newItemName) {
-            return null;
+            return new FakeItem(new FieldList(), Sitecore.Configuration.Factory.GetDatabase("master"));
         }
 
         #endregion Methods

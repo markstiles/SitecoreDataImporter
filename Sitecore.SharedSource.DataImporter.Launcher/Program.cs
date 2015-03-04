@@ -8,6 +8,7 @@ using Sitecore.Data;
 using Sitecore.Data.Items;
 using Sitecore.SecurityModel;
 using Sitecore.SharedSource.DataImporter.Providers;
+using Sitecore.SharedSource.DataImporter.Logger;
 
 namespace Sitecore.SharedSource.DataImporter.Launcher {
 
@@ -18,6 +19,7 @@ namespace Sitecore.SharedSource.DataImporter.Launcher {
 		NullDatabase = 8,
 		NullConnectionString = 16,
 		NullImportItem = 32,
+        NullImportInstantation = 64
 	}
 
 	public class Program {
@@ -84,9 +86,19 @@ namespace Sitecore.SharedSource.DataImporter.Launcher {
 			}
 
 			using (new SecurityDisabler()) {
-                IDataMap map = (IDataMap)Sitecore.Reflection.ReflectionUtil.CreateObject(assemblyName, className, new object[] { scDB, connStr, importDefItem });
-				string message = map.Process();
-				Console.WriteLine(message);
+                DefaultLogger l = new DefaultLogger();
+                IDataMap map = (IDataMap)Sitecore.Reflection.ReflectionUtil.CreateObject(
+                    assemblyName, 
+                    className, 
+                    new object[] { scDB, connStr, importDefItem, l }
+                );
+                if (map == null) {
+                    Console.WriteLine("The import definition map could not be instantiated");
+                    Environment.Exit((int)ExitCode.NullImportInstantation);
+                }
+                ImportProcessor p = new ImportProcessor(map, l);
+                p.Process();
+				Console.WriteLine(l.GetLog());
 			}
 		}
 

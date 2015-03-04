@@ -102,7 +102,6 @@
     <Compile Include="Providers\SitecoreDataMap.cs" />
     <Compile Include="Providers\SqlDataMap.cs" />
     <Compile Include="Mappings\Fields\ToStaticValue.cs" />
-    <Compile Include="Utility\SitecoreUtility.cs" />
     <Compile Include="Utility\StringUtility.cs" />
   </ItemGroup>
   <ItemGroup>

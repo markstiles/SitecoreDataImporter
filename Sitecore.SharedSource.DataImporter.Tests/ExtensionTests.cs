@@ -17,16 +17,12 @@ using Sitecore.Web;
 using Sitecore.Globalization;
 using Sitecore.Web.UI.WebControls;
 using Sitecore.Layouts;
+using Sitecore.SharedSource.DataImporter.Tests.Items;
 
 namespace Sitecore.SharedSource.DataImporter.Tests {
 	[TestFixture, Category("Extension Tests")]
 	public class ExtensionTests {
-
-		[SetUp]
-		public void SetUp() {
-			
-		}
-
+        
 		[Test]
 		public void ToDateFieldTest() {
 			DateTime dt = new DateTime(2010, 1, 1, 1, 1, 1);
