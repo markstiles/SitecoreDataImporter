@@ -1,0 +1,51 @@
+----item----
+version: 1
+id: {CB50C13B-B28B-4102-8484-45BC0C1D3605}
+database: master
+path: /sitecore/templates/Modules/Data Import/Mappings/Properties/PathToText/__Standard Values
+parent: {3C255ADA-989B-4B8C-BDD8-42C0E74749B7}
+name: __Standard Values
+master: {00000000-0000-0000-0000-000000000000}
+template: {3C255ADA-989B-4B8C-BDD8-42C0E74749B7}
+templatekey: PathToText
+
+----field----
+field: {FA7B99B1-6BB9-469C-B786-F8A9D52D2F0A}
+name: Handler Class
+key: handler class
+content-length: 65
+
+Sitecore.SharedSource.DataImporter.Mappings.Properties.PathToText
+----version----
+language: en
+version: 1
+revision: dad5b465-9dff-43cf-af77-1c460e2da181
+
+----field----
+field: {25BED78C-4957-4165-998A-CA1B52F67497}
+name: __Created
+key: __created
+content-length: 15
+
+20110704T104557
+----field----
+field: {8CDC337E-A112-42FB-BBB4-4143751E123F}
+name: __Revision
+key: __revision
+content-length: 36
+
+dad5b465-9dff-43cf-af77-1c460e2da181
+----field----
+field: {D9CF14B1-FA16-4BA6-9288-E8A174D4D522}
+name: __Updated
+key: __updated
+content-length: 34
+
+20110704T104605:634453731655629348
+----field----
+field: {BADD9CF9-53E0-4D0C-BCC0-2D784C282F6A}
+name: __Updated by
+key: __updated by
+content-length: 14
+
+sitecore\admin

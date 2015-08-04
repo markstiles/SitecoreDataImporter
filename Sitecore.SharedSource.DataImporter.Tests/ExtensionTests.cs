@@ -18,6 +18,8 @@ using Sitecore.Globalization;
 using Sitecore.Web.UI.WebControls;
 using Sitecore.Layouts;
 using Sitecore.SharedSource.DataImporter.Tests.Items;
+using Sitecore.FakeDb;
+using Sitecore.FakeDb.Serialization;
 
 namespace Sitecore.SharedSource.DataImporter.Tests {
 	[TestFixture, Category("Extension Tests")]
@@ -41,5 +43,16 @@ namespace Sitecore.SharedSource.DataImporter.Tests {
 			Assert.IsTrue(isStandard);
 			Assert.IsFalse(isNon);
 		}
+        
+        [Test]
+        public void HowToDeserializeItem() {
+            using (Db db = new Db {
+              new DsDbTemplate("/sitecore/templates/Modules/Data Import/Testing/A"),
+              new DsDbItem("/sitecore/content/DataImportTesting/From/A", true)
+            }) {
+                var a = db.GetItem("/sitecore/content/DataImportTesting/From/A");
+                Assert.AreEqual("A First Value", a["First"]);
+            }
+        }
 	}
 }

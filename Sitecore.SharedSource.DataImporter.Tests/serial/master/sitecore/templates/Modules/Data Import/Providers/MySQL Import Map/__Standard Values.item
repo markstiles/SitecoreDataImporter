@@ -1,0 +1,65 @@
+----item----
+version: 1
+id: {CE57BDF6-DBB7-4E2A-9727-AE540113F71E}
+database: master
+path: /sitecore/templates/Modules/Data Import/Providers/MySQL Import Map/__Standard Values
+parent: {84FBB783-2320-481B-876A-256E58C43FAD}
+name: __Standard Values
+master: {00000000-0000-0000-0000-000000000000}
+template: {84FBB783-2320-481B-876A-256E58C43FAD}
+templatekey: MySQL Import Map
+
+----field----
+field: {0790A745-13E8-44F1-AA17-469E8FC7D20E}
+name: Handler Class
+key: handler class
+content-length: 57
+
+Sitecore.SharedSource.DataImporter.Providers.MySqlDataMap
+----field----
+field: {0639F8E7-44AB-41CE-AE67-9987BAF47E96}
+name: Handler Assembly
+key: handler assembly
+content-length: 34
+
+Sitecore.SharedSource.DataImporter
+----field----
+field: {A0CB3965-8884-4C7A-8815-B6B2E5CED162}
+name: __Editors
+key: __editors
+content-length: 38
+
+{6ABC057D-F83F-470B-B0C6-01EB9CB1B03E}
+----version----
+language: en
+version: 1
+revision: 90c03568-3aac-4190-9bb0-2fa8d273af09
+
+----field----
+field: {25BED78C-4957-4165-998A-CA1B52F67497}
+name: __Created
+key: __created
+content-length: 15
+
+20130223T142937
+----field----
+field: {8CDC337E-A112-42FB-BBB4-4143751E123F}
+name: __Revision
+key: __revision
+content-length: 36
+
+90c03568-3aac-4190-9bb0-2fa8d273af09
+----field----
+field: {D9CF14B1-FA16-4BA6-9288-E8A174D4D522}
+name: __Updated
+key: __updated
+content-length: 34
+
+20140428T120730:635342836509958127
+----field----
+field: {BADD9CF9-53E0-4D0C-BCC0-2D784C282F6A}
+name: __Updated by
+key: __updated by
+content-length: 14
+
+sitecore\admin

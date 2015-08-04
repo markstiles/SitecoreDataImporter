@@ -1,0 +1,65 @@
+----item----
+version: 1
+id: {F1199728-0560-43DB-80AA-46EC0B5D0ECE}
+database: master
+path: /sitecore/templates/Modules/Data Import/Branches/Sitecore Import Map
+parent: {FD063A78-69FF-40A1-8CAA-67B0BCBEB746}
+name: Sitecore Import Map
+master: {00000000-0000-0000-0000-000000000000}
+template: {35E75C72-4985-4E09-88C3-0EAC6CD1E64F}
+templatekey: Branch
+
+----field----
+field: {06D5295C-ED2F-4A54-9BF2-26228D113318}
+name: __Icon
+key: __icon
+content-length: 31
+
+business/32x32/data_refresh.png
+----version----
+language: en
+version: 1
+revision: 34ef9bcd-fe88-4484-afef-24eb196916e1
+
+----field----
+field: {52807595-0F8F-4B20-8D2A-CB71D28C6103}
+name: __Owner
+key: __owner
+content-length: 14
+
+sitecore\admin
+----field----
+field: {25BED78C-4957-4165-998A-CA1B52F67497}
+name: __Created
+key: __created
+content-length: 15
+
+20110704T113339
+----field----
+field: {5DD74568-4D4B-44C1-B513-0AF5F4CDA34F}
+name: __Created by
+key: __created by
+content-length: 14
+
+sitecore\admin
+----field----
+field: {8CDC337E-A112-42FB-BBB4-4143751E123F}
+name: __Revision
+key: __revision
+content-length: 36
+
+34ef9bcd-fe88-4484-afef-24eb196916e1
+----field----
+field: {D9CF14B1-FA16-4BA6-9288-E8A174D4D522}
+name: __Updated
+key: __updated
+content-length: 34
+
+20110704T121239:634453783590929878
+----field----
+field: {BADD9CF9-53E0-4D0C-BCC0-2D784C282F6A}
+name: __Updated by
+key: __updated by
+content-length: 14
+
+sitecore\admin

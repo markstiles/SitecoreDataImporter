@@ -26,7 +26,7 @@ namespace Sitecore.SharedSource.DataImporter.Tests {
 		public void StripInvalidCharsTest() {
 			string s1 = "a>b<c:d\"[e]f?g/h\\i|j";
 			string r1 = StringUtility.StripInvalidChars(s1);
-			Assert.AreEqual(r1, "abcdefghij");
+			Assert.AreEqual("abcdefghij", r1);
 		}
 
 		[Test]
