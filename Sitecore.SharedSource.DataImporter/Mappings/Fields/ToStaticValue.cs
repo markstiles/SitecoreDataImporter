@@ -1,20 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Sitecore.Data.Items;
-using System.Data;
-using System.Collections;
-using Sitecore.SharedSource.DataImporter.Providers;
 using Sitecore.Data.Fields;
+using Sitecore.Data.Items;
+using Sitecore.SharedSource.DataImporter.Providers;
 
-namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
-	
+namespace Sitecore.SharedSource.DataImporter.Mappings.Fields 
+{
     /// <summary>
     /// this is used to set a field to a specific predetermined value when importing data.
     /// </summary>
-    public class ToStaticValue : BaseMapping, IBaseField {
-
+    
+    public class ToStaticValue : BaseMapping, IBaseField 
+    {
 		#region Properties
 
 		private string _Value;

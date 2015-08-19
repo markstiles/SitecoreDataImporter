@@ -1,25 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Sitecore.SharedSource.DataImporter;
+using Sitecore.Data.Fields;
 using Sitecore.Data.Items;
-using Sitecore.Data;
-using System.Data;
-using Sitecore.SharedSource.DataImporter.Extensions;
-using System.Collections;
 using Sitecore.SharedSource.DataImporter.Providers;
 using Sitecore.SharedSource.DataImporter.Utility;
-using Sitecore.Data.Fields;
 
-namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
-	
+namespace Sitecore.SharedSource.DataImporter.Mappings.Fields 
+{
     /// <summary>
     /// This uses imported values to match by name an existing content item in the list provided
     /// then stores the GUID of the existing item
     /// </summary>
-    public class ListToGuid : ToText {
 
+    public class ListToGuid : ToText 
+    {
 		#region Properties
 
 		private string _SourceList;
