@@ -117,7 +117,9 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
         #region Methods
 		
 		protected List<string> SplitString(string str, string splitter){
-			return str.Split(new string[] { splitter }, StringSplitOptions.RemoveEmptyEntries).ToList();
+            // string split options set to none so that empty columns are allowed
+            // useful for importing large csv files, so you don't have to check the content
+			return str.Split(new string[] { splitter }, StringSplitOptions.None).ToList();
 		}
 
 		protected byte[] GetFileBytes(string filePath) {
