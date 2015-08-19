@@ -65,7 +65,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
 				return Enumerable.Empty<object>();
 			}
 
-			Encoding et = Encoding.GetEncoding(1252);
+			Encoding et = Encoding.GetEncoding("utf-8");
 			int ei = -1;
 			if(!EncodingType.Equals("")) {
 				Encoding eTemp; 
