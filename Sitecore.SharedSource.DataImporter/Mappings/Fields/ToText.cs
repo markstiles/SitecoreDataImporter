@@ -1,13 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Sitecore.SharedSource.DataImporter.Extensions;
-using Sitecore.Data.Items;
-using System.Web;
 using Sitecore.Data.Fields;
-using System.Data;
-using System.Collections;
+using Sitecore.Data.Items;
 using Sitecore.SharedSource.DataImporter.Providers;
 
 namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
@@ -15,9 +9,9 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
     /// <summary>
     /// this stores the plain text import value as is into the new field
     /// </summary>
+
     public class ToText : BaseMapping, IBaseField
-    {
-		
+    {		
 		#region Properties 
 
         /// <summary>

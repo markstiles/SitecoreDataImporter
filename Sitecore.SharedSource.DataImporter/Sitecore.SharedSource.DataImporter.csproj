@@ -55,10 +55,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MySql.Data">
-      <HintPath>..\..\Sitecore\bin\MySql.Data.dll</HintPath>
+      <HintPath>references\MySql.Data.dll</HintPath>
     </Reference>
     <Reference Include="Sitecore.Kernel">
-      <HintPath>..\..\Sitecore\bin\Sitecore.Kernel.dll</HintPath>
+      <HintPath>references\Sitecore.Kernel.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -77,11 +77,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Extensions\ItemExtensions.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Extensions\SystemExtensions.cs" />
     <Compile Include="Extensions\TemplateExtensions.cs" />
     <Compile Include="Mappings\BaseMapping.cs" />
     <Compile Include="Mappings\Fields\IBaseField.cs" />
+    <Compile Include="Mappings\Fields\ToCheckBox.cs" />
+    <Compile Include="Mappings\Fields\ToChecklist.cs" />
     <Compile Include="Mappings\Fields\ToDate.cs" />
+    <Compile Include="Mappings\Fields\ToDropdownList.cs" />
+    <Compile Include="Mappings\Fields\ToInteger.cs" />
+    <Compile Include="Mappings\Fields\ToListItem.cs" />
+    <Compile Include="Mappings\Fields\ToMultiList.cs" />
+    <Compile Include="Mappings\Fields\ToNumber.cs" />
     <Compile Include="Mappings\Fields\UrlToReference.cs" />
     <Compile Include="Mappings\Fields\UrlToLink.cs" />
     <Compile Include="Mappings\Templates\TemplateMapping.cs" />

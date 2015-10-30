@@ -1,19 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Sitecore.Data.Fields;
 using Sitecore.Data.Items;
-using Sitecore.Data.Fields;
-using System.Data;
-using System.Collections;
 using Sitecore.SharedSource.DataImporter.Providers;
 
-namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
-	
+namespace Sitecore.SharedSource.DataImporter.Mappings.Fields 
+{	
     /// <summary>
     /// this field uses the url stored in the field and converts it to a LinkField value
     /// </summary>
-    public class UrlToLink : ToText {
+
+    public class UrlToLink : ToText 
+    {
 		#region Properties 
 
 		#endregion Properties

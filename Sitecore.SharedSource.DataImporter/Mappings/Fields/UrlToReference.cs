@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Sitecore.Data.Items;
 using Sitecore.Data.Fields;
-using System.Data;
-using System.Collections;
+using Sitecore.Data.Items;
 using Sitecore.SharedSource.DataImporter.Providers;
 
 namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
@@ -13,7 +8,9 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
     /// <summary>
     /// Class form importing ReferenceFields like DropList
     /// </summary>
-    public class UrlToReference: ToText {
+   
+    public class UrlToReference: ToText 
+    {
 		#region Properties 
 
         private const string SiteHomeItemFieldName = "SiteHomeItem";

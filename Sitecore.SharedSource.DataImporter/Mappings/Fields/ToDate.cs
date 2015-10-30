@@ -1,21 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using Sitecore.Data.Fields;
 using Sitecore.Data.Items;
 using Sitecore.SharedSource.DataImporter.Extensions;
-using System.Data;
-using System.Collections;
 using Sitecore.SharedSource.DataImporter.Providers;
-using Sitecore.Data.Fields;
 
-namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
-	
+namespace Sitecore.SharedSource.DataImporter.Mappings.Fields 
+{
     /// <summary>
     /// This field converts a date value to a sitecore date field value
     /// </summary>
-    public class ToDate : ToText {
-
+    
+    public class ToDate : ToText 
+    {
 		#region Properties 
 
 		#endregion Properties
