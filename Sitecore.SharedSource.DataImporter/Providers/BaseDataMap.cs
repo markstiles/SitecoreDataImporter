@@ -601,10 +601,15 @@ namespace Sitecore.SharedSource.DataImporter.Providers
                         Log("Field Error", string.Format("the field name: '{0}' does not exist in the import row: {1}", this.DateField, GetFieldValue(importRow, "FILENAME")));
                 }
                 if(!string.IsNullOrEmpty(dateValue)){
-                    if (DateTime.TryParse(dateValue, out date))
+                    if (!DateTime.TryParse(dateValue, out date)) {
+                        if (!DateTime.TryParseExact(dateValue, new string[] { "d/M/yyyy", "d/M/yyyy HH:mm:ss" }, CultureInfo.InvariantCulture, DateTimeStyles.None, out date)) { // try to parse as day/month/year 
+                            Log("Foldering Date parse error", string.Format("item '{0}', date '{1}' could not be parsed", GetNewItemName(importRow), dateValue));
+                        } else { 
+                            thisParent = GetDateParentNode(Parent, date, this.FolderTemplate);
+                        }
+                    } else {
                         thisParent = GetDateParentNode(Parent, date, this.FolderTemplate);
-                    else
-                        Log("Foldering Date Parse Error", string.Format("item '{0}', date '{1}' could not be parsed", GetNewItemName(importRow), dateValue));
+                    }
                 } else {
                     Log("Foldering Date Parse Error", "the date value was empty");
                 }

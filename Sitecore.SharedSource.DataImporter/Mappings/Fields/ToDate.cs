@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using Sitecore.Data.Fields;
 using Sitecore.Data.Items;
 using Sitecore.Diagnostics;
@@ -37,8 +38,11 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
             DateTime date;
             if (!DateTime.TryParse(importValue, out date))
             {
-                map.Log("DateTime parse error", string.Format("item '{0}', from '{1}', date '{2}'", newItem.DisplayName, string.Join(Delimiter, ExistingDataNames), importValue));
-                return;
+                if (!DateTime.TryParseExact(importValue, new string[] { "d/M/yyyy", "d/M/yyyy HH:mm:ss" }, CultureInfo.InvariantCulture, DateTimeStyles.None, out date)) // try to parse as day/month/year
+                {
+                    map.Log("DateTime parse error", string.Format("item '{0}', from '{1}', date '{2}'", newItem.DisplayName, string.Join(Delimiter, ExistingDataNames), importValue));
+                    return;
+                }
             }
             
 			Field f = newItem.Fields[NewItemField];
