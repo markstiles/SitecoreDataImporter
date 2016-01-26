@@ -1,13 +1,8 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Sitecore.Data.Items;
-using System.Data;
-using System.Collections;
-using Sitecore.SharedSource.DataImporter.Providers;
 using Sitecore.Data.Fields;
-
+using Sitecore.Data.Items;
+using Sitecore.SharedSource.DataImporter.Providers;
 namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
 
     /// <summary>

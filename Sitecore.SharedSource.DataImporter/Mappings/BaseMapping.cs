@@ -13,6 +13,8 @@ namespace Sitecore.SharedSource.DataImporter.Mappings {
     public class BaseMapping {
 
 		#region Properties
+        
+        public Item InnerItem;
 
 		/// <summary>
 		/// the field on the new item that the imported data should be stored in
@@ -34,7 +36,8 @@ namespace Sitecore.SharedSource.DataImporter.Mappings {
 		#region Constructor
 
 		public BaseMapping(Item i) {
-			NewItemField = GetItemField(i, "To What Field");
+		    InnerItem = i;
+            NewItemField = GetItemField(i, "To What Field");
 			HandlerClass = GetItemField(i, "Handler Class");
 			HandlerAssembly = GetItemField(i, "Handler Assembly");
 		}
@@ -42,6 +45,9 @@ namespace Sitecore.SharedSource.DataImporter.Mappings {
 		#endregion Constructor
 
 		#region Methods
+        public string ItemName() {
+            return (InnerItem != null) ? InnerItem.DisplayName : string.Empty;
+        }
 
         public string GetItemField(Item i, string fieldName) {
             //check item

@@ -424,7 +424,10 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
                 }
             }
 
-            return StringUtility.GetValidItemName(strItemName.ToString(), ItemNameMaxLength);
+            string nameValue = strItemName.ToString();
+            if (string.IsNullOrEmpty(nameValue))
+                throw new NullReferenceException(string.Format("the name fields: '{0}' are empty in the import row", string.Join(",", ItemNameFields)));
+            return StringUtility.GetValidItemName(strItemName.ToString().Trim(), this.ItemNameMaxLength);
         }
 
         public void CreateNewItem(Item parent, object importRow, string newItemName) {
@@ -456,8 +459,14 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
                     //add in the field mappings
                     List<IBaseField> fieldDefs = GetFieldDefinitionsByRow(importRow);
                     foreach (IBaseField d in fieldDefs) {
-                        IEnumerable<string> values = GetFieldValues(d.GetExistingFieldNames(), importRow);
-                        d.FillField(this, ref newItem, String.Join(d.GetFieldValueDelimiter(), values));
+                        try {
+                            IEnumerable<string> values = GetFieldValues(d.GetExistingFieldNames(), importRow);
+                            string importValue = String.Join(d.GetFieldValueDelimiter(), values);
+                            if (!string.IsNullOrEmpty(importValue))
+                                d.FillField(this, ref newItem, importValue);
+                        } catch (Exception ex) {
+                            Logger.LogError("Field Level Error", string.Format("item '{0}', field '{1}'", newItem.DisplayName, d.ItemName()));
+                        }
                     }
 
                     //calls the subclass method to handle custom fields and properties
@@ -489,8 +498,9 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
                     return thisParent;
                 }
 
-                if (!DateTime.TryParse(dateValue, out date)) {
-                    Logger.LogError("Error", "Couldn't folder by date. The date value could not be parsed");
+                if (!DateTime.TryParse(dateValue, out date) 
+                    && !DateTime.TryParseExact(dateValue, new string[] { "d/M/yyyy", "d/M/yyyy HH:mm:ss" }, CultureInfo.InvariantCulture, DateTimeStyles.None, out date)) {
+                    Logger.LogError("Foldering Date Parse Error", string.Format("item '{0}', date '{1}' could not be parsed", newItemName, dateValue));
                     return thisParent;
                 }
 

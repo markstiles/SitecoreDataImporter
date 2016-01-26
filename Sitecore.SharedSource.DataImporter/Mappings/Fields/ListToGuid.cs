@@ -1,17 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Sitecore.SharedSource.DataImporter;
+using Sitecore.Data.Fields;
 using Sitecore.Data.Items;
-using Sitecore.Data;
-using System.Data;
-using Sitecore.SharedSource.DataImporter.Extensions;
-using System.Collections;
 using Sitecore.SharedSource.DataImporter.Providers;
 using Sitecore.SharedSource.DataImporter.Utility;
-using Sitecore.Data.Fields;
-
 namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
 
     /// <summary>
@@ -50,19 +42,23 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
         public override void FillField(IDataMap map, ref Item newItem, string importValue) {
             //get parent item of list to search
             Item i = newItem.Database.GetItem(SourceList);
-            if (i != null) {
-                //loop through children and look for anything that matches by name
-                IEnumerable<Item> t = from Item c in i.GetChildren()
-                                      where c.DisplayName.Equals(StringUtility.GetValidItemName(importValue, map.ItemNameMaxLength))
-                                      select c;
-                //if you find one then store the id
-                if (t.Any()) {
-                    Field f = newItem.Fields[NewItemField];
-                    if (f != null)
-                        f.Value = t.First().ID.ToString();
-                }
-            }
-        }
+            if (i == null)
+                return;
+
+            //loop through children and look for anything that matches by name
+            string cleanName = StringUtility.GetValidItemName(importValue, map.ItemNameMaxLength);
+            IEnumerable<Item> t = i.GetChildren().Where(c => c.DisplayName.Equals(cleanName));
+
+            //if you find one then store the id
+            if (!t.Any())
+                return;
+
+            Field f = newItem.Fields[NewItemField];
+            if (f == null)
+                return;
+
+            f.Value = t.First().ID.ToString();
+		}
 
         #endregion IBaseField
     }

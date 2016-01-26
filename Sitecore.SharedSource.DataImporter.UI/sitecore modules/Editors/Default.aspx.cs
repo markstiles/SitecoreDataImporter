@@ -73,6 +73,11 @@ public partial class Default : Page
 		
 		HandleImport();
 
+        string logPath = string.Format(@"{0}sitecore modules\Shell\Data Import\logs\{1}.{2}.txt",
+            HttpContext.Current.Server.MapPath("~"), importItem.DisplayName.Replace(" ", "-"),
+            DateTime.Now.ToString("yyyy.MM.dd.H.mm.ss"));
+        File.WriteAllText(logPath, log.ToString());
+        
 		txtMessage.Text = log.ToString();
 	}
 

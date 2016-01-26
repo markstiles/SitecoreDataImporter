@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Sitecore.Data.Items;
-using Sitecore.SharedSource.DataImporter.Extensions;
-using System.Data;
-using System.Collections;
-using Sitecore.SharedSource.DataImporter.Providers;
+using System.Globalization;
 using Sitecore.Data.Fields;
-
+using Sitecore.Data.Items;
+using Sitecore.Diagnostics;
+using Sitecore.SharedSource.DataImporter.Extensions;
+using Sitecore.SharedSource.DataImporter.Providers;
 namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
 
     /// <summary>
@@ -33,11 +29,22 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
         #region IBaseField
 
         public override void FillField(IDataMap map, ref Item newItem, string importValue) {
-            //try to parse date value
-            DateTime date = DateTime.Parse(importValue);
+            if (string.IsNullOrEmpty(importValue))
+                return;
+
+            //try to parse date value 
+            DateTime date;
+            if (!DateTime.TryParse(importValue, out date)
+                && !DateTime.TryParseExact(importValue, new string[] { "d/M/yyyy", "d/M/yyyy HH:mm:ss" }, CultureInfo.InvariantCulture, DateTimeStyles.None, out date))  {
+                map.Logger.LogError("DateTime parse error", string.Format("item '{0}', from '{1}', date '{2}'", newItem.DisplayName, string.Join(Delimiter, ExistingDataNames), importValue));
+                return;
+            }
+            
             Field f = newItem.Fields[NewItemField];
-            if (f != null)
-                f.Value = date.ToDateFieldValue();
+            if (f == null)
+                return;
+
+            f.Value = date.ToDateFieldValue();
         }
 
         #endregion IBaseField
