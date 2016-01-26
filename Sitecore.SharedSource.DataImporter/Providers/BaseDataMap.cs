@@ -432,7 +432,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers
         /// </summary>
         /// <param name="errorType"></param>
         /// <param name="message"></param>
-        protected void Log(string errorType, string message)
+        public void Log(string errorType, string message)
         {
             log.AppendFormat("{0} : {1}", errorType, message).AppendLine().AppendLine();
         }
@@ -452,26 +452,30 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 
             long line = 0;
 
-			try {
+            using (new BulkUpdateContext())
+            { // try to eliminate some of the extra pipeline work
+
                 //Loop through the data source
-				foreach (object importRow in importItems)
-				{
+                foreach (object importRow in importItems)
+			    {
 				    line++;
+                    try {
+					    string newItemName = GetNewItemName(importRow);
+					    if (string.IsNullOrEmpty(newItemName))
+						    continue;
 
-					string newItemName = GetNewItemName(importRow);
-					if (string.IsNullOrEmpty(newItemName))
-						continue;
+					    Item thisParent = GetParentNode(importRow, newItemName);
+					    if (thisParent.IsNull())
+						    throw new NullReferenceException("The new item's parent is null");
 
-					Item thisParent = GetParentNode(importRow, newItemName);
-					if (thisParent.IsNull())
-						throw new NullReferenceException("The new item's parent is null");
-					
-					CreateNewItem(thisParent, importRow, newItemName);
-				}
-			} catch (Exception ex) {
-                Log("Error (line: " + line + ")", ex.Message);
-			}
-
+                    
+					    CreateNewItem(thisParent, importRow, newItemName);
+                    } catch (Exception ex) {
+                        Log("Error (line: " + line + ")", ex.Message);
+			        }
+                }
+            }
+			
             //if no messages then you're good
             if (log.Length < 1 || !log.ToString().Contains("Error")) 
                 Log("Success", "the import completed successfully");
@@ -507,10 +511,20 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 				using (new EditContext(newItem, true, false)) {
 					//add in the field mappings
 					foreach (IBaseField d in this.FieldDefinitions) {
-						IEnumerable<string> values = GetFieldValues(d.GetExistingFieldNames(), importRow);
+					    try
+					    {
+					        IEnumerable<string> values = GetFieldValues(d.GetExistingFieldNames(), importRow);
 
-					    d.FillField(this, ref newItem, String.Join(d.GetFieldValueDelimiter(), values));
-					}
+					        string importValue = String.Join(d.GetFieldValueDelimiter(), values);
+					        if (!string.IsNullOrEmpty(importValue))
+					            d.FillField(this, ref newItem, importValue);
+					    }
+					    catch (Exception ex)
+					    {
+                            Log("Field Level Error", $"item '{newItem.DisplayName}', field '{d.ItemName()}'");
+                        }
+
+                    }
 
 					//calls the subclass method to handle custom fields and properties
 					ProcessCustomData(ref newItem, importRow);
@@ -534,16 +548,21 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 
 			StringBuilder strItemName = new StringBuilder();
             foreach (string nameField in NameFields) {
-                try {
+                try
+                {
                     strItemName.Append(GetFieldValue(importRow, nameField));
                 } catch (ArgumentException ex) {
                     if (string.IsNullOrEmpty(this.ItemNameDataField))
 						throw new NullReferenceException("the 'Name' field is empty");
                     else
-						throw new NullReferenceException(string.Format("the field name: '{0}' does not exist in the import row", nameField));
+						throw new NullReferenceException(string.Format("the field name: '{0}' does not exist in the import row: {1}", nameField, GetFieldValue(importRow, "FILENAME")));
                 } 
             }
-            return StringUtility.GetNewItemName(strItemName.ToString(), this.ItemNameMaxLength);
+
+            string nameValue = strItemName.ToString();
+            if (string.IsNullOrEmpty(nameValue))
+                throw new NullReferenceException(string.Format("the name fields: '{0}' are empty in the import row: {1}", string.Join(",", NameFields), GetFieldValue(importRow, "FILENAME")));
+            return StringUtility.GetNewItemName(strItemName.ToString().Trim(), this.ItemNameMaxLength);
         }
 
         /// <summary>
@@ -558,7 +577,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers
                     if (string.IsNullOrEmpty(f))
                         Log("Field Error", "the 'From' field name is empty");
                     else
-                        Log("Field Error", string.Format("the field name: '{0}' does not exist in the import row", f));
+                        Log("Field Error", string.Format("the field name: '{0}' does not exist in the import row: {1}", f, GetFieldValue(importRow, "FILENAME")));
                 }
             }
             return list;
@@ -579,15 +598,15 @@ namespace Sitecore.SharedSource.DataImporter.Providers
                     if (string.IsNullOrEmpty(this.DateField))
                         Log("Field Error", "the date name field is empty");
                     else
-                        Log("Field Error", string.Format("the field name: '{0}' does not exist in the import row", this.DateField));
+                        Log("Field Error", string.Format("the field name: '{0}' does not exist in the import row: {1}", this.DateField, GetFieldValue(importRow, "FILENAME")));
                 }
                 if(!string.IsNullOrEmpty(dateValue)){
                     if (DateTime.TryParse(dateValue, out date))
                         thisParent = GetDateParentNode(Parent, date, this.FolderTemplate);
                     else
-                        Log("Error", "the date value could not be parsed");
+                        Log("Foldering Date Parse Error", string.Format("item '{0}', date '{1}' could not be parsed", GetNewItemName(importRow), dateValue));
                 } else {
-                    Log("Error", "the date value was empty");
+                    Log("Foldering Date Parse Error", "the date value was empty");
                 }
             } else if (this.FolderByName) {
                 thisParent = GetNameParentNode(Parent, newItemName.Substring(0, 1), this.FolderTemplate);

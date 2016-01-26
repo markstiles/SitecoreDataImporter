@@ -11,9 +11,11 @@ namespace Sitecore.SharedSource.DataImporter.Mappings {
     /// </summary>
     public class BaseMapping {
 
-		#region Properties
+        #region Properties
 
-		private string _newItemField;
+        public Item InnerItem;
+
+        private string _newItemField;
 		/// <summary>
 		/// the field on the new item that the imported data should be stored in
 		/// </summary>
@@ -57,15 +59,20 @@ namespace Sitecore.SharedSource.DataImporter.Mappings {
 		#region Constructor
 
 		public BaseMapping(Item i) {
-			NewItemField = i.Fields["To What Field"].Value;
+            InnerItem = i;
+            NewItemField = i.Fields["To What Field"].Value;
 			HandlerClass = i.Fields["Handler Class"].Value;
 			HandlerAssembly = i.Fields["Handler Assembly"].Value;
 		}
 
-		#endregion Constructor
+        #endregion Constructor
 
-		#region Methods
+        #region Methods
+        public string ItemName()
+        {
+            return InnerItem.DisplayName;
+        }
 
-		#endregion Methods
-	}
+        #endregion Methods
+    }
 }

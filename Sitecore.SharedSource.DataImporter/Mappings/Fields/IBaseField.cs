@@ -15,6 +15,11 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
 
 		#region Methods
 
+	    /// <summary>
+	    /// gets the name of the field
+	    /// </summary>
+	    string ItemName();
+
         /// <summary>
         /// This uses the imported value to modify the newly created item. 
         /// </summary>

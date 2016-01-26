@@ -82,9 +82,17 @@ public partial class Default : Page
                         Log("Error", "the binary specified could not be found");
                     }
                     if (map != null)
-                    log.Append(map.Process());
-                    else
+                    {
+                        string logValue = map.Process();
+                        string logPath = string.Format(@"{0}sitecore modules\Shell\Data Import\logs\{1}.{2}.txt",
+                            HttpContext.Current.Server.MapPath("~"), importItem.DisplayName.Replace(" ", "-"),
+                            DateTime.Now.ToString("yyyy.MM.dd.H.mm.ss"));
+                        File.WriteAllText(logPath, logValue);
+                        log.Append(logValue);
+                    }
+                    else { 
                         Log("Error", "the data map provided could not be instantiated");
+                    }
                 } else {
                     Log("Error", "import handler class is not defined");
                 }
