@@ -54,6 +54,10 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="HtmlAgilityPack, Version=1.4.9.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Website\bin\HtmlAgilityPack.dll</HintPath>
+    </Reference>
     <Reference Include="MySql.Data">
       <HintPath>..\..\Sitecore\bin\MySql.Data.dll</HintPath>
     </Reference>
@@ -92,8 +96,10 @@
     <Compile Include="Mappings\Fields\ToDropdownList.cs" />
     <Compile Include="Mappings\Fields\ToInteger.cs" />
     <Compile Include="Mappings\Fields\ToListItem.cs" />
+    <Compile Include="Mappings\Fields\ToMediaImage.cs" />
     <Compile Include="Mappings\Fields\ToMultiList.cs" />
     <Compile Include="Mappings\Fields\ToNumber.cs" />
+    <Compile Include="Mappings\Fields\ToRichText.cs" />
     <Compile Include="Mappings\Fields\UrlToReference.cs" />
     <Compile Include="Mappings\Fields\UrlToLink.cs" />
     <Compile Include="Mappings\Templates\TemplateMapping.cs" />
