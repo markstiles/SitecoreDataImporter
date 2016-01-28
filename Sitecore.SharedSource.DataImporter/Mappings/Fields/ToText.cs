@@ -45,6 +45,10 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
         public string Name { get; set; }
 
         public virtual void FillField(IDataMap map, ref Item newItem, string importValue) {
+
+            if (string.IsNullOrEmpty(importValue))
+                return;
+
             //store the imported value as is
             Field f = newItem.Fields[NewItemField];
             if (f != null)

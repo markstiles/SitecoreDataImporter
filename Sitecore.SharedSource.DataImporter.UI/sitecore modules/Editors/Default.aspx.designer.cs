@@ -30,6 +30,24 @@ public partial class Default {
     protected global::System.Web.UI.WebControls.DropDownList ddlConnStr;
     
     /// <summary>
+    /// btnRefresh control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Button btnRefresh;
+    
+    /// <summary>
+    /// repJobs control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Repeater repJobs;
+    
+    /// <summary>
     /// btnImport control.
     /// </summary>
     /// <remarks>

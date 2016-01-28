@@ -26,6 +26,10 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
         #region IBaseField
 
         public override void FillField(IDataMap map, ref Item newItem, string importValue) {
+
+            if (string.IsNullOrEmpty(importValue))
+                return;
+
             //get the field as a link field and store the url
             LinkField lf = newItem.Fields[NewItemField];
             if (lf != null)

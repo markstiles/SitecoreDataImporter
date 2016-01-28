@@ -39,7 +39,12 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
         /// <param name="map">provides settings for the import</param>
         /// <param name="newItem">newly created item</param>
         /// <param name="importValue">imported value to match</param>
-        public override void FillField(IDataMap map, ref Item newItem, string importValue) {
+        public override void FillField(IDataMap map, ref Item newItem, string importValue)
+        {
+
+            if (string.IsNullOrEmpty(importValue))
+                return;
+
             //get parent item of list to search
             Item i = newItem.Database.GetItem(SourceList);
             if (i == null)

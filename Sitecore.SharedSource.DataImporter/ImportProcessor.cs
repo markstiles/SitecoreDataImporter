@@ -9,8 +9,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Sitecore.Data;
+using Sitecore.Jobs;
 
 namespace Sitecore.SharedSource.DataImporter {
     public class ImportProcessor {
@@ -33,6 +35,10 @@ namespace Sitecore.SharedSource.DataImporter {
         /// processes each field against the data provided by subclasses
         /// </summary>
         public void Process() {
+
+            if (Sitecore.Context.Job != null)
+                Sitecore.Context.Job.Options.Priority = ThreadPriority.Highest;
+
             IEnumerable<object> importItems;
             try {
                 importItems = DataMap.GetImportData();
@@ -41,8 +47,13 @@ namespace Sitecore.SharedSource.DataImporter {
                 return;
             }
 
+            int totalLines = importItems.Count();
+            if (Sitecore.Context.Job != null)
+                Sitecore.Context.Job.Status.Total = totalLines;
+
             long line = 0;
 
+            Logger.Log("Import Started", string.Format("start time: {0}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")));
             using (new BulkUpdateContext()) { // try to eliminate some of the extra pipeline work
                 foreach (object importRow in importItems) {
                     //import each row of data
@@ -66,12 +77,23 @@ namespace Sitecore.SharedSource.DataImporter {
                     } catch (Exception ex) {
                         Logger.LogError(string.Format("Exception thrown (import row: {0})", line), ex.Message);
                     }
+
+                    if (Sitecore.Context.Job != null)
+                    {
+                        Sitecore.Context.Job.Status.Processed = line;
+                        Sitecore.Context.Job.Status.Messages.Add(string.Format("Processed item {0} of {1}", line, totalLines));
+                    }
                 }
             }
 
             //if no messages then you're good
             if (!Logger.LoggedError)
                 Logger.Log("Success", "the import completed successfully");
+
+            Logger.Log("Import Finished", string.Format("end time: {0}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")));
+
+            if (Sitecore.Context.Job != null)
+                Sitecore.Context.Job.Status.State = JobState.Finished;
         }
     }
 }

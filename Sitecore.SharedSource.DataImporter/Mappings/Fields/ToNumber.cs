@@ -19,6 +19,10 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
         }
 
         public override void FillField(IDataMap map, ref Item newItem, string importValue) {
+
+            if (string.IsNullOrEmpty(importValue))
+                return;
+
             double value = 0;
             var style = NumberStyles.Number;
             if (!double.TryParse(importValue.Trim(), style, ImportCulture, out value))

@@ -38,14 +38,14 @@ namespace Sitecore.SharedSource.DataImporter.Extensions {
             //check field
             Field f = i.Fields[fieldName];
             if (f == null) {
-                logger.LogError("Error", string.Format("the field '{0}' on the item '{1}' is null", fieldName, i.DisplayName));
+                logger.LogError("Error", string.Format("the field '{0}' on the item '{1}' is null", fieldName, i.Paths.FullPath));
                 return string.Empty;
             }
 
             //check value
             string s = f.Value;
             if (string.IsNullOrEmpty(s))
-                logger.Log("Warn", string.Format("the '{0}' field was not set on '{1}'", fieldName, i.DisplayName));
+                logger.Log("Warn", string.Format("the '{0}' field was not set on '{1}'", fieldName, i.Paths.FullPath));
 
             return s;
         }

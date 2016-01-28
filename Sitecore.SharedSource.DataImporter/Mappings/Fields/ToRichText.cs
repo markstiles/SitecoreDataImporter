@@ -49,12 +49,12 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
 
             Field f = newItem.Fields[NewItemField];
             if (f != null)
-                f.Value = CleanHtml(map, newItem.DisplayName, importValue);
+                f.Value = CleanHtml(map, newItem.Paths.FullPath, importValue);
         }
 
         #endregion IBaseField
 
-        public string CleanHtml(IDataMap map, string itemName, string html)
+        public string CleanHtml(IDataMap map, string itemPath, string html)
         {
             if (String.IsNullOrEmpty(html))
                 return html;
@@ -106,7 +106,7 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
                     {
                         // see if it exists
                         string imgSrc = node.Attributes["src"].Value;
-                        MediaItem newImg = HandleImage(map, MediaParentItem, itemName, imgSrc);
+                        MediaItem newImg = HandleImage(map, MediaParentItem, itemPath, imgSrc);
                         if (newImg != null)
                         {
                             string newSrc = string.Format("-/media/{0}.ashx", newImg.ID.ToShortID().ToString());
@@ -122,11 +122,11 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
             return document.DocumentNode.InnerHtml;
         }
 
-        public MediaItem HandleImage(IDataMap map, Item parentItem, string itemName, string url)
+        public MediaItem HandleImage(IDataMap map, Item parentItem, string itemPath, string url)
         {
             // see if the url is badly formed
             if (!Uri.IsWellFormedUriString(url, UriKind.Absolute)) {
-                map.Logger.LogError("Malformed Image URL", string.Format("item '{0}', image url '{1}'", itemName, url));
+                map.Logger.LogError("Malformed Image URL", string.Format("item '{0}', image url '{1}'", itemPath, url));
                 return null;
             }
 
@@ -149,13 +149,13 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
                 if (matches.Count().Equals(1))
                     return new MediaItem(matches.First());
 
-                map.Logger.LogError("Sitecore Image Lookup Conflict", string.Format("item '{0}', image name '{1}', {2} matches", itemName, filePath, matches.Count()));
+                map.Logger.LogError("Sitecore Image Lookup Conflict", string.Format("item '{0}', image name '{1}', {2} matches", itemPath, filePath, matches.Count()));
                 return null;
             }
             
             MediaItem m = ImportImage(url, filePath, string.Format("{0}/{1}", parentItem.Paths.FullPath, newFilePath));
             if (m == null)
-                map.Logger.LogError("Image Not Found", string.Format("item '{0}', image '{1}'", itemName, url));
+                map.Logger.LogError("Image Not Found", string.Format("item '{0}', image '{1}'", itemPath, url));
 
             return m;
         }
