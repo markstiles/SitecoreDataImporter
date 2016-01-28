@@ -334,7 +334,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
         /// <returns></returns>
         protected Item GetDateParentNode(Item parentNode, DateTime dt, TemplateItem folderType) {
             //get year folder
-            Item year = parentNode.Children[dt.Year.ToString()];
+            Item year = GetChild(parentNode, dt.Year.ToString());
             if (year == null) {
                 //build year folder if you have to
                 year = parentNode.Add(dt.Year.ToString(), folderType);
@@ -343,7 +343,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
             parentNode = year;
 
             //get month folder
-            Item month = parentNode.Children[dt.ToString("MM")];
+            Item month = GetChild(parentNode, dt.ToString("MM"));
             if (month == null) {
                 //build month folder if you have to
                 month = parentNode.Add(dt.ToString("MM"), folderType);
@@ -352,7 +352,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
             parentNode = month;
 
             //get day folder
-            Item day = parentNode.Children[dt.ToString("dd")];
+            Item day = GetChild(parentNode, dt.ToString("dd"));
             if (day == null) {
                 //build day folder if you have to
                 day = parentNode.Add(dt.ToString("dd"), folderType);
@@ -372,12 +372,18 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
         /// <returns></returns>
         protected Item GetNameParentNode(Item parentNode, string letter, TemplateItem folderType) {
             //get letter folder
-            Item letterItem = parentNode.Children[letter];
+            Item letterItem = GetChild(parentNode, letter);
             if (letterItem == null) //build year folder if you have to
                 letterItem = parentNode.Add(letter, folderType);
 
             //set the parent to year
             return letterItem;
+        }
+
+        public static Item GetChild(Item i, string childName)
+        {
+            string childPath = string.Format("{0}/{1}", i.Paths.FullPath, childName);
+            return i.Database.GetItem(childPath);
         }
 
         #endregion Methods
@@ -440,7 +446,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
 
                 Item newItem;
                 //search for the child by name
-                newItem = parent.GetChildren()[newItemName];
+                newItem = GetChild(parent, newItemName);
                 if (newItem != null) //add version for lang
                     newItem = newItem.Versions.AddVersion();
 
@@ -462,10 +468,9 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
                         try {
                             IEnumerable<string> values = GetFieldValues(d.GetExistingFieldNames(), importRow);
                             string importValue = String.Join(d.GetFieldValueDelimiter(), values);
-                            if (!string.IsNullOrEmpty(importValue))
-                                d.FillField(this, ref newItem, importValue);
+                            d.FillField(this, ref newItem, importValue);
                         } catch (Exception ex) {
-                            Logger.LogError("Field Level Error", string.Format("item '{0}', field '{1}'", newItem.DisplayName, d.ItemName()));
+                            Logger.LogError("Field Level Error", string.Format("item '{0}', field '{1}'", newItem.Paths.FullPath, d.ItemName()));
                         }
                     }
 
