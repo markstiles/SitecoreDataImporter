@@ -25,10 +25,14 @@ namespace Sitecore.SharedSource.DataImporter.Tests.Fields
         [Test]
         public void HowToDeserializeItem() {
             using (Db db = new Db {
-                new DsDbItem("/sitecore/content/home")
+                new DsDbItem("/sitecore/content/home"),
+                new DsDbTemplate("/sitecore/templates/Sample/Sample Item")
             })
             {
                 var home = db.GetItem("/sitecore/content/home");
+                Assert.IsNotNull(home);
+
+                var sampleTemp = db.GetItem("/sitecore/templates/Sample/Sample Item");
                 Assert.IsNotNull(home);
             }
         }
