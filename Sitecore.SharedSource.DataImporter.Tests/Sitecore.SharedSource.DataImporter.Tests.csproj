@@ -1,0 +1,201 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{8B3D1D0C-9DC3-49F9-94CA-00A9A978AE5A}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Sitecore.SharedSource.DataImporter.Tests</RootNamespace>
+    <AssemblyName>Sitecore.SharedSource.DataImporter.Tests</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="nunit.core">
+      <HintPath>..\lib\nunit.core.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.core.interfaces">
+      <HintPath>..\lib\nunit.core.interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework">
+      <HintPath>..\lib\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework.tests">
+      <HintPath>..\lib\nunit.framework.tests.dll</HintPath>
+    </Reference>
+    <Reference Include="Sitecore.Analytics">
+      <HintPath>..\..\..\Informa\web\Website\bin\Sitecore.Analytics.dll</HintPath>
+    </Reference>
+    <Reference Include="Sitecore.FakeDb, Version=0.38.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\Informa\packages\Sitecore.FakeDb.0.38.0\lib\net45\Sitecore.FakeDb.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Sitecore.Kernel">
+      <HintPath>..\..\..\Informa\web\Website\bin\Sitecore.Kernel.dll</HintPath>
+    </Reference>
+    <Reference Include="sitecore.nexus">
+      <HintPath>..\..\..\Informa\web\Website\bin\sitecore.nexus.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Fields\ToTextTests.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Sitecore.FakeDb\src\Sitecore.FakeDb.Serialization\Sitecore.FakeDb.Serialization.csproj">
+      <Project>{8958b567-7955-4714-b3a8-bcfb43b0a588}</Project>
+      <Name>Sitecore.FakeDb.Serialization</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Sitecore.SharedSource.DataImporter\Sitecore.SharedSource.DataImporter.csproj">
+      <Project>{0e4f3486-8733-4e18-a5d0-51f2b92b2974}</Project>
+      <Name>Sitecore.SharedSource.DataImporter</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="App_Config\FieldTypes.config" />
+    <None Include="packages.config" />
+    <None Include="serial\core\sitecore\content\Applications\Content Editor\Editors\Modules\DataImporter.item" />
+    <None Include="serial\core\sitecore\content\Applications\Content Editor\Editors\Modules\DataImporter\DataImporter.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Branches.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Branches\CSV Import Map.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Branches\CSV Import Map\%2524name.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Branches\CSV Import Map\%2524name\Fields.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Branches\MySQL Import Map.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Branches\MySQL Import Map\%2524name.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Branches\MySQL Import Map\%2524name\Fields.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Branches\Sitecore Import Map.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Branches\Sitecore Import Map\%2524name.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Branches\Sitecore Import Map\%2524name\Fields.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Branches\Sitecore Import Map\%2524name\Properties.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Branches\Sitecore Import Map\%2524name\Templates.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Branches\SQL Import Map.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Branches\SQL Import Map\%2524name.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Branches\SQL Import Map\%2524name\Fields.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Folders.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Folders\Data Import Folder.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Folders\Data Import Folder\__Standard Values.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Folders\Field Folder.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Folders\Field Folder\__Standard Values.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Folders\Import Map Folder.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Folders\Import Map Folder\__Standard Values.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Folders\Property Folder.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Folders\Property Folder\__Standard Values.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Folders\Template Folder.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Folders\Template Folder\__Standard Values.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Mappings.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Mappings\Base Mapping.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Mappings\Base Mapping\Base Fields.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Mappings\Base Mapping\Base Fields\To What Field.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Mappings\Base Mapping\Handler.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Mappings\Base Mapping\Handler\Handler Assembly.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Mappings\Base Mapping\Handler\Handler Class.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Mappings\Base Mapping\__Standard Values.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Mappings\Fields.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Mappings\Fields\ListToGuid.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Mappings\Fields\ListToGuid\Droplink Mapping.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Mappings\Fields\ListToGuid\Droplink Mapping\Source List.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Mappings\Fields\ListToGuid\__Standard Values.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Mappings\Fields\ToDate.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Mappings\Fields\ToDate\__Standard Values.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Mappings\Fields\ToStaticValue.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Mappings\Fields\ToStaticValue\Value Mapping.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Mappings\Fields\ToStaticValue\Value Mapping\Value.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Mappings\Fields\ToStaticValue\__Standard Values.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Mappings\Fields\ToText.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Mappings\Fields\ToText\Field Mapping.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Mappings\Fields\ToText\Field Mapping\Delimiter.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Mappings\Fields\ToText\Field Mapping\From What Fields.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Mappings\Fields\ToText\__Standard Values.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Mappings\Fields\UrlToLink.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Mappings\Fields\UrlToLink\__Standard Values.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Mappings\Fields\UrlToReference.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Mappings\Fields\UrlToReference\UrlToReference.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Mappings\Fields\UrlToReference\UrlToReference\SiteHomeItem.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Mappings\Fields\UrlToReference\__Standard Values.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Mappings\Properties.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Mappings\Properties\PathToText.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Mappings\Properties\PathToText\__Standard Values.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Mappings\Properties\UrlToText.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Mappings\Properties\UrlToText\__Standard Values.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Mappings\Templates.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Mappings\Templates\TemplateMapping.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Mappings\Templates\TemplateMapping\Template Mapping.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Mappings\Templates\TemplateMapping\Template Mapping\From What Template.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Mappings\Templates\TemplateMapping\Template Mapping\To What Template.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Providers.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Providers\Base Import Map.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Providers\Base Import Map\Handler.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Providers\Base Import Map\Handler\Handler Assembly.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Providers\Base Import Map\Handler\Handler Class.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Providers\Base Import Map\Import Information.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Providers\Base Import Map\Import Information\Import To Language.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Providers\Base Import Map\Import Information\Import To What Template.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Providers\Base Import Map\Import Information\Import To Where.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Providers\Base Import Map\Import Information\Item Name Max Length.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Providers\Base Import Map\Import Information\Pull Item Name from What Fields.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Providers\Base Import Map\Import Information\Query.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Providers\Base Import Map\Item Foldering.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Providers\Base Import Map\Item Foldering\Date Field.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Providers\Base Import Map\Item Foldering\Folder By Date.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Providers\Base Import Map\Item Foldering\Folder By Name.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Providers\Base Import Map\Item Foldering\Folder Template.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Providers\Base Import Map\__Standard Values.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Providers\CSV Import Map.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Providers\CSV Import Map\CSV Import Map.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Providers\CSV Import Map\CSV Import Map\Encoding Type.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Providers\CSV Import Map\CSV Import Map\Field Delimiter.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Providers\CSV Import Map\__Standard Values.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Providers\MySQL Import Map.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Providers\MySQL Import Map\__Standard Values.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Providers\Sitecore Import Map.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Providers\Sitecore Import Map\Sitecore Import Map.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Providers\Sitecore Import Map\Sitecore Import Map\Import From Language.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Providers\Sitecore Import Map\Sitecore Import Map\Recursively Fetch Children.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Providers\Sitecore Import Map\__Standard Values.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Providers\SQL Import Map.item" />
+    <None Include="serial\master\sitecore\templates\Modules\Data Import\Providers\SQL Import Map\__Standard Values.item" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
