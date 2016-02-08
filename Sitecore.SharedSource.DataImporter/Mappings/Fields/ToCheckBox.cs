@@ -45,7 +45,7 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
             
             bool b = false;
             if (!bool.TryParse(importValue.Trim().ToLower(), out b)) {
-                map.Logger.LogError("Bool Parse Error", string.Format("Couldn't parse the boolean value of the {0} field", ItemName()));
+                map.Logger.Log(newItem.Paths.FullPath, "Couldn't parse the boolean value", ProcessStatus.FieldError, ItemName(), importValue);
                 return;
             }
                

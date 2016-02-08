@@ -168,14 +168,14 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
             //check field value
             string toWhereID = ImportItem.GetItemField("Import To Where", Logger);
             if (string.IsNullOrEmpty(toWhereID)) {
-                Logger.LogError("Error", string.Format("the 'To Where' field is not set on '{0}'", ImportItem.DisplayName));
+                Logger.Log(ImportItem.Paths.FullPath, "the 'To Where' field is not set on the import item", ProcessStatus.ImportDefinitionError, "Import To Where");
                 return null;
             }
 
             //check item
             toWhere = ToDB.Items[toWhereID];
             if (toWhere.IsNull())
-                Logger.LogError("Error", "the 'To Where' item is null");
+                Logger.Log(ImportItem.Paths.FullPath, "the 'To Where' item is null on the import item", ProcessStatus.ImportDefinitionError, "Import To Where", toWhereID);
 
             return toWhere;
         }
@@ -187,14 +187,14 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
             //check field value
             string templateID = ImportItem.GetItemField("Import To What Template", Logger);
             if (string.IsNullOrEmpty(templateID)) {
-                Logger.LogError("Error", "the 'To What Template' field is not set");
+                Logger.Log(ImportItem.Paths.FullPath, "the 'To What Template' field is not set", ProcessStatus.ImportDefinitionError, "Import To What Template");
                 return null;
             }
 
             //check template item
             Item templateItem = ToDB.Items[templateID];
             if (templateItem.IsNull()) {
-                Logger.LogError("Error", "the 'To What Template' item is null");
+                Logger.Log(ImportItem.Paths.FullPath, "the 'To What Template' item is null", ProcessStatus.ImportDefinitionError, "Import To What Template");
                 return null;
             }
 
@@ -215,21 +215,21 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
             //check the field
             string langID = ImportItem.GetItemField(fieldName, Logger);
             if (string.IsNullOrEmpty(langID)) {
-                Logger.LogError("Error", "The 'Import Language' field is not set");
+                Logger.Log(ImportItem.Paths.FullPath, "The 'Import Language' field is not set on the import item", ProcessStatus.ImportDefinitionError, fieldName);
                 return l;
             }
 
             //check item
             Item iLang = ToDB.GetItem(langID);
             if (iLang.IsNull()) {
-                Logger.LogError("Error", "The 'Import Language' Item is null");
+                Logger.Log(ImportItem.Paths.FullPath, "The 'Import Language' Item is null on the import item", ProcessStatus.ImportDefinitionError, fieldName);
                 return l;
             }
 
             //check language
             l = LanguageManager.GetLanguage(iLang.Name);
             if (l == null) {
-                Logger.LogError("Error", "The 'Import Language' name is not valid");
+                Logger.Log(ImportItem.Paths.FullPath, "The 'Import Language' name is not valid on the import item", ProcessStatus.ImportDefinitionError, fieldName);
             }
 
             return l;
@@ -264,13 +264,13 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
             //check for fields folder
             Item Fields = i.GetChildByTemplate(FieldsFolderTemplateID);
             if (Fields.IsNull()) {
-                Logger.Log("Warn", string.Format("there is no 'Fields' folder on '{0}'", i.DisplayName));
+                Logger.Log(i.Paths.FullPath, "there is no 'Fields' folder on the import item", ProcessStatus.ImportDefinitionError);
                 return l;
             }
 
             //check for any children
             if (!Fields.HasChildren) {
-                Logger.Log("Warn", string.Format("there are no fields to import on '{0}'", i.DisplayName));
+                Logger.Log(i.Paths.FullPath, "there are no fields to import on  on the import item", ProcessStatus.ImportDefinitionError);
                 return l;
             }
 
@@ -281,13 +281,13 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
 
                 //check for assembly
                 if (string.IsNullOrEmpty(bm.HandlerAssembly)) {
-                    Logger.LogError("Error", string.Format("the field: '{0}' Handler Assembly {1} is not defined", child.Name, bm.HandlerAssembly));
+                    Logger.Log(child.Paths.FullPath, "the field's Handler Assembly is not defined", ProcessStatus.ImportDefinitionError, child.Name, bm.HandlerAssembly);
                     continue;
                 }
 
                 //check for class
                 if (string.IsNullOrEmpty(bm.HandlerClass)) {
-                    Logger.LogError("Error", string.Format("the field: '{0}' Handler Class {1} is not defined", child.Name, bm.HandlerClass));
+                    Logger.Log(child.Paths.FullPath, "the field's Handler Class is not defined", ProcessStatus.ImportDefinitionError, child.Name, bm.HandlerClass);
                     continue;
                 }
 
@@ -296,13 +296,13 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
                 try {
                     bf = (IBaseField)Sitecore.Reflection.ReflectionUtil.CreateObject(bm.HandlerAssembly, bm.HandlerClass, new object[] { child });
                 } catch (FileNotFoundException fnfe) {
-                    Logger.LogError("Error", string.Format("the field:{0} binary {1} specified could not be found", child.Name, bm.HandlerAssembly));
+                    Logger.Log(child.Paths.FullPath, "the field's binary specified could not be found", ProcessStatus.ImportDefinitionError, child.Name, bm.HandlerAssembly);
                 }
 
                 if (bf != null)
                     l.Add(bf);
                 else
-                    Logger.LogError("Error", string.Format("the field: '{0}' class type {1} could not be instantiated", child.Name, bm.HandlerClass));
+                    Logger.Log(child.Paths.FullPath, "the field's class type could not be instantiated", ProcessStatus.ImportDefinitionError, child.Name, bm.HandlerClass);
             }
 
             return l;
@@ -317,9 +317,10 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
                 try {
                     list.Add(GetFieldValue(importRow, f));
                 } catch (ArgumentException ex) {
-                    Logger.LogError("Field Error", (string.IsNullOrEmpty(f))
+                    Logger.Log("N/A", (string.IsNullOrEmpty(f))
                         ? "the 'From' field name is empty"
-                        : string.Format("the field name: '{0}' does not exist in the import row", f));
+                        : "the field doesn't exist in the import row", 
+                        ProcessStatus.FieldError, f);
                 }
             }
             return list;
@@ -433,7 +434,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
             string nameValue = strItemName.ToString();
             if (string.IsNullOrEmpty(nameValue))
                 throw new NullReferenceException(string.Format("the name fields: '{0}' are empty in the import row", string.Join(",", ItemNameFields)));
-            return StringUtility.GetValidItemName(strItemName.ToString().Trim(), this.ItemNameMaxLength);
+            return StringUtility.GetValidItemName(strItemName.ToString().Trim(), this.ItemNameMaxLength).Trim();
         }
 
         public void CreateNewItem(Item parent, object importRow, string newItemName) {
@@ -464,13 +465,15 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
                 using (new EditContext(newItem, true, false)) {
                     //add in the field mappings
                     List<IBaseField> fieldDefs = GetFieldDefinitionsByRow(importRow);
-                    foreach (IBaseField d in fieldDefs) {
+                    foreach (IBaseField d in fieldDefs)
+                    {
+                        string importValue = string.Empty;
                         try {
                             IEnumerable<string> values = GetFieldValues(d.GetExistingFieldNames(), importRow);
-                            string importValue = String.Join(d.GetFieldValueDelimiter(), values);
+                            importValue = String.Join(d.GetFieldValueDelimiter(), values);
                             d.FillField(this, ref newItem, importValue);
                         } catch (Exception ex) {
-                            Logger.LogError("Field Level Error", string.Format("item '{0}', field '{1}'", newItem.Paths.FullPath, d.ItemName()));
+                            Logger.Log(newItem.Paths.FullPath, "the FillField failed", ProcessStatus.FieldError, d.ItemName(), importValue);
                         }
                     }
 
@@ -492,20 +495,19 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
                 try {
                     dateValue = GetFieldValue(importRow, DateField);
                 } catch (ArgumentException ex) {
-                    Logger.LogError("Field Error", (string.IsNullOrEmpty(DateField))
+                    Logger.Log(newItemName, (string.IsNullOrEmpty(DateField))
                         ? "the date name field is empty"
-                        : string.Format("the field name: '{0}' does not exist in the import row", DateField)
-                    );
+                        : "the field name does not exist in the import row", ProcessStatus.DateParseError, DateField);
                 }
 
                 if (string.IsNullOrEmpty(dateValue)) {
-                    Logger.LogError("Error", "Couldn't folder by date. The date value was empty");
+                    Logger.Log(newItemName, "Couldn't folder by date. The date value was empty", ProcessStatus.DateParseError, DateField);
                     return thisParent;
                 }
 
                 if (!DateTime.TryParse(dateValue, out date) 
                     && !DateTime.TryParseExact(dateValue, new string[] { "d/M/yyyy", "d/M/yyyy HH:mm:ss" }, CultureInfo.InvariantCulture, DateTimeStyles.None, out date)) {
-                    Logger.LogError("Foldering Date Parse Error", string.Format("item '{0}', date '{1}' could not be parsed", newItemName, dateValue));
+                    Logger.Log(newItemName, "date could not be parsed", ProcessStatus.DateParseError, DateField, dateValue);
                     return thisParent;
                 }
 

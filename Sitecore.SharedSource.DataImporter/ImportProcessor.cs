@@ -36,6 +36,8 @@ namespace Sitecore.SharedSource.DataImporter {
         /// </summary>
         public void Process() {
 
+            Logger.Log("N/A", string.Format("Import Started at: {0}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")));
+
             if (Sitecore.Context.Job != null)
                 Sitecore.Context.Job.Options.Priority = ThreadPriority.Highest;
 
@@ -43,7 +45,12 @@ namespace Sitecore.SharedSource.DataImporter {
             try {
                 importItems = DataMap.GetImportData();
             } catch (Exception ex) {
-                Logger.LogError("Import Error", ex.Message);
+                Logger.Log("N/A", string.Format("GetImportData Failed: {0}", ex.Message), ProcessStatus.Error);
+                Logger.Log("N/A", string.Format("Import Finished at: {0}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")));
+
+                if (Sitecore.Context.Job != null)
+                    Sitecore.Context.Job.Status.State = JobState.Finished;
+
                 return;
             }
 
@@ -53,7 +60,6 @@ namespace Sitecore.SharedSource.DataImporter {
 
             long line = 0;
 
-            Logger.Log("Import Started", string.Format("start time: {0}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")));
             using (new BulkUpdateContext()) { // try to eliminate some of the extra pipeline work
                 foreach (object importRow in importItems) {
                     //import each row of data
@@ -61,21 +67,20 @@ namespace Sitecore.SharedSource.DataImporter {
                     try {
                         string newItemName = DataMap.BuildNewItemName(importRow);
                         if (string.IsNullOrEmpty(newItemName)) {
-                            Logger.LogError(string.Format("Get Name Error (import row: {0})", line),
-                                "Item wasn't created because the new item name was empty");
+                            Logger.Log("N/A", string.Format("BuildNewItemName failed on import row {0} because the new item name was empty", line), ProcessStatus.NewItemError);
                             continue;
                         }
 
                         Item thisParent = DataMap.GetParentNode(importRow, newItemName);
-                        if (thisParent.IsNull()) {
-                            Logger.LogError(string.Format("Get Parent Error (import row: {0})", line),
-                                "The new item's parent is null");
+                        if (thisParent.IsNull())
+                        {
+                            Logger.Log("N/A", string.Format("Get parent failed on import row {0} because the new item's parent is null", line), ProcessStatus.NewItemError);
                             continue;
                         }
 
                         DataMap.CreateNewItem(thisParent, importRow, newItemName);
                     } catch (Exception ex) {
-                        Logger.LogError(string.Format("Exception thrown (import row: {0})", line), ex.Message);
+                        Logger.Log("N/A", string.Format("Exception thrown on import row {0} : {1}", line, ex.Message), ProcessStatus.NewItemError);
                     }
 
                     if (Sitecore.Context.Job != null)
@@ -90,7 +95,7 @@ namespace Sitecore.SharedSource.DataImporter {
             if (!Logger.LoggedError)
                 Logger.Log("Success", "the import completed successfully");
 
-            Logger.Log("Import Finished", string.Format("end time: {0}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")));
+            Logger.Log("N/A", string.Format("Import Finished at: {0}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")));
 
             if (Sitecore.Context.Job != null)
                 Sitecore.Context.Job.Status.State = JobState.Finished;

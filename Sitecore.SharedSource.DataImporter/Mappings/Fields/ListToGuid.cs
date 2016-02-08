@@ -46,7 +46,7 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
                 return;
 
             //get parent item of list to search
-            Item i = newItem.Database.GetItem(SourceList);
+            Item i = InnerItem.Database.GetItem(SourceList);
             if (i == null)
                 return;
 

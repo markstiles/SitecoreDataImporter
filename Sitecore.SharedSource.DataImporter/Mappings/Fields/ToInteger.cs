@@ -20,7 +20,7 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
             int value = 0;
             if (!int.TryParse(importValue.Trim(), out value))
             {
-                map.Logger.LogError("Integer Parse Error", string.Format("Couldn't parse the integer value of the {0} field", ItemName()));
+                map.Logger.Log(newItem.Paths.FullPath, "Couldn't parse the integer value", ProcessStatus.FieldError, ItemName(), importValue);
                 return;
             }
             

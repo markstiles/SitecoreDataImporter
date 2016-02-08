@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" Debug="true" CodeBehind="Default.aspx.cs" Inherits="Default" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" Debug="true" CodeBehind="Default.aspx.cs" Inherits="Sitecore.SharedSource.DataImporter.UI.Default" %>
 <%@ Import Namespace="Sitecore" %>
 <%@ Import Namespace="Sitecore.Jobs" %>
 

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Sitecore.SharedSource.DataImporter.Providers;
 
 namespace Sitecore.SharedSource.DataImporter.Extensions {
     public static class SitecoreExtensions {
@@ -31,21 +32,21 @@ namespace Sitecore.SharedSource.DataImporter.Extensions {
         public static string GetItemField(this Item i, string fieldName, ILogger logger) {
             //check item
             if (i == null) {
-                logger.LogError("Error", "the item is null");
+                logger.Log("N/A", "the item is null", ProcessStatus.ImportDefinitionError, fieldName);
                 return string.Empty;
             }
 
             //check field
             Field f = i.Fields[fieldName];
             if (f == null) {
-                logger.LogError("Error", string.Format("the field '{0}' on the item '{1}' is null", fieldName, i.Paths.FullPath));
+                logger.Log(i.Paths.FullPath, "the field is null", ProcessStatus.ImportDefinitionError, fieldName);
                 return string.Empty;
             }
 
             //check value
             string s = f.Value;
             if (string.IsNullOrEmpty(s))
-                logger.Log("Warn", string.Format("the '{0}' field was not set on '{1}'", fieldName, i.Paths.FullPath));
+                logger.Log(i.Paths.FullPath, "the field was empty", ProcessStatus.ImportDefinitionError, fieldName);
 
             return s;
         }

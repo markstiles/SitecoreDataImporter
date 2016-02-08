@@ -250,13 +250,13 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
 
                 //check for assembly
                 if (string.IsNullOrEmpty(bm.HandlerAssembly)) {
-                    Logger.LogError("Error", string.Format("the 'Handler Assembly' {1} is not defined for the '{0}' property", child.Name, bm.HandlerAssembly));
+                    Logger.Log(child.Paths.FullPath, "the 'Handler Assembly' is not defined", ProcessStatus.ImportDefinitionError, "Handler Assembly", bm.HandlerAssembly);
                     continue;
                 }
 
                 //check for class
                 if (string.IsNullOrEmpty(bm.HandlerClass)) {
-                    Logger.LogError("Error", string.Format("the Handler Class {1} is not defined for the '{0}' property", child.Name, bm.HandlerClass));
+                    Logger.Log(child.Paths.FullPath, "the Handler Class is not defined", ProcessStatus.ImportDefinitionError, "Handler Class", bm.HandlerClass);
                     continue;
                 }
 
@@ -265,13 +265,13 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
                 try {
                     bp = (IBaseProperty)Sitecore.Reflection.ReflectionUtil.CreateObject(bm.HandlerAssembly, bm.HandlerClass, new object[] { child });
                 } catch (FileNotFoundException fnfe) {
-                    Logger.LogError("Error", string.Format("the binary {1} specified could not be found for the '{0}' property", child.Name, bm.HandlerAssembly));
+                    Logger.Log(child.Paths.FullPath, "the binary could not be found", ProcessStatus.ImportDefinitionError, "Handler Assembly", bm.HandlerAssembly);
                 }
 
                 if (bp != null)
                     l.Add(bp);
                 else
-                    Logger.LogError("Error", string.Format("the class type {1} could not be instantiated for the '{0}' property ", child.Name, bm.HandlerClass));
+                    Logger.Log(child.Paths.FullPath, "the class type could not be instantiated", ProcessStatus.ImportDefinitionError, "Handler Class", bm.HandlerClass);
             }
 
             return l;
@@ -303,13 +303,13 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
 
                 //check for 'from' template
                 if (string.IsNullOrEmpty(tm.FromWhatTemplate)) {
-                    Logger.LogError("Error", string.Format("the template mapping field 'FromWhatTemplate' on '{0}' is not defined", child.Name));
+                    Logger.Log(child.Paths.FullPath, "the template mapping field 'FromWhatTemplate' is not defined", ProcessStatus.ImportDefinitionError, "From What Template");
                     continue;
                 }
 
                 //check for 'to' template
                 if (string.IsNullOrEmpty(tm.ToWhatTemplate)) {
-                    Logger.LogError("Error", string.Format("the template mapping field 'ToWhatTemplate' on '{0}' is not defined", child.Name));
+                    Logger.Log(child.Paths.FullPath, "the template mapping field 'ToWhatTemplate' is not defined", ProcessStatus.ImportDefinitionError, "To What Template");
                     continue;
                 }
 

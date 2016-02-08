@@ -126,7 +126,7 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
         {
             // see if the url is badly formed
             if (!Uri.IsWellFormedUriString(url, UriKind.Absolute)) {
-                map.Logger.LogError("Malformed Image URL", string.Format("item '{0}', image url '{1}'", itemPath, url));
+                map.Logger.Log(itemPath, "Malformed Image URL", ProcessStatus.FieldError, ItemName(), url);
                 return null;
             }
 
@@ -149,13 +149,13 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
                 if (matches.Count().Equals(1))
                     return new MediaItem(matches.First());
 
-                map.Logger.LogError("Sitecore Image Lookup Conflict", string.Format("item '{0}', image name '{1}', {2} matches", itemPath, filePath, matches.Count()));
+                map.Logger.Log(itemPath, string.Format("Sitecore image lookup matched {0}", matches.Count()), ProcessStatus.FieldError, filePath);
                 return null;
             }
             
             MediaItem m = ImportImage(url, filePath, string.Format("{0}/{1}", parentItem.Paths.FullPath, newFilePath));
             if (m == null)
-                map.Logger.LogError("Image Not Found", string.Format("item '{0}', image '{1}'", itemPath, url));
+                map.Logger.Log("Image Not Found", string.Format("item '{0}', image '{1}'", itemPath, url));
 
             return m;
         }
