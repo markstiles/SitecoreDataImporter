@@ -10,11 +10,11 @@ namespace Sitecore.SharedSource.DataImporter.Mappings {
     /// <summary>
     /// this is the class that all fields/properties should extend. 
     /// </summary>
-    public class BaseMapping {
+    public class BaseMapping : IBaseMapping {
 
 		#region Properties
         
-        public Item InnerItem;
+        public Item InnerItem { get; set; }
 
 		/// <summary>
 		/// the field on the new item that the imported data should be stored in

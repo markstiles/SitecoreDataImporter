@@ -11,7 +11,7 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
 	/// <summary>
 	/// The IBaseField is the interface required for all Data Importer fields to function properly
 	/// </summary>
-	public interface IBaseField {
+	public interface IBaseField : IBaseMapping {
 
 		#region Methods
 

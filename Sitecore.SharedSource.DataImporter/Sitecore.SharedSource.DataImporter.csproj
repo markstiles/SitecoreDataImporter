@@ -106,6 +106,7 @@
     <Compile Include="Mappings\Fields\ToRichText.cs" />
     <Compile Include="Mappings\Fields\UrlToReference.cs" />
     <Compile Include="Mappings\Fields\UrlToLink.cs" />
+    <Compile Include="Mappings\IBaseMapping.cs" />
     <Compile Include="Mappings\Templates\TemplateMapping.cs" />
     <Compile Include="Providers\BaseDataMap.cs" />
     <Compile Include="Mappings\Fields\ListToGuid.cs" />

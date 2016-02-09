@@ -7,7 +7,7 @@ using System.Data;
 using Sitecore.SharedSource.DataImporter.Providers;
 
 namespace Sitecore.SharedSource.DataImporter.Mappings.Properties {
-    public interface IBaseProperty {
+    public interface IBaseProperty : IBaseMapping {
 
         #region Methods
 
