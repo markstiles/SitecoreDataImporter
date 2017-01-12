@@ -521,7 +521,9 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 					    }
 					    catch (Exception ex)
 					    {
-                            Log("Field Level Error", $"item '{newItem.DisplayName}', field '{d.ItemName()}'");
+                            //TO MARK: Hi Mark, not sure why there was this $ sign in below code that was not letting me build the project, so I took it out. Please let me know thanks.
+                            //Use to be: Log("Field Level Error", $"item '{newItem.DisplayName}', field '{d.ItemName()}'");
+                            Log("Field Level Error", "item '{newItem.DisplayName}', field '{d.ItemName()}'");
                         }
 
                     }
