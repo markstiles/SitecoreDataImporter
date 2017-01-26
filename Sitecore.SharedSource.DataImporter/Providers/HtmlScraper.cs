@@ -12,24 +12,25 @@ using Sitecore.Data.Items;
 using Sitecore.SharedSource.DataImporter.HtmlAgilityPack;
 using Sitecore.SharedSource.DataImporter.HtmlScraper;
 
+/// <summary>
+/// TODO: based on Dev Breakfast meeting input:
+///     
+///       -Make the field mapping to use the same concept of this module by adding field mappings under the provider
+///       -Handle varios xpath mapping logic to target html element 
+/// 
+/// </summary>
+
 namespace Sitecore.SharedSource.DataImporter.Providers
 {
     public class HtmlScraper : BaseDataMap 
     {
-        public ImportConfig SelectedConfig { get; set; }
-        private Database selectedDB = null;
-
+        public ImportConfig SelectedConfig { get; set; }      
+        private Item ImportItem = null;
 
         public HtmlScraper(Database db, string ConnectionString, Item importItem)
             : base(db, ConnectionString, importItem)
         {
-            selectedDB = db;
-            SelectedConfig = new ImportConfig(importItem, db);
-            SelectedConfig.ImportLocation = selectedDB.Items[importItem.Fields["Import To Where"].Value];
-           
-            ImportContent(SelectedConfig);
-
-            //SelectedConfig = config;
+            ImportItem = importItem;
         }
 
         #region Override Methods
@@ -42,6 +43,23 @@ namespace Sitecore.SharedSource.DataImporter.Providers
         {
             List<string> lines = new List<string>();
 
+            SelectedConfig = new ImportConfig(ImportItem, this.SitecoreDB, this.Query);
+            SelectedConfig.ImportLocation = Parent;
+            ImportContent(SelectedConfig);
+
+            //DataSet ds = new DataSet();
+            //SqlConnection dbCon = new SqlConnection(this.DatabaseConnectionString);
+            //dbCon.Open();
+
+            //SqlDataAdapter adapter = new SqlDataAdapter(this.Query, dbCon);
+            //adapter.Fill(ds);
+            //dbCon.Close();
+
+            //DataTable dt = ds.Tables[0].Copy();
+
+            //return (from DataRow dr in dt.Rows
+            //        select dr).Cast<object>();
+
             return lines;
         }
 
@@ -52,6 +70,12 @@ namespace Sitecore.SharedSource.DataImporter.Providers
         /// <param name="importRow"></param>
         public override void ProcessCustomData(ref Item newItem, object importRow)
         {
+        }
+
+        protected override Item GetParentNode(object importRow, string newItemName)
+        {
+
+            return this.Parent;
         }
 
         /// <summary>
@@ -84,6 +108,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers
                 Item loc = AddToLocation(config, levels, url);
             }
         }
+
         private bool UseSmartDirectory(ImportConfig selectedConfig)
         {
             return selectedConfig.EnableSmartDirectory;
@@ -161,11 +186,11 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 
                     if (!string.IsNullOrEmpty(prevDir))
                     {
-                        location = selectedDB.GetItem(prevDir);
+                        location = this.SitecoreDB.GetItem(prevDir);
                     }
                     else
                     {
-                        location = selectedDB.GetItem(dir);
+                        location = this.SitecoreDB.GetItem(dir);
                     }
 
                     if (location == null)
@@ -422,7 +447,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 
         private Item IsItemAdded(string path)
         {
-            Item i = selectedDB.GetItem(path);
+            Item i = this.SitecoreDB.GetItem(path);
 
             return i;
         }

@@ -31,7 +31,7 @@ namespace Sitecore.SharedSource.DataImporter.HtmlScraper
             return url.EndsWith(".xml");
         }
 
-        public ImportConfig(Item config, Database db)
+        public ImportConfig(Item config, Database db, string query)
         {
 
             if (config != null)
@@ -42,7 +42,7 @@ namespace Sitecore.SharedSource.DataImporter.HtmlScraper
                 EnableSmartDirectory = config.Fields["Maintain Hierarchy"].Value == "1" ? true : false;
                 ImportTextOnly = config.Fields["Import Text Only"].Value == "1" ? true : false;
                 SelectedMapping = config;
-                string storedValues = config.Fields["URLs"].Value;
+                string storedValues = query;// config.Fields["URLs"].Value;
                 storedValues.Split(new[] { '\r' }, StringSplitOptions.RemoveEmptyEntries).ToList();
                 List<string> urls = storedValues.Split(new[] {'\n'}).ToList();
                 List<string> sitemapURLs = urls.Where(u => IsSiteMapURL(u.Trim())).ToList();
