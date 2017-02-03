@@ -6,6 +6,7 @@ using Sitecore.Data.Items;
 using Sitecore.Data;
 using System.Collections.Specialized;
 using System.Xml.Linq;
+using Sitecore.SharedSource.DataImporter.Mappings.Fields;
 
 namespace Sitecore.SharedSource.DataImporter.HtmlScraper
 {
@@ -14,9 +15,9 @@ namespace Sitecore.SharedSource.DataImporter.HtmlScraper
         public string Name { get; set; }
         public Item ImportLocation { get; set; }
         public bool IgnoreRootDirectories { get; set; }
-        public bool EnableSmartDirectory { get; set; }
+        public bool MaintainHierarchy { get; set; }
         public bool ImportTextOnly { get; set; }
-        public List<ImportMappings> ImportMappings { get; set; }
+        //public List<ImportMappings> ImportMappings { get; set; }
 
         public Item SelectedMapping { get; set; }
         public List<string> StoredURLs { get; set; }
@@ -39,7 +40,7 @@ namespace Sitecore.SharedSource.DataImporter.HtmlScraper
                 Name = config.Name;
                 StoredURLs = new List<string>();
                 IgnoreRootDirectories = config.Fields["Ignore Root Directories"].Value == "1" ? true : false;
-                EnableSmartDirectory = config.Fields["Maintain Hierarchy"].Value == "1" ? true : false;
+                MaintainHierarchy = config.Fields["Maintain Hierarchy"].Value == "1" ? true : false;
                 ImportTextOnly = config.Fields["Import Text Only"].Value == "1" ? true : false;
                 SelectedMapping = config;
                 string storedValues = query;// config.Fields["URLs"].Value;
@@ -58,7 +59,7 @@ namespace Sitecore.SharedSource.DataImporter.HtmlScraper
                     StoredURLs.AddRange(pageURLs);
                 }
 
-                ImportMappings = new MapData(config, db).MappedData;
+                //ImportMappings = new MapData(config, db).MappedData;
             }
         }
 

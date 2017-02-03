@@ -15,10 +15,28 @@ namespace Sitecore.SharedSource.DataImporter.Mappings {
 
         public Item InnerItem;
 
+        private string _oldItemField;
+
         private string _newItemField;
-		/// <summary>
-		/// the field on the new item that the imported data should be stored in
-		/// </summary>
+
+        /// <summary>
+        /// the field that the old content gets from 
+        /// </summary>
+        public string OldItemField
+        {
+            get
+            {
+                return _oldItemField;
+            }
+            set
+            {
+                _oldItemField = value;
+            }
+        }
+
+        /// <summary>
+        /// the field on the new item that the imported data should be stored in
+        /// </summary>
         public string NewItemField {
 			get {
 				return _newItemField;
@@ -60,6 +78,7 @@ namespace Sitecore.SharedSource.DataImporter.Mappings {
 
 		public BaseMapping(Item i) {
             InnerItem = i;
+            OldItemField = i.Fields["From What Fields"].Value;
             NewItemField = i.Fields["To What Field"].Value;
 			HandlerClass = i.Fields["Handler Class"].Value;
 			HandlerAssembly = i.Fields["Handler Assembly"].Value;

@@ -117,7 +117,6 @@
     <Compile Include="HtmlAgilityPack\Trace.FullFramework.cs" />
     <Compile Include="HtmlAgilityPack\Utilities.cs" />
     <Compile Include="HtmlScraper\ImportConfig.cs" />
-    <Compile Include="HtmlScraper\ImportMappings.cs" />
     <Compile Include="Mappings\BaseMapping.cs" />
     <Compile Include="Mappings\Fields\IBaseField.cs" />
     <Compile Include="Mappings\Fields\ToCheckBox.cs" />

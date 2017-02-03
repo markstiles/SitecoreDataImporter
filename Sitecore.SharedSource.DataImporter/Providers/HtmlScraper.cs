@@ -11,6 +11,9 @@ using Sitecore.Data;
 using Sitecore.Data.Items;
 using Sitecore.SharedSource.DataImporter.HtmlAgilityPack;
 using Sitecore.SharedSource.DataImporter.HtmlScraper;
+using System.Data;
+using Sitecore.Collections;
+using Sitecore.SharedSource.DataImporter.Mappings;
 
 /// <summary>
 /// TODO: based on Dev Breakfast meeting input:
@@ -24,8 +27,11 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 {
     public class HtmlScraper : BaseDataMap 
     {
-        public ImportConfig SelectedConfig { get; set; }      
+        public ImportConfig Config { get; set; }      
         private Item ImportItem = null;
+        private string ItemNameColumn = "ItemName";
+        private string PathColumn = "Path";
+        private NameValueCollection mappings;
 
         public HtmlScraper(Database db, string ConnectionString, Item importItem)
             : base(db, ConnectionString, importItem)
@@ -41,27 +47,47 @@ namespace Sitecore.SharedSource.DataImporter.Providers
         /// <returns></returns>
         public override IEnumerable<object> GetImportData()
         {
-            List<string> lines = new List<string>();
+            mappings = GetMappings();
+            DataTable dt = new DataTable();
+            dt.Columns.Add(ItemNameColumn);
+            dt.Columns.Add(PathColumn);
 
-            SelectedConfig = new ImportConfig(ImportItem, this.SitecoreDB, this.Query);
-            SelectedConfig.ImportLocation = Parent;
-            ImportContent(SelectedConfig);
+            ImportConfig config = new ImportConfig(ImportItem, SitecoreDB, this.Query);
+            config.ImportLocation = this.Parent;
+            Config = config;
 
-            //DataSet ds = new DataSet();
-            //SqlConnection dbCon = new SqlConnection(this.DatabaseConnectionString);
-            //dbCon.Open();
+            //ImportContent(config);
+            //List<string> lines = new List<string>();
 
-            //SqlDataAdapter adapter = new SqlDataAdapter(this.Query, dbCon);
-            //adapter.Fill(ds);
-            //dbCon.Close();
+            if (ItemNameDataField == "[URL]")
+            {
+                ItemNameDataField = ItemNameColumn;
+            }
 
-            //DataTable dt = ds.Tables[0].Copy();
+            //Adding columns to the table from field mapping
+            foreach (var key in mappings)
+            {
+                string toField = mappings[key.ToString()];
+                dt.Columns.Add(toField);
+            }
 
-            //return (from DataRow dr in dt.Rows
-            //        select dr).Cast<object>();
+            List<string> urls = config.StoredURLs;
+            foreach (var url in urls)
+            {
+                bool ignoreroots = config.IgnoreRootDirectories ? true : false;
 
-            return lines;
+                string relativeURL = url.Replace("http://", "").Replace("https://", "");
+                Char[] splitChars = new Char[] { '/' };
+                //parts is the directory list in array format, ie. second array is the child of very first etc..
+                List<string> levels = ignoreroots ? relativeURL.Split(splitChars, StringSplitOptions.RemoveEmptyEntries).Skip(1).ToList() :
+                relativeURL.Split(splitChars, StringSplitOptions.RemoveEmptyEntries).ToList();
+
+                BuildData(config, levels, url, dt);
+            }
+
+            return (dt.Rows).Cast<object>();
         }
+
 
         /// <summary>
         /// There is no custom data for this type
@@ -74,8 +100,24 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 
         protected override Item GetParentNode(object importRow, string newItemName)
         {
+            Item parentItem = null;
+            DataRow dataRow = importRow as DataRow;
+            string parentPath = dataRow[PathColumn].ToString();
+            string itemName = dataRow[ItemNameColumn].ToString();
+            parentPath = parentPath.Replace(itemName, "");
 
-            return this.Parent;
+            
+            if (Config.MaintainHierarchy)
+            {
+                parentItem = this.SitecoreDB.GetItem(parentPath);
+            }
+
+            if (parentItem == null)
+            {
+                parentItem = base.GetParentNode(importRow, newItemName);
+            }
+
+            return parentItem;
         }
 
         /// <summary>
@@ -86,39 +128,29 @@ namespace Sitecore.SharedSource.DataImporter.Providers
         /// <returns></returns>
         protected override string GetFieldValue(object importRow, string fieldName)
         {
+            string toFieldName = fieldName;
+            if (fieldName != ItemNameColumn)
+            {                
+                toFieldName = mappings[fieldName];
+            }
 
-            return "";
+            //if (toFieldName.Contains("_"))
+            //{
+            //    int removeIndex = toFieldName.IndexOf("_");
+            //    toFieldName = toFieldName.Substring(0, removeIndex);
+            //}
+
+
+            DataRow item = importRow as DataRow;
+            object f = item[toFieldName];
+            return (f != null) ? f.ToString() : string.Empty;
         }
 
         #endregion Override Methods
 
-        private void ImportContent(ImportConfig config)
-        {
-            List<string> urls = config.StoredURLs;
-            foreach (var url in urls)
-            {
-                bool ignoreroots = config.IgnoreRootDirectories ? true : false;
-
-                string relativeURL = url.Replace("http://", "").Replace("https://", "");
-                Char[] splitChars = new Char[] { '/' };
-                //parts is the directory list in array format, ie. second array is the child of very first etc..
-                List<string> levels = ignoreroots ? relativeURL.Split(splitChars, StringSplitOptions.RemoveEmptyEntries).Skip(1).ToList() :
-                relativeURL.Split(splitChars, StringSplitOptions.RemoveEmptyEntries).ToList();
-
-                Item loc = AddToLocation(config, levels, url);
-            }
-        }
-
-        private bool UseSmartDirectory(ImportConfig selectedConfig)
-        {
-            return selectedConfig.EnableSmartDirectory;
-
-        }
-
         public string RemoveInvalidChars(string data)
         {
             data = ItemUtil.ProposeValidItemName(data);
-
             return data;
         }
 
@@ -134,7 +166,6 @@ namespace Sitecore.SharedSource.DataImporter.Providers
                 string directroy = RemoveInvalidChars(dir);
                 string fullPath = string.Empty;
 
-
                 if (string.IsNullOrEmpty(prevDir))
                 {
                     fullPath = rootPath + "/" + directroy;
@@ -142,7 +173,6 @@ namespace Sitecore.SharedSource.DataImporter.Providers
                 }
                 else
                 {
-
                     fullPath = prevDir + "/" + directroy;
                     dirs.Add(fullPath, dir);
                 }
@@ -150,17 +180,17 @@ namespace Sitecore.SharedSource.DataImporter.Providers
                 prevDir = fullPath;
 
             }
-
             return dirs;
         }
 
-        private Item AddToLocation(ImportConfig storedConfig, List<string> levels, string url)
+
+        private void BuildData(ImportConfig storedConfig, List<string> levels, string url, DataTable dataTable)
         {
-            //ran some directory tests (seems good for now, if needed later)
+            
             Item location = storedConfig.ImportLocation;
-            bool smart = UseSmartDirectory(storedConfig);
-            bool ignoreroot =  storedConfig.IgnoreRootDirectories;
-            NameValueCollection directroies = smart ? DirectroyBuilder(levels, storedConfig) : null;
+           
+            bool ignoreroot = storedConfig.IgnoreRootDirectories;
+            NameValueCollection directroies = Config.MaintainHierarchy ? DirectroyBuilder(levels, storedConfig) : null;
 
             if (directroies == null)
             {
@@ -176,10 +206,15 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 
             foreach (string dir in directroies)
             {
+                List<string> updatedFields = new List<string>();
+                bool wasupdated = false;
+                DataRow dr = dataTable.NewRow();
+                dataTable.Rows.Add(dr);
+
                 string name = string.Empty;
                 string urlVal = directroies[dir].ToString();
 
-                if (smart)
+                if (Config.MaintainHierarchy)
                 {
                     dirPath = dir;
                     name = dir.Split('/').Last();
@@ -205,97 +240,84 @@ namespace Sitecore.SharedSource.DataImporter.Providers
                     urlVal = dir;
                 }
 
+                dr[PathColumn] = dirPath;
+                if (ItemNameDataField == "[URL]" || ItemNameDataField == ItemNameColumn)
+                {                  
+                    dr[ItemNameColumn] = name;
+                }
 
                 string currentDirURL = string.Empty;
                 currentDirURL = url.Substring(0, url.IndexOf(urlVal));
                 currentDirURL = currentDirURL.EndsWith("/") ? (currentDirURL + urlVal) : (currentDirURL + "/" + urlVal);
-
                 HtmlNode.ElementsFlags.Remove("form");
                 HtmlDocument doc = new HtmlDocument();
                 var contentHtml = WebContentRequest(currentDirURL);
                 doc.LoadHtml(contentHtml);
 
-                foreach (var im in storedConfig.ImportMappings)
+                foreach (var key in mappings)
                 {
-                    Item i = IsItemAdded(dirPath);
-                    if (i == null)
-                    {
-                        InsertContent(name, location, im.TemplateItem, contentHtml, im, storedConfig);
-                    }
-                    else
-                    {
-                        InsertContent(name, location, im.TemplateItem, contentHtml, im, storedConfig, i);
-                    }
-                }
+                    string toFieldName = mappings[key.ToString()];
+                    bool isOverride = toFieldName.StartsWith("!");
 
+                    //This is for if 2 mapping target the same field so the next one to not override the first update, 
+                    //becuase each could apply for different URL  
+                    wasupdated = IsDataInList(updatedFields, toFieldName);
+                    if (!wasupdated || isOverride)
+                    {
+                        toFieldName = toFieldName.Replace("!", "");
+                        string value = FetchContent(doc, key, mappings, storedConfig);
+                        dr[toFieldName] = value;
+                        updatedFields.Add(toFieldName);
+                    }                    
+                }                   
                 prevDir = dir;
             }
-
-            return location;
         }
 
-        public void InsertContent(string name, Item InsertLocation, TemplateItem template, string contentHtml, ImportMappings im, ImportConfig storedConfig, Item updatedItem = null)
+
+
+        public string FetchContent(HtmlDocument doc, object key, NameValueCollection mappings, ImportConfig storedConfig)
         {
-            HtmlDocument doc = new HtmlDocument();
-            doc.LoadHtml(contentHtml);
+            string rowValue = string.Empty;
             bool textonly = storedConfig.ImportTextOnly;
-            using (new Sitecore.SecurityModel.SecurityDisabler())
-            {
-                List<string> updatedFields = new List<string>();
-                List<string> updatedIndexedFields = new List<string>();
-                Item i = updatedItem != null ? updatedItem : InsertLocation.Add(RemoveInvalidChars(name), template);
-                string htmlObj = string.Empty;
-                string fieldname = string.Empty;
-                HtmlNode node = null;
-                i.Editing.BeginEdit();
+            List<string> updatedIndexedFields = new List<string>();
+            string htmlObj = string.Empty;
+            string fieldname = string.Empty;
+            HtmlNode node = null;
+           
+            //TODO: index logic seems to be workign good, 
+            //think of adding logic where instead index using + to append data on same field
+            //Mapping examples added: .content/1/p/3:Main Content, title:Title, #corp-info-container:Main Content
 
-                bool wasupdated = false;
-                foreach (var key in im.Mappings)
-                {
-                    bool isOverride = false;
-                    bool isOneToOneMap = false;
+            htmlObj = key.ToString();
+            fieldname = mappings[key.ToString()];
+            node = HandleNodesLookup(htmlObj, doc);
 
-                    //TODO: index logic seems to be workign good, 
-                    //think of adding logic where instead index using + to append data on same field
-                    //Mapping examples added: .content/1/p/3:Main Content, title:Title, #corp-info-container:Main Content
-
-
-                    htmlObj = key.ToString();
-                    fieldname = im.Mappings[key.ToString()];
-                    fieldname = fieldname.Replace("\r", "");
-
-                    if (htmlObj.StartsWith("!"))
-                    {
-                        isOverride = true;                       
-                        htmlObj = htmlObj.Replace("!", "");
-                    }
-
-                    node = HandleNodesLookup(htmlObj, doc);
-
-
-                    if (node == null) { continue; }
-
-                    //This is for if 2 mapping target the same field so hte next one to not override the first update, 
-                    //becuase each could apply for different URL  
-                    wasupdated = IsDataInList(updatedFields, fieldname);
-
-                    if (isOverride || !wasupdated)
-                    {
-                        //TODO: use dataType to handle each field accordingly 
-                        //var dataType = i.Fields[fieldname].Type.ToLower();
-                        i.Fields[fieldname].Value = textonly ? node.InnerText : node.InnerHtml;
-                        updatedFields.Add(fieldname);
-                    }
-
-
-                }
-
-                i.Editing.EndEdit();
+            if (node != null)
+            {              
+               rowValue = textonly ? node.InnerText : node.InnerHtml;
             }
 
+            return rowValue;
         }
 
-        //TODO: ^^^ work on this next.
+
+        private NameValueCollection GetMappings()
+        {
+            NameValueCollection mappings = new NameValueCollection();
+            Item fieldDefinitions = GetItemByTemplate(ImportItem, FieldsFolderID);
+            ChildList fields = fieldDefinitions.GetChildren();
+            foreach (Item field in fields)
+            {
+                BaseMapping baseMap = new BaseMapping(field);
+                string fromFieldName = baseMap.OldItemField;
+                string toFieldName = baseMap.NewItemField + "_" + Guid.NewGuid().ToString().Replace("-", ""); 
+                mappings.Add(fromFieldName, toFieldName);
+            }
+            return mappings;
+        }
+
+
         /// <summary>
         /// Calculate the node path logic and return the node to be used for the field value
         /// </summary>
@@ -310,16 +332,14 @@ namespace Sitecore.SharedSource.DataImporter.Providers
             bool isMultiNodesData = htmlObj.Contains("/*");
             try
             {
-
-
                 //Not sure if this check is needed so to do somthing else. Check it latter.  
                 if (htmlObj.Contains("/"))
                 {
-                    nodes = HandleStartWith(htmlObj, doc);
+                    nodes = HandleXPathQuery(htmlObj, doc);
                 }
                 else
                 {
-                    nodes = HandleStartWith(htmlObj, doc);
+                    nodes = HandleXPathQuery(htmlObj, doc);
                 }
 
                 if (isMultiNodesData)
@@ -330,7 +350,6 @@ namespace Sitecore.SharedSource.DataImporter.Providers
                     {
                         node.AppendChild(n);
                     }
-
                 }
                 else
                 {
@@ -347,51 +366,70 @@ namespace Sitecore.SharedSource.DataImporter.Providers
         }
 
 
+
+        private string FormatXpath(string data, string option) {
+            string formated = data;
+            string value = data;
+
+            switch (option)
+            {
+                case ".":
+                    value = value.Replace(".", "");
+                    formated = "[@class='" + value + "']";
+                    break;
+                case "#":
+                    value = value.Replace("#", "");
+                    formated = "[@id='" + value + "']";
+                    break;
+            }
+
+            return formated;
+        }
+
         /// <summary>
         ///
         /// </summary>
-        /// <param name="htmlObj"></param>
+        /// <param name="selector"></param>
         /// <param name="doc"></param>
         /// <returns></returns>
-        private List<HtmlNode> HandleStartWith(string htmlObj, HtmlDocument doc)
+        private List<HtmlNode> HandleXPathQuery(string selector, HtmlDocument doc)
         {
             string xPath = "//";
             string attrName = "";
             List<HtmlNode> nodes = new List<HtmlNode>();
+            List<string> dataItems = selector.Split('/').ToList();
+            selector = HandleIndex(selector);
 
-            if (htmlObj.StartsWith("."))
+            if (dataItems != null && dataItems.Any() && selector.Contains("/"))
             {
-                attrName = htmlObj.Split('/').First();
-                htmlObj = htmlObj.Replace(attrName, "");
-                attrName = attrName.Replace(".", "");
-                htmlObj = HandleIndex(htmlObj);
-                xPath += "*[@class='" + attrName + "']" + htmlObj + "";
+                foreach (var data in dataItems)
+                {
+                    string option = data.ToCharArray().FirstOrDefault().ToString();
+                    attrName = FormatXpath(data, option);
+                    selector = selector.Replace(data, attrName);
+                    selector = selector.Replace("/[", "/*[");
+                }
 
-                // //div[@class='content']/p[3]
-                // //*[@class='content'][1]/p[3]"
-                nodes = doc.DocumentNode.SelectNodes(xPath).ToList();
-
-            }
-            else if (htmlObj.StartsWith("#"))
-            {
-                attrName = htmlObj.Split('/').First();
-                htmlObj = htmlObj.Replace(attrName, "");
-                attrName = attrName.Replace("#", "");
-                htmlObj = HandleIndex(htmlObj);
-                xPath += "*[@id='" + attrName + "']" + htmlObj + "";
-                nodes = doc.DocumentNode.SelectNodes(xPath).ToList();
+                xPath += "*" + selector;
             }
             else
             {
-                //attrName = htmlObj.Split('/').First();
-                //htmlObj = htmlObj.Replace(attrName, "");
-                //attrName = attrName.Replace("#", "");
-                htmlObj = HandleIndex(htmlObj);
-                xPath += htmlObj;
-                nodes = doc.DocumentNode.SelectNodes(xPath).ToList();
+                if (selector.StartsWith("."))
+                {
+                    attrName = FormatXpath(selector, ".");
+                    selector = "*"+ selector.Replace(selector, attrName);
+                }
+                else if (selector.StartsWith("#"))
+                {
+                    attrName = FormatXpath(selector, "#");
+                    selector = "*"+ selector.Replace(selector, attrName);
+                }
 
+                xPath += selector;
             }
 
+                      
+            nodes = doc.DocumentNode.SelectNodes(xPath).ToList();
             return nodes;
         }
 
@@ -442,14 +480,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 
         private bool IsDataInList(List<string> dataList, string data)
         {
-            return dataList.Any(f => data.ToLower().Contains(f.ToLower()));
-        }
-
-        private Item IsItemAdded(string path)
-        {
-            Item i = this.SitecoreDB.GetItem(path);
-
-            return i;
+            return dataList.Any(f => data.ToLower() == f.ToLower());
         }
 
 
