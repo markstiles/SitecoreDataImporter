@@ -330,17 +330,20 @@ namespace Sitecore.SharedSource.DataImporter.Providers
             HtmlNode node = null;
             List<HtmlNode> nodes = new List<HtmlNode>();
             bool isMultiNodesData = htmlObj.Contains("/*");
+            htmlObj = isMultiNodesData ? htmlObj.Replace("/*","") : htmlObj;
             try
             {
                 //Not sure if this check is needed so to do somthing else. Check it latter.  
-                if (htmlObj.Contains("/"))
-                {
-                    nodes = HandleXPathQuery(htmlObj, doc);
-                }
-                else
-                {
-                    nodes = HandleXPathQuery(htmlObj, doc);
-                }
+                //if (htmlObj.Contains("/"))
+                //{
+                //    nodes = HandleXPathQuery(htmlObj, doc);
+                //}
+                //else
+                //{
+                //    nodes = HandleXPathQuery(htmlObj, doc);
+                //}
+
+                nodes = HandleXPathQuery(htmlObj, doc);
 
                 if (isMultiNodesData)
                 {
@@ -398,7 +401,12 @@ namespace Sitecore.SharedSource.DataImporter.Providers
             string attrName = "";
             List<HtmlNode> nodes = new List<HtmlNode>();
             List<string> dataItems = selector.Split('/').ToList();
-            selector = HandleIndex(selector);
+            bool isTagName = true;
+
+            if (selector.StartsWith(".") || selector.StartsWith("#"))
+            {
+                isTagName = false;
+            }
 
             if (dataItems != null && dataItems.Any() && selector.Contains("/"))
             {
@@ -410,7 +418,14 @@ namespace Sitecore.SharedSource.DataImporter.Providers
                     selector = selector.Replace("/[", "/*[");
                 }
 
-                xPath += "*" + selector;
+                if (!isTagName)
+                {
+                    xPath += "*" + selector;
+                }
+                else {
+                    xPath += selector;
+                }
+                
             }
             else
             {
@@ -428,7 +443,8 @@ namespace Sitecore.SharedSource.DataImporter.Providers
                 xPath += selector;
             }
 
-                      
+            xPath = HandleIndex(xPath);
+
             nodes = doc.DocumentNode.SelectNodes(xPath).ToList();
             return nodes;
         }
@@ -440,7 +456,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers
         /// <param name="data"></param>
         private string HandleIndex(string data)
         {
-            data = data.Replace("/*", "");
+            //data = data.Replace("/*", "");
             string[] splits = data.ToString().Split('/');
             //string indexUpdates = string.Empty;
 
