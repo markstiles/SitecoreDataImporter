@@ -14,6 +14,9 @@ using Sitecore.SharedSource.DataImporter.HtmlScraper;
 using System.Data;
 using Sitecore.Collections;
 using Sitecore.SharedSource.DataImporter.Mappings;
+using Sitecore.Data.Fields;
+using Sitecore.SharedSource.DataImporter.Processors;
+using System.Reflection;
 
 /// <summary>
 /// TODO: based on Dev Breakfast meeting input:
@@ -32,7 +35,9 @@ namespace Sitecore.SharedSource.DataImporter.Providers
         private string ItemNameColumn = "ItemName";
         private string PathColumn = "Path";
         private NameValueCollection mappings;
+        private List<Item> MappingFields;
 
+      
         public HtmlScraper(Database db, string ConnectionString, Item importItem)
             : base(db, ConnectionString, importItem)
         {
@@ -85,7 +90,26 @@ namespace Sitecore.SharedSource.DataImporter.Providers
                 BuildData(config, levels, url, dt);
             }
 
+
             return (dt.Rows).Cast<object>();
+        }
+
+        private void RunProcessor(Item fieldMap, Item newItem)
+        {
+            //"To What Field"
+            List<Item> processorList = new List<Item>();
+            MultilistField processors = fieldMap.Fields["Post Processors"];
+
+            foreach (var targetId in processors.TargetIDs)
+            {
+                Item processor = this.SitecoreDB.GetItem(targetId);
+
+                if (processor == null) { continue; }
+
+               
+                
+               Processor.Execute(processor, newItem, fieldMap);
+            }
         }
 
 
@@ -96,6 +120,11 @@ namespace Sitecore.SharedSource.DataImporter.Providers
         /// <param name="importRow"></param>
         public override void ProcessCustomData(ref Item newItem, object importRow)
         {
+
+            foreach (var field in MappingFields)
+            {
+                RunProcessor(field, newItem);
+            }
         }
 
         protected override Item GetParentNode(object importRow, string newItemName)
@@ -191,6 +220,19 @@ namespace Sitecore.SharedSource.DataImporter.Providers
            
             bool ignoreroot = storedConfig.IgnoreRootDirectories;
             NameValueCollection directroies = Config.MaintainHierarchy ? DirectroyBuilder(levels, storedConfig) : null;
+
+            //This is to be sure there are no duplicates in dataTable
+            foreach (DataRow dr in dataTable.Rows)
+            {
+                string key = dr[PathColumn].ToString();
+                var checkKey = directroies[key];
+
+                if (checkKey != null) {
+                    directroies.Remove(key);
+                }
+            }
+
+
 
             if (directroies == null)
             {
@@ -291,7 +333,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 
             htmlObj = key.ToString();
             fieldname = mappings[key.ToString()];
-            node = HandleNodesLookup(htmlObj, doc);
+            node = Helper.HandleNodesLookup(htmlObj, doc);
 
             if (node != null)
             {              
@@ -307,190 +349,16 @@ namespace Sitecore.SharedSource.DataImporter.Providers
             NameValueCollection mappings = new NameValueCollection();
             Item fieldDefinitions = GetItemByTemplate(ImportItem, FieldsFolderID);
             ChildList fields = fieldDefinitions.GetChildren();
+            MappingFields = new List<Item>();
             foreach (Item field in fields)
             {
+                MappingFields.Add(field);
                 BaseMapping baseMap = new BaseMapping(field);
                 string fromFieldName = baseMap.OldItemField;
                 string toFieldName = baseMap.NewItemField + "_" + Guid.NewGuid().ToString().Replace("-", ""); 
                 mappings.Add(fromFieldName, toFieldName);
             }
             return mappings;
-        }
-
-
-        /// <summary>
-        /// Calculate the node path logic and return the node to be used for the field value
-        /// </summary>
-        /// <param name="htmlObj"></param>
-        /// <param name="doc"></param>
-        /// <returns></returns>
-        private HtmlNode HandleNodesLookup(string htmlObj, HtmlDocument doc)
-        {
-
-            HtmlNode node = null;
-            List<HtmlNode> nodes = new List<HtmlNode>();
-            bool isMultiNodesData = htmlObj.Contains("/*");
-            htmlObj = isMultiNodesData ? htmlObj.Replace("/*","") : htmlObj;
-            try
-            {
-                //Not sure if this check is needed so to do somthing else. Check it latter.  
-                //if (htmlObj.Contains("/"))
-                //{
-                //    nodes = HandleXPathQuery(htmlObj, doc);
-                //}
-                //else
-                //{
-                //    nodes = HandleXPathQuery(htmlObj, doc);
-                //}
-
-                nodes = HandleXPathQuery(htmlObj, doc);
-
-                if (isMultiNodesData)
-                {
-                    //TODO: this is worked for * but run some more test with differnt type mapping options of *
-                    node = doc.CreateNode(HtmlNodeType.Element, 0);
-                    foreach (HtmlNode n in nodes)
-                    {
-                        node.AppendChild(n);
-                    }
-                }
-                else
-                {
-                    node = nodes.FirstOrDefault();
-                }
-
-            }
-            catch
-            {
-
-            }
-
-            return node;
-        }
-
-
-
-        private string FormatXpath(string data, string option) {
-            string formated = data;
-            string value = data;
-
-            switch (option)
-            {
-                case ".":
-                    value = value.Replace(".", "");
-                    formated = "[@class='" + value + "']";
-                    break;
-                case "#":
-                    value = value.Replace("#", "");
-                    formated = "[@id='" + value + "']";
-                    break;
-            }
-
-            return formated;
-        }
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="selector"></param>
-        /// <param name="doc"></param>
-        /// <returns></returns>
-        private List<HtmlNode> HandleXPathQuery(string selector, HtmlDocument doc)
-        {
-            string xPath = "//";
-            string attrName = "";
-            List<HtmlNode> nodes = new List<HtmlNode>();
-            List<string> dataItems = selector.Split('/').ToList();
-            bool isTagName = true;
-
-            if (selector.StartsWith(".") || selector.StartsWith("#"))
-            {
-                isTagName = false;
-            }
-
-            if (dataItems != null && dataItems.Any() && selector.Contains("/"))
-            {
-                foreach (var data in dataItems)
-                {
-                    string option = data.ToCharArray().FirstOrDefault().ToString();
-                    attrName = FormatXpath(data, option);
-                    selector = selector.Replace(data, attrName);
-                    selector = selector.Replace("/[", "/*[");
-                }
-
-                if (!isTagName)
-                {
-                    xPath += "*" + selector;
-                }
-                else {
-                    xPath += selector;
-                }
-                
-            }
-            else
-            {
-                if (selector.StartsWith("."))
-                {
-                    attrName = FormatXpath(selector, ".");
-                    selector = "*"+ selector.Replace(selector, attrName);
-                }
-                else if (selector.StartsWith("#"))
-                {
-                    attrName = FormatXpath(selector, "#");
-                    selector = "*"+ selector.Replace(selector, attrName);
-                }
-
-                xPath += selector;
-            }
-
-            xPath = HandleIndex(xPath);
-
-            nodes = doc.DocumentNode.SelectNodes(xPath).ToList();
-            return nodes;
-        }
-
-        /// <summary>
-        /// 
-        /// ie. [1]/p[3]
-        /// </summary>
-        /// <param name="data"></param>
-        private string HandleIndex(string data)
-        {
-            //data = data.Replace("/*", "");
-            string[] splits = data.ToString().Split('/');
-            //string indexUpdates = string.Empty;
-
-            foreach (var s in splits)
-            {
-                int indexOut;
-                //If true, then it is numeric index
-                if (int.TryParse(s, out indexOut))
-                {
-
-                    //string lookUp = "/" + s + "/";
-                    string lookUp2 = "/" + s;
-                    string replace = "[" + s + "]";
-                    //indexUpdates += data.Replace(lookUp, replace);
-                    data = data.Replace(lookUp2, replace);
-                }
-            }
-
-
-            return data;
-            //switch (splits)
-            //{
-            //    case "*":
-            //        break;
-            //    default:
-            //        int indexOut;
-            //        //If true, then it is numeric index
-            //        if (int.TryParse(splits, out indexOut))
-            //        {
-            //            data = data.Replace("/" + splits, "[" + splits + "]");
-            //        }
-            //        break;
-            //}
-
         }
 
 

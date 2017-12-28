@@ -46,6 +46,7 @@ namespace Sitecore.SharedSource.DataImporter.HtmlScraper
                 string storedValues = query;// config.Fields["URLs"].Value;
                 storedValues.Split(new[] { '\r' }, StringSplitOptions.RemoveEmptyEntries).ToList();
                 List<string> urls = storedValues.Split(new[] {'\n'}).ToList();
+                urls = urls.Where(u => !u.StartsWith("//")).ToList();
                 List<string> sitemapURLs = urls.Where(u => IsSiteMapURL(u.Trim())).ToList();
                 List<string> pageURLs = urls.Where(u => !IsSiteMapURL(u.Trim())).ToList();
 

@@ -116,6 +116,7 @@
     <Compile Include="HtmlAgilityPack\Trace.cs" />
     <Compile Include="HtmlAgilityPack\Trace.FullFramework.cs" />
     <Compile Include="HtmlAgilityPack\Utilities.cs" />
+    <Compile Include="HtmlScraper\Helper.cs" />
     <Compile Include="HtmlScraper\ImportConfig.cs" />
     <Compile Include="Mappings\BaseMapping.cs" />
     <Compile Include="Mappings\Fields\IBaseField.cs" />
@@ -130,6 +131,9 @@
     <Compile Include="Mappings\Fields\UrlToReference.cs" />
     <Compile Include="Mappings\Fields\UrlToLink.cs" />
     <Compile Include="Mappings\Templates\TemplateMapping.cs" />
+    <Compile Include="Processors\Cleanup.cs" />
+    <Compile Include="Processors\Execute.cs" />
+    <Compile Include="Processors\TrimValue.cs" />
     <Compile Include="Providers\BaseDataMap.cs" />
     <Compile Include="Mappings\Fields\ListToGuid.cs" />
     <Compile Include="Mappings\Fields\ToText.cs" />
