@@ -116,6 +116,7 @@
     <Compile Include="HtmlAgilityPack\Trace.cs" />
     <Compile Include="HtmlAgilityPack\Trace.FullFramework.cs" />
     <Compile Include="HtmlAgilityPack\Utilities.cs" />
+    <Compile Include="HtmlScraper\Constants.cs" />
     <Compile Include="HtmlScraper\Helper.cs" />
     <Compile Include="HtmlScraper\ImportConfig.cs" />
     <Compile Include="Mappings\BaseMapping.cs" />
@@ -168,6 +169,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="bin\Sitecore.Kernel.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Packages\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

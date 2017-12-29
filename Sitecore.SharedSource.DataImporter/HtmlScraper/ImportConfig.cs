@@ -17,6 +17,9 @@ namespace Sitecore.SharedSource.DataImporter.HtmlScraper
         public bool IgnoreRootDirectories { get; set; }
         public bool MaintainHierarchy { get; set; }
         public bool ImportTextOnly { get; set; }
+        public List<string> AllowedExtensions { get; set; }
+        public List<string> ExcludeDirectories { get; set; }
+        public string URLCount { get; set; }
         //public List<ImportMappings> ImportMappings { get; set; }
 
         public Item SelectedMapping { get; set; }
@@ -37,11 +40,19 @@ namespace Sitecore.SharedSource.DataImporter.HtmlScraper
 
             if (config != null)
             {
+
+                AllowedExtensions = new List<string>();
+                ExcludeDirectories = new List<string>();
                 Name = config.Name;
+                int count = 0;
                 StoredURLs = new List<string>();
-                IgnoreRootDirectories = config.Fields["Ignore Root Directories"].Value == "1" ? true : false;
-                MaintainHierarchy = config.Fields["Maintain Hierarchy"].Value == "1" ? true : false;
-                ImportTextOnly = config.Fields["Import Text Only"].Value == "1" ? true : false;
+                IgnoreRootDirectories = config.Fields[Constants.FieldNames.IgnoreRootDirectories].Value == "1" ? true : false;
+                MaintainHierarchy = config.Fields[Constants.FieldNames.MaintainHierarchy].Value == "1" ? true : false;
+                ImportTextOnly = config.Fields[Constants.FieldNames.ImportTextOnly].Value == "1" ? true : false;
+                AllowedExtensions = config.Fields[Constants.FieldNames.AllowedExtensions].Value.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+               
+                URLCount = config.Fields[Constants.FieldNames.URLCount].Value;
+                ExcludeDirectories = config.Fields[Constants.FieldNames.ExcludeDirectories].Value.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
                 SelectedMapping = config;
                 string storedValues = query;// config.Fields["URLs"].Value;
                 storedValues.Split(new[] { '\r' }, StringSplitOptions.RemoveEmptyEntries).ToList();
@@ -60,13 +71,24 @@ namespace Sitecore.SharedSource.DataImporter.HtmlScraper
                     StoredURLs.AddRange(pageURLs);
                 }
 
-                //ImportMappings = new MapData(config, db).MappedData;
+                StoredURLs = StoredURLs.Select(u => u.TrimEnd('\r', '\n').ToLower()).ToList();
+
+                if (AllowedExtensions != null && AllowedExtensions.Any())
+                {
+                    StoredURLs = StoredURLs.Where(x => AllowedExtensions.Any(e => x.EndsWith(("." + e.Trim())))).ToList();
+                }
+
+                if (int.TryParse(URLCount, out count))
+                {
+                    StoredURLs = StoredURLs.Take(count).ToList();
+                }
             }
         }
 
 
         private void ImportFromSitemap(List<string> sitemapURLs, List<string> storedList) 
         {
+           
             foreach (var s in sitemapURLs)
             {
 
@@ -75,6 +97,7 @@ namespace Sitecore.SharedSource.DataImporter.HtmlScraper
                 List<XElement> xLocs = xdoc.Root.Elements(ns + "url").Elements(ns + "loc").ToList();
                 List<string> urls = xLocs.Select(u => u.Value).ToList();
 
+                
                 storedList.AddRange(urls);
             }
         }

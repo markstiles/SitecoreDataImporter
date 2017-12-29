@@ -51,9 +51,9 @@ namespace Sitecore.SharedSource.DataImporter.HtmlScraper
                 }
 
             }
-            catch
+            catch(Exception ex)
             {
-
+                //This is just means selector was looking for in dom was not found.
             }
 
             return node;

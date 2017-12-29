@@ -77,15 +77,22 @@ namespace Sitecore.SharedSource.DataImporter.Providers
             }
 
             List<string> urls = config.StoredURLs;
+
             foreach (var url in urls)
             {
                 bool ignoreroots = config.IgnoreRootDirectories ? true : false;
 
                 string relativeURL = url.Replace("http://", "").Replace("https://", "");
                 Char[] splitChars = new Char[] { '/' };
-                //parts is the directory list in array format, ie. second array is the child of very first etc..
+                //parts are the directory list in array format, ie. second array is the child of first etc..
                 List<string> levels = ignoreroots ? relativeURL.Split(splitChars, StringSplitOptions.RemoveEmptyEntries).Skip(1).ToList() :
                 relativeURL.Split(splitChars, StringSplitOptions.RemoveEmptyEntries).ToList();
+
+                if (config.ExcludeDirectories != null && config.ExcludeDirectories.Any())
+                {
+                    levels.RemoveAll(x => config.ExcludeDirectories.Contains(x.ToLower()));
+                }
+                
 
                 BuildData(config, levels, url, dt);
             }
@@ -177,8 +184,14 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 
         #endregion Override Methods
 
-        public string RemoveInvalidChars(string data)
+        public string RemoveInvalidChars(string data, bool root)
         {
+            if (data.Contains(".") && !root)
+            {
+                int index = data.IndexOf('.');
+                data = data.Remove(index);
+            }
+
             data = ItemUtil.ProposeValidItemName(data);
             return data;
         }
@@ -189,10 +202,10 @@ namespace Sitecore.SharedSource.DataImporter.Providers
             NameValueCollection dirs = new NameValueCollection();
             string prevDir = string.Empty;
             string rootPath = selectedConfig.ImportLocation.Paths.FullPath;
-
+            bool root = true;
             foreach (string dir in directroies)
             {
-                string directroy = RemoveInvalidChars(dir);
+                string directroy = RemoveInvalidChars(dir, root);
                 string fullPath = string.Empty;
 
                 if (string.IsNullOrEmpty(prevDir))
@@ -208,6 +221,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 
                 prevDir = fullPath;
 
+                root = false;
             }
             return dirs;
         }
@@ -221,19 +235,8 @@ namespace Sitecore.SharedSource.DataImporter.Providers
             bool ignoreroot = storedConfig.IgnoreRootDirectories;
             NameValueCollection directroies = Config.MaintainHierarchy ? DirectroyBuilder(levels, storedConfig) : null;
 
-            //This is to be sure there are no duplicates in dataTable
-            foreach (DataRow dr in dataTable.Rows)
-            {
-                string key = dr[PathColumn].ToString();
-                var checkKey = directroies[key];
 
-                if (checkKey != null) {
-                    directroies.Remove(key);
-                }
-            }
-
-
-
+            //if MaintainHierarchy false then build it again with single 
             if (directroies == null)
             {
                 directroies = new NameValueCollection();
@@ -243,8 +246,24 @@ namespace Sitecore.SharedSource.DataImporter.Providers
                 }
             }
 
+
+            //This is to be sure there are no duplicates in dataTable
+            foreach (DataRow dr in dataTable.Rows)
+            {
+                string key = dr[PathColumn].ToString();
+                var checkKey = directroies[key];
+
+                if (checkKey != null)
+                {
+                    directroies.Remove(key);
+                }
+            }
+
+
+
             string dirPath = string.Empty;
             string prevDir = string.Empty;
+            bool root = true;
 
             foreach (string dir in directroies)
             {
@@ -261,23 +280,23 @@ namespace Sitecore.SharedSource.DataImporter.Providers
                     dirPath = dir;
                     name = dir.Split('/').Last();
 
-                    if (!string.IsNullOrEmpty(prevDir))
-                    {
-                        location = this.SitecoreDB.GetItem(prevDir);
-                    }
-                    else
-                    {
-                        location = this.SitecoreDB.GetItem(dir);
-                    }
+                    //if (!string.IsNullOrEmpty(prevDir))
+                    //{
+                    //    location = this.SitecoreDB.GetItem(prevDir);
+                    //}
+                    //else
+                    //{
+                    //    location = this.SitecoreDB.GetItem(dir);
+                    //}
 
-                    if (location == null)
-                    {
-                        location = storedConfig.ImportLocation;
-                    }
+                    //if (location == null)
+                    //{
+                    //    location = storedConfig.ImportLocation;
+                    //}
                 }
                 else
                 {
-                    name = RemoveInvalidChars(dir);
+                    name = RemoveInvalidChars(dir, root);
                     dirPath = location.Paths.FullPath + "/" + name;
                     urlVal = dir;
                 }
@@ -291,6 +310,8 @@ namespace Sitecore.SharedSource.DataImporter.Providers
                 string currentDirURL = string.Empty;
                 currentDirURL = url.Substring(0, url.IndexOf(urlVal));
                 currentDirURL = currentDirURL.EndsWith("/") ? (currentDirURL + urlVal) : (currentDirURL + "/" + urlVal);
+
+
                 HtmlNode.ElementsFlags.Remove("form");
                 HtmlDocument doc = new HtmlDocument();
                 var contentHtml = WebContentRequest(currentDirURL);
@@ -313,6 +334,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers
                     }                    
                 }                   
                 prevDir = dir;
+                root = false;
             }
         }
 
@@ -321,15 +343,27 @@ namespace Sitecore.SharedSource.DataImporter.Providers
         public string FetchContent(HtmlDocument doc, object key, NameValueCollection mappings, ImportConfig storedConfig)
         {
             string rowValue = string.Empty;
-            bool textonly = storedConfig.ImportTextOnly;
+            bool textOnly = false;
+
+            try
+            {
+                int index = mappings[key.ToString()].IndexOf('_');
+                string toWhatField = mappings[key.ToString()].Substring(0, index);
+                Item mappingItem = MappingFields.Where(f => f.Fields[DataImporter.HtmlScraper.Constants.FieldNames.FromWhatField].Value == key.ToString()
+                    && f.Fields[DataImporter.HtmlScraper.Constants.FieldNames.ToWhatField].Value == toWhatField).FirstOrDefault();
+
+                if (mappingItem != null)
+                {
+                    textOnly = mappingItem.Fields[DataImporter.HtmlScraper.Constants.FieldNames.ImportTextOnly].Value == "1" ? true : storedConfig.ImportTextOnly;
+                }
+            }
+            catch { }
+
+            
             List<string> updatedIndexedFields = new List<string>();
             string htmlObj = string.Empty;
             string fieldname = string.Empty;
             HtmlNode node = null;
-           
-            //TODO: index logic seems to be workign good, 
-            //think of adding logic where instead index using + to append data on same field
-            //Mapping examples added: .content/1/p/3:Main Content, title:Title, #corp-info-container:Main Content
 
             htmlObj = key.ToString();
             fieldname = mappings[key.ToString()];
@@ -337,7 +371,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 
             if (node != null)
             {              
-               rowValue = textonly ? node.InnerText : node.InnerHtml;
+               rowValue = textOnly ? node.InnerText : node.InnerHtml;
             }
 
             return rowValue;
