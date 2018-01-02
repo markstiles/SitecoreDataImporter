@@ -29,7 +29,17 @@ namespace Sitecore.SharedSource.DataImporter.Processors
                 itemToProcess.Editing.BeginEdit();
                 if (node != null)
                 {
-                    itemToProcess.Fields[baseMap.NewItemField].Value = content.Replace(node.OuterHtml, replacePattern);
+                    if (findPattern.Contains("/*") && node.ChildNodes != null)
+                    {
+                        foreach (var child in node.ChildNodes)
+                        {
+                            content = content.Replace(child.OuterHtml, replacePattern);
+                            itemToProcess.Fields[baseMap.NewItemField].Value = content;
+                        }
+                    }
+                    else {
+                        itemToProcess.Fields[baseMap.NewItemField].Value = content.Replace(node.OuterHtml, replacePattern);
+                    }
                 }
                 else {
                     itemToProcess.Fields[baseMap.NewItemField].Value = content.Replace(findPattern, replacePattern);
