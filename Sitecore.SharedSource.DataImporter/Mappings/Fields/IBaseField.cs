@@ -14,12 +14,7 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
 	public interface IBaseField : IBaseMapping {
 
 		#region Methods
-
-	    /// <summary>
-	    /// gets the name of the field
-	    /// </summary>
-	    string ItemName();
-
+        
         /// <summary>
         /// Used to differentiate fields from each other
         /// </summary>

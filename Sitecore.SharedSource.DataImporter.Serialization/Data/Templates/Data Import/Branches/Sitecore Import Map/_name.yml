@@ -1,0 +1,18 @@
+﻿---
+ID: "2abce595-486f-4ce8-ac44-cb04374e7a42"
+Parent: "f1199728-0560-43db-80aa-46ec0b5d0ece"
+Template: "96aac80c-ce36-43c5-93eb-eda101794aac"
+Path: /sitecore/templates/Modules/Data Import/Branches/Sitecore Import Map/$name
+DB: master
+SharedFields:
+- ID: "06d5295c-ed2f-4a54-9bf2-26228d113318"
+  Hint: __Icon
+  Value: Business/32x32/data_refresh.png
+Languages:
+- Language: en
+  Versions:
+  - Version: 1
+    Fields:
+    - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
+      Hint: __Created
+      Value: 20110704T113339

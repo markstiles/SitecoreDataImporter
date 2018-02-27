@@ -1,0 +1,197 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{D8DE6A89-458C-409C-B191-6F883533D69B}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Sitecore.SharedSource.DataImporter.Serialization</RootNamespace>
+    <AssemblyName>Sitecore.SharedSource.DataImporter.Serialization</AssemblyName>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Data\Editor-Tab\DataImporter.yml" />
+    <None Include="Data\Editor-Tab\DataImporter\DataImporter.yml" />
+    <None Include="Data\System-Folder\Data Imports.yml" />
+    <None Include="Data\Templates\2b7ed962-3fae-492a-9fde-b2bb212a99c0\Pull Item Name from What Field.yml" />
+    <None Include="Data\Templates\58c1b76c-4582-4bc4-b259-817d572d47ec\From What Template.yml" />
+    <None Include="Data\Templates\58c1b76c-4582-4bc4-b259-817d572d47ec\Preseve Component ID.yml" />
+    <None Include="Data\Templates\da3e49b1-25de-4396-aa46-091f15a5ae38\Preserve Children on Delete.yml" />
+    <None Include="Data\Templates\Data Import.yml" />
+    <None Include="Data\Templates\Data Import\Branches.yml" />
+    <None Include="Data\Templates\Data Import\Branches\CSV Import Map.yml" />
+    <None Include="Data\Templates\Data Import\Branches\CSV Import Map\_name.yml" />
+    <None Include="Data\Templates\Data Import\Branches\CSV Import Map\_name\Fields.yml" />
+    <None Include="Data\Templates\Data Import\Branches\MySQL Import Map.yml" />
+    <None Include="Data\Templates\Data Import\Branches\MySQL Import Map\_name.yml" />
+    <None Include="Data\Templates\Data Import\Branches\MySQL Import Map\_name\Fields.yml" />
+    <None Include="Data\Templates\Data Import\Branches\Sitecore Import Map.yml" />
+    <None Include="Data\Templates\Data Import\Branches\Sitecore Import Map\_name.yml" />
+    <None Include="Data\Templates\Data Import\Branches\Sitecore Import Map\_name\Components.yml" />
+    <None Include="Data\Templates\Data Import\Branches\Sitecore Import Map\_name\Fields.yml" />
+    <None Include="Data\Templates\Data Import\Branches\Sitecore Import Map\_name\Properties.yml" />
+    <None Include="Data\Templates\Data Import\Branches\Sitecore Import Map\_name\Reference Fields.yml" />
+    <None Include="Data\Templates\Data Import\Branches\Sitecore Import Map\_name\Templates.yml" />
+    <None Include="Data\Templates\Data Import\Branches\SQL Import Map.yml" />
+    <None Include="Data\Templates\Data Import\Branches\SQL Import Map\_name.yml" />
+    <None Include="Data\Templates\Data Import\Branches\SQL Import Map\_name\Fields.yml" />
+    <None Include="Data\Templates\Data Import\Folders.yml" />
+    <None Include="Data\Templates\Data Import\Folders\Component Folder.yml" />
+    <None Include="Data\Templates\Data Import\Folders\Component Folder\__Standard Values.yml" />
+    <None Include="Data\Templates\Data Import\Folders\Data Import Folder.yml" />
+    <None Include="Data\Templates\Data Import\Folders\Data Import Folder\__Standard Values.yml" />
+    <None Include="Data\Templates\Data Import\Folders\Field Folder.yml" />
+    <None Include="Data\Templates\Data Import\Folders\Field Folder\__Standard Values.yml" />
+    <None Include="Data\Templates\Data Import\Folders\Import Map Folder.yml" />
+    <None Include="Data\Templates\Data Import\Folders\Import Map Folder\__Standard Values.yml" />
+    <None Include="Data\Templates\Data Import\Folders\Property Folder.yml" />
+    <None Include="Data\Templates\Data Import\Folders\Property Folder\__Standard Values.yml" />
+    <None Include="Data\Templates\Data Import\Folders\Reference Fields.yml" />
+    <None Include="Data\Templates\Data Import\Folders\Reference Fields\__Standard Values.yml" />
+    <None Include="Data\Templates\Data Import\Folders\Template Folder.yml" />
+    <None Include="Data\Templates\Data Import\Folders\Template Folder\__Standard Values.yml" />
+    <None Include="Data\Templates\Data Import\Mappings.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Base Mapping.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Base Mapping\Base Fields.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Base Mapping\Base Fields\To What Field.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Base Mapping\Handler.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Base Mapping\Handler\Handler Assembly.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Base Mapping\Handler\Handler Class.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Base Mapping\__Standard Values.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Components.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Components\ComponentMapping.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Components\ComponentMapping\Component Mapping.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Components\ComponentMapping\Component Mapping\Component Name.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Components\ComponentMapping\Component Mapping\Folder Name.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Components\ComponentMapping\Component Mapping\Placeholder.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Components\ComponentMapping\Component Mapping\Query.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Components\ComponentMapping\Component Mapping\Rendering.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Components\ComponentMapping\Component Mapping\Required Fields.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Components\ComponentMapping\Component Mapping\To What Template.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Fields.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Fields\Global Field Mapping Reference.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Fields\Global Field Mapping Reference\Data.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Fields\Global Field Mapping Reference\Data\Fields.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Fields\ListToGuid.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Fields\ListToGuid\Droplink Mapping.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Fields\ListToGuid\Droplink Mapping\Source List.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Fields\ListToGuid\__Standard Values.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Fields\ToDate.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Fields\ToDate\__Standard Values.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Fields\ToRichText.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Fields\ToRichText\Formatting Options.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Fields\ToRichText\Formatting Options\Replace Tags.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Fields\ToRichText\Formatting Options\Unwanted Attributes.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Fields\ToRichText\Formatting Options\Unwanted Tags.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Fields\ToRichText\__Standard Values.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Fields\ToStaticValue.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Fields\ToStaticValue\Value Mapping.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Fields\ToStaticValue\Value Mapping\Value.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Fields\ToStaticValue\__Standard Values.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Fields\ToText.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Fields\ToText\Field Mapping.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Fields\ToText\Field Mapping\Delimiter.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Fields\ToText\Field Mapping\From What Fields.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Fields\ToText\__Standard Values.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Fields\UrlToLink.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Fields\UrlToLink\__Standard Values.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Fields\UrlToReference.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Fields\UrlToReference\UrlToReference.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Fields\UrlToReference\UrlToReference\SiteHomeItem.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Fields\UrlToReference\__Standard Values.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Properties.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Properties\ChildrenToText.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Properties\ChildrenToText\__Standard Values.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Properties\FromChildItemToText.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Properties\FromChildItemToText\Field Mapping.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Properties\FromChildItemToText\Field Mapping\From What Fields.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Properties\FromChildItemToText\Reference.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Properties\FromChildItemToText\Reference\Child Template.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Properties\FromChildItemToText\__Standard Values.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Properties\PathToText.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Properties\PathToText\__Standard Values.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Properties\UrlToText.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Properties\UrlToText\__Standard Values.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Templates.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Templates\TemplateMapping.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Templates\TemplateMapping\Template Mapping.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Templates\TemplateMapping\Template Mapping\From What Template.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Templates\TemplateMapping\Template Mapping\To What Template.yml" />
+    <None Include="Data\Templates\Data Import\Providers.yml" />
+    <None Include="Data\Templates\Data Import\Providers\Base Import Map.yml" />
+    <None Include="Data\Templates\Data Import\Providers\Base Import Map\Handler.yml" />
+    <None Include="Data\Templates\Data Import\Providers\Base Import Map\Handler\Handler Assembly.yml" />
+    <None Include="Data\Templates\Data Import\Providers\Base Import Map\Handler\Handler Class.yml" />
+    <None Include="Data\Templates\Data Import\Providers\Base Import Map\Import Information.yml" />
+    <None Include="Data\Templates\Data Import\Providers\Base Import Map\Import Information\Import To Language.yml" />
+    <None Include="Data\Templates\Data Import\Providers\Base Import Map\Import Information\Import To What Template.yml" />
+    <None Include="Data\Templates\Data Import\Providers\Base Import Map\Import Information\Import To Where.yml" />
+    <None Include="Data\Templates\Data Import\Providers\Base Import Map\Import Information\Item Name Max Length.yml" />
+    <None Include="Data\Templates\Data Import\Providers\Base Import Map\Import Information\Query.yml" />
+    <None Include="Data\Templates\Data Import\Providers\Base Import Map\Item Foldering.yml" />
+    <None Include="Data\Templates\Data Import\Providers\Base Import Map\Item Foldering\Component Folder Name.yml" />
+    <None Include="Data\Templates\Data Import\Providers\Base Import Map\Item Foldering\Date Field.yml" />
+    <None Include="Data\Templates\Data Import\Providers\Base Import Map\Item Foldering\Folder By Date.yml" />
+    <None Include="Data\Templates\Data Import\Providers\Base Import Map\Item Foldering\Folder By Name.yml" />
+    <None Include="Data\Templates\Data Import\Providers\Base Import Map\Item Foldering\Folder By Path.yml" />
+    <None Include="Data\Templates\Data Import\Providers\Base Import Map\Item Foldering\Folder Template.yml" />
+    <None Include="Data\Templates\Data Import\Providers\Base Import Map\Item Foldering\Path Rewrites.yml" />
+    <None Include="Data\Templates\Data Import\Providers\Base Import Map\Logging.yml" />
+    <None Include="Data\Templates\Data Import\Providers\Base Import Map\Logging\Logger Assembly.yml" />
+    <None Include="Data\Templates\Data Import\Providers\Base Import Map\Logging\Logger Class.yml" />
+    <None Include="Data\Templates\Data Import\Providers\Base Import Map\__Standard Values.yml" />
+    <None Include="Data\Templates\Data Import\Providers\CSV Import Map.yml" />
+    <None Include="Data\Templates\Data Import\Providers\CSV Import Map\CSV Import Map.yml" />
+    <None Include="Data\Templates\Data Import\Providers\CSV Import Map\CSV Import Map\Encoding Type.yml" />
+    <None Include="Data\Templates\Data Import\Providers\CSV Import Map\CSV Import Map\Field Delimiter.yml" />
+    <None Include="Data\Templates\Data Import\Providers\CSV Import Map\__Standard Values.yml" />
+    <None Include="Data\Templates\Data Import\Providers\MySQL Import Map.yml" />
+    <None Include="Data\Templates\Data Import\Providers\MySQL Import Map\__Standard Values.yml" />
+    <None Include="Data\Templates\Data Import\Providers\Sitecore Import Map.yml" />
+    <None Include="Data\Templates\Data Import\Providers\Sitecore Import Map\Import Information.yml" />
+    <None Include="Data\Templates\Data Import\Providers\Sitecore Import Map\Import Information\Allow Item Name Match.yml" />
+    <None Include="Data\Templates\Data Import\Providers\Sitecore Import Map\Import Information\Delete On Overwrite.yml" />
+    <None Include="Data\Templates\Data Import\Providers\Sitecore Import Map\Item Foldering.yml" />
+    <None Include="Data\Templates\Data Import\Providers\Sitecore Import Map\Sitecore Import Map.yml" />
+    <None Include="Data\Templates\Data Import\Providers\Sitecore Import Map\Sitecore Import Map\Import From Language.yml" />
+    <None Include="Data\Templates\Data Import\Providers\Sitecore Import Map\Sitecore Import Map\Import Root.yml" />
+    <None Include="Data\Templates\Data Import\Providers\Sitecore Import Map\__Standard Values.yml" />
+    <None Include="Data\Templates\Data Import\Providers\SQL Import Map.yml" />
+    <None Include="Data\Templates\Data Import\Providers\SQL Import Map\__Standard Values.yml" />
+    <None Include="Data\Templates\f37df260-906a-4f0a-9b64-f2bb8ba9dc65\Recursively Fetch Children.yml" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

@@ -5,6 +5,8 @@ using Sitecore.Data.Fields;
 using Sitecore.Data.Items;
 using Sitecore.SharedSource.DataImporter.Extensions;
 using Sitecore.SharedSource.DataImporter.Providers;
+using Sitecore.Diagnostics;
+using Sitecore.SharedSource.DataImporter.Logger;
 
 namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
 {
@@ -17,8 +19,8 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
 
         #endregion properties
 
-        public ToDropdownList(Item i) : base(i)
-        {
+        public ToDropdownList(Item i, ILogger l) : base(i, l)
+		{
             SelectionRootItem = GetItemField(i, "SelectionRootItem");
         }
 
@@ -26,6 +28,7 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
 
         public override void FillField(IDataMap map, ref Item newItem, string importValue)
         {
+			Assert.IsNotNull(newItem, "newItem");
             string selectedValue = string.Empty;
 
             if (string.IsNullOrEmpty(SelectionRootItem))
@@ -42,17 +45,10 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
 
             if (!importValue.IsNotNull())
                 return;
-            
-            foreach (Item value in selectionValues) {
-                Field t = value.Fields["Text"];
-                if (t == null)
-                    continue;
 
-                if (!importValue.Trim().ToLower().Equals(t.Value.Trim().ToLower()))
-                    continue;
-                
-                selectedValue = value.ID.ToString();
-            }
+	        importValue = importValue.Trim().ToLowerInvariant();
+	        selectedValue = selectionValues.FirstOrDefault(v => v.Fields["Text"] != null && v.Fields["Text"].Value.Trim().ToLowerInvariant() == importValue)?.ID.ToString();
+            
 
             Field f = newItem.Fields[NewItemField];
             if (f == null || !selectedValue.IsNotNull())

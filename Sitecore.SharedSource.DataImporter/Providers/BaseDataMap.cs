@@ -34,11 +34,14 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
 
         public static readonly string CommonFolderTemplateID = "{A87A00B1-E6DB-45AB-8B54-636FEC3B5523}";
 
+        public static readonly string ReferenceFieldsFolderTemplateID = "{045308E2-BD25-4B5D-B5C8-49EC6CD173C3}";
+
         #endregion Static IDs
 
         #region Properties
 
         public Item ImportItem { get; set; }
+		public string Name { get; set; }
 
         #endregion Properties
 
@@ -97,6 +100,11 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
         public bool FolderByName { get; set; }
 
         /// <summary>
+        /// tells whether or not to folder new items by first letter of their name
+        /// </summary>
+        public bool FolderByPath { get; set; }
+
+        /// <summary>
         /// the name of the field that stores a date to folder by
         /// </summary>
         public string DateField { get; set; }
@@ -143,8 +151,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
             //foldering information
             FolderByDate = ImportItem.GetItemBool("Folder By Date");
             FolderByName = ImportItem.GetItemBool("Folder By Name");
-            DateField = ImportItem.GetItemField("Date Field", Logger);
-            FolderTemplate = GetImportFolderTemplate();
+            FolderByPath = ImportItem.GetItemBool("Folder By Path");
 
             //populate field definitions
             FieldDefinitions = GetFieldDefinitions(ImportItem);
@@ -237,7 +244,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
 
         public TemplateItem GetImportFolderTemplate() {
 
-            if (!FolderByName && !FolderByDate)
+            if (!FolderByName && !FolderByDate && !FolderByPath)
                 return null;
 
             //setup a default type to an ordinary folder
@@ -275,7 +282,85 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
             }
 
             ChildList c = Fields.GetChildren();
-            foreach (Item child in c) {
+            foreach (Item child in c)
+			{
+				if (child.TemplateID == new ID("{F9FDB469-FC36-4A48-AB45-1B4832AA350E}"))
+				{
+					var fieldFolder = ((LookupField) child.Fields["Fields"]).TargetItem;
+					foreach (Item sharedChild in fieldFolder.GetChildren())
+					{
+						l.Add(GenerateFieldMapping(sharedChild));
+					}
+				}
+				else
+				{
+					l.Add(GenerateFieldMapping(child));
+				}
+			}
+
+            return l.Where(x => x != null).ToList();
+        }
+
+		private IBaseField GenerateFieldMapping(Item child)
+		{
+			//create an item to get the class / assembly name from
+			BaseMapping bm = new BaseMapping(child);
+
+			//check for assembly
+			if (string.IsNullOrEmpty(bm.HandlerAssembly))
+			{
+				Logger.Log("BaseDataMap.GenerateFieldMapping", string.Format("the field's Handler Assembly is not defined on item {0}: {1}", child.Paths.FullPath, bm.HandlerAssembly));
+				return null;
+			}
+
+			//check for class
+			if (string.IsNullOrEmpty(bm.HandlerClass))
+			{
+				Logger.Log("BaseDataMap.GenerateFieldMapping", string.Format("the field's Handler Class is not defined on item {0}: {1}", child.Paths.FullPath, bm.HandlerClass));
+				return null;
+			}
+
+			//create the object from the class and cast as base field to add it to field definitions
+			IBaseField bf = null;
+			try
+			{
+				bf = (IBaseField)Sitecore.Reflection.ReflectionUtil.CreateObject(bm.HandlerAssembly, bm.HandlerClass, new object[] { child, Logger });
+			}
+			catch (FileNotFoundException)
+			{
+				Logger.Log("BaseDataMap.GenerateFieldMapping", string.Format("the field's binary specified could not be found on item {0} : {1}", child.Paths.FullPath, bm.HandlerAssembly));
+			}
+
+			if (bf != null)
+				return bf;
+			else
+				Logger.Log("BaseDataMap.GenerateFieldMapping", string.Format("the field's class type could not be instantiated {0} :{1}", child.Paths.FullPath, bm.HandlerClass));
+			return null;
+		}
+
+        protected virtual List<IBaseFieldWithReference> GetReferenceFieldDefinitions(Item i)
+        {
+
+            List<IBaseFieldWithReference> l = new List<IBaseFieldWithReference>();
+
+            //check for fields folder
+            Item Fields = i.GetChildByTemplate(ReferenceFieldsFolderTemplateID);
+            if (Fields.IsNull())
+            {
+                Logger.Log("BaseDataMap.GetReferenceFieldDefinitions", string.Format("there is no 'Reference Fields' folder on the import item {0}", i.Paths.FullPath));
+                return l;
+            }
+
+            //check for any children
+            if (!Fields.HasChildren)
+			{
+				Logger.Log("BaseDataMap.GetReferenceFieldDefinitions", string.Format("there are no reference fields to import on  on the import item {0}", ImportItem.Paths.FullPath));
+				return l;
+            }
+
+            ChildList c = Fields.GetChildren();
+            foreach (Item child in c)
+            {
                 //create an item to get the class / assembly name from
                 BaseMapping bm = new BaseMapping(child);
 
@@ -292,9 +377,9 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
                 }
 
                 //create the object from the class and cast as base field to add it to field definitions
-                IBaseField bf = null;
+                IBaseFieldWithReference bf = null;
                 try {
-                    bf = (IBaseField)Sitecore.Reflection.ReflectionUtil.CreateObject(bm.HandlerAssembly, bm.HandlerClass, new object[] { child });
+                    bf = (IBaseFieldWithReference)Sitecore.Reflection.ReflectionUtil.CreateObject(bm.HandlerAssembly, bm.HandlerClass, new object[] { child });
                 } catch (FileNotFoundException fnfe) {
                     Logger.Log(child.Paths.FullPath, "the field's binary specified could not be found", ProcessStatus.ImportDefinitionError, child.Name, bm.HandlerAssembly);
                 }
@@ -437,7 +522,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
             return StringUtility.GetValidItemName(strItemName.ToString().Trim(), this.ItemNameMaxLength).Trim();
         }
 
-        public void CreateNewItem(Item parent, object importRow, string newItemName) {
+        public virtual Item CreateNewItem(Item parent, object importRow, string newItemName) {
 
             CustomItemBase nItemTemplate = GetNewItemTemplate(importRow);
 
@@ -480,6 +565,8 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
                     //calls the subclass method to handle custom fields and properties
                     ProcessCustomData(ref newItem, importRow);
                 }
+
+                return newItem;
             }
         }
 
@@ -487,8 +574,11 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
         /// gets the parent of the new item created. will create folders based on name or date if configured to
         /// </summary>
         public virtual Item GetParentNode(object importRow, string newItemName) {
-            Item thisParent = ImportToWhere;
+
+			Item thisParent = ImportToWhere;
             if (FolderByDate) {
+				FolderTemplate = GetImportFolderTemplate();
+				DateField = ImportItem.GetItemField("Date Field", Logger);
                 DateTime date = DateTime.Now;
                 string dateValue = string.Empty;
 
@@ -513,6 +603,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
 
                 thisParent = GetDateParentNode(ImportToWhere, date, FolderTemplate);
             } else if (FolderByName) {
+				FolderTemplate = GetImportFolderTemplate();
                 thisParent = GetNameParentNode(ImportToWhere, newItemName.Substring(0, 1), FolderTemplate);
             }
             return thisParent;

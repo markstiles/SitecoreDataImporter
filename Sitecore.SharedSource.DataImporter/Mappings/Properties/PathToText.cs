@@ -7,6 +7,7 @@ using Sitecore.Data.Fields;
 using System.Web;
 using Sitecore.SharedSource.DataImporter.Extensions;
 using System.Collections;
+using Sitecore.SharedSource.DataImporter.Logger;
 using Sitecore.SharedSource.DataImporter.Providers;
 
 namespace Sitecore.SharedSource.DataImporter.Mappings.Properties {
@@ -19,7 +20,7 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Properties {
         #region Constructor
 
         //constructor
-        public PathToText(Item i) : base(i) { }
+        public PathToText(Item i, ILogger l) : base(i) { }
 
         #endregion Constructor
 

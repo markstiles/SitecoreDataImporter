@@ -1,0 +1,21 @@
+﻿---
+ID: "09fb982b-6009-4eea-9009-a4847c93056b"
+Parent: "0d38a1ff-fca5-4931-97f6-d3357c7057e8"
+Template: "0d38a1ff-fca5-4931-97f6-d3357c7057e8"
+Path: /sitecore/templates/Modules/Data Import/Mappings/Properties/FromChildItemToText/__Standard Values
+DB: master
+SharedFields:
+- ID: "ba3f86a2-4a1c-4d78-b63d-91c2779c1b5e"
+  Hint: __Sortorder
+  Value: 250
+- ID: "fa7b99b1-6bb9-469c-b786-f8a9d52d2f0a"
+  Hint: Handler Class
+  Value: Sitecore.SharedSource.DataImporter.Mappings.Fields.FromChildValueToText
+Languages:
+- Language: en
+  Versions:
+  - Version: 1
+    Fields:
+    - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
+      Hint: __Created
+      Value: 20110704T103557

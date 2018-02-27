@@ -1,0 +1,21 @@
+﻿---
+ID: "9edcf70a-45d7-4c34-aabf-826f46afad7f"
+Parent: "89611cc2-5781-4ce6-8107-0e986edf7cfa"
+Template: "455a3e98-a627-4b40-8035-e683a0331ac7"
+Path: /sitecore/templates/Modules/Data Import/Providers/Base Import Map/Item Foldering/Path Rewrites
+DB: master
+SharedFields:
+- ID: "ab162cc0-dc80-4abf-8871-998ee5d7ba32"
+  Hint: Type
+  Value: "Multi-Line Text"
+- ID: "ba3f86a2-4a1c-4d78-b63d-91c2779c1b5e"
+  Hint: __Sortorder
+  Value: 700
+Languages:
+- Language: en
+  Versions:
+  - Version: 1
+    Fields:
+    - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
+      Hint: __Created
+      Value: 20171211T154109Z

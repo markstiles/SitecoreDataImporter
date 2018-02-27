@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2010
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sitecore.SharedSource.DataImporter", "Sitecore.SharedSource.DataImporter\Sitecore.SharedSource.DataImporter.csproj", "{0E4F3486-8733-4E18-A5D0-51F2B92B2974}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sitecore.SharedSource.DataImporter.Tests", "Sitecore.SharedSource.DataImporter.Tests\Sitecore.SharedSource.DataImporter.Tests.csproj", "{8B3D1D0C-9DC3-49F9-94CA-00A9A978AE5A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sitecore.SharedSource.DataImporter.Launcher", "Sitecore.SharedSource.DataImporter.Launcher\Sitecore.SharedSource.DataImporter.Launcher.csproj", "{B8132576-B0B3-4EBA-9B10-7A2D8379C879}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sitecore.SharedSource.DataImporter.Serialization", "Sitecore.SharedSource.DataImporter.Serialization\Sitecore.SharedSource.DataImporter.Serialization.csproj", "{D8DE6A89-458C-409C-B191-6F883533D69B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0E4F3486-8733-4E18-A5D0-51F2B92B2974}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E4F3486-8733-4E18-A5D0-51F2B92B2974}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E4F3486-8733-4E18-A5D0-51F2B92B2974}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E4F3486-8733-4E18-A5D0-51F2B92B2974}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8B3D1D0C-9DC3-49F9-94CA-00A9A978AE5A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B3D1D0C-9DC3-49F9-94CA-00A9A978AE5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B3D1D0C-9DC3-49F9-94CA-00A9A978AE5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B3D1D0C-9DC3-49F9-94CA-00A9A978AE5A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B8132576-B0B3-4EBA-9B10-7A2D8379C879}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8132576-B0B3-4EBA-9B10-7A2D8379C879}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8132576-B0B3-4EBA-9B10-7A2D8379C879}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8132576-B0B3-4EBA-9B10-7A2D8379C879}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D8DE6A89-458C-409C-B191-6F883533D69B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8DE6A89-458C-409C-B191-6F883533D69B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8DE6A89-458C-409C-B191-6F883533D69B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8DE6A89-458C-409C-B191-6F883533D69B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EC0D5025-C8E0-4E8F-A86A-723F585B7382}
+	EndGlobalSection
+EndGlobal

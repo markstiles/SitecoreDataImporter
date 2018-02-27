@@ -1,0 +1,31 @@
+﻿---
+ID: "198b60ce-1875-4ce9-8a31-9c3bdf9b9378"
+Parent: "91d02640-32d5-45ff-a3d2-a5b3402a36e4"
+Template: "91d02640-32d5-45ff-a3d2-a5b3402a36e4"
+Path: /sitecore/templates/Modules/Data Import/Mappings/Base Mapping/__Standard Values
+DB: master
+SharedFields:
+- ID: "093d915a-4306-4a68-b64a-07cc2a7e4ee5"
+  Hint: To What Field
+  Value: $name
+- ID: "ba3f86a2-4a1c-4d78-b63d-91c2779c1b5e"
+  Hint: __Sortorder
+  Value: 100
+- ID: "bdf8732c-c239-4762-a3e0-ada23ef44775"
+  Hint: Handler Assembly
+  Value: Sitecore.SharedSource.DataImporter
+- ID: "fa7b99b1-6bb9-469c-b786-f8a9d52d2f0a"
+  Hint: Handler Class
+  Value: 
+Languages:
+- Language: en
+  Versions:
+  - Version: 1
+    Fields:
+    - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
+      Hint: __Created
+      Value: 20091010T183826
+    - ID: "5dd74568-4d4b-44c1-b513-0af5f4cda34f"
+      Hint: __Created by
+      Value: |
+        sitecore\admin

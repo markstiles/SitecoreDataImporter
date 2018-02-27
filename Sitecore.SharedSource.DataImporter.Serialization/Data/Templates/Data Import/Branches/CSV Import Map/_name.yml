@@ -1,0 +1,21 @@
+﻿---
+ID: "20b1f9c1-9c09-49c9-b760-6ffde99c35ea"
+Parent: "5abc6ebe-627e-40d3-bbc0-1f614611505c"
+Template: "e70adef9-b551-4648-9fca-3efb17b491b1"
+Path: /sitecore/templates/Modules/Data Import/Branches/CSV Import Map/$name
+DB: master
+SharedFields:
+- ID: "0639f8e7-44ab-41ce-ae67-9987baf47e96"
+  Hint: Handler Assembly
+  Value: Sitecore.SharedSource.DataImporter
+- ID: "0790a745-13e8-44f1-aa17-469e8fc7d20e"
+  Hint: Handler Class
+  Value: Sitecore.SharedSource.DataImporter.Providers.CSVDataMap
+Languages:
+- Language: en
+  Versions:
+  - Version: 1
+    Fields:
+    - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
+      Hint: __Created
+      Value: 20140511T104208

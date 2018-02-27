@@ -91,7 +91,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
         /// <param name="parent"></param>
         /// <param name="importRow"></param>
         /// <param name="newItemName"></param>
-        void CreateNewItem(Item parent, object importRow, string newItemName);
+        Item CreateNewItem(Item parent, object importRow, string newItemName);
 
         /// <summary>
         /// Determines what the new parent item should be for the current import row based on foldering settings.

@@ -31,6 +31,11 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Templates {
         /// List of properties
         /// </summary>
         public List<IBaseProperty> PropertyDefinitions { get; set; }
+
+        /// <summary>
+        /// List of properties
+        /// </summary>
+        public List<IBaseFieldWithReference> ReferenceFieldDefinitions { get; set; }
         
 		#endregion
 

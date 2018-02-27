@@ -1,5 +1,6 @@
 ﻿using Sitecore.Data.Fields;
 using Sitecore.Data.Items;
+using Sitecore.SharedSource.DataImporter.Logger;
 using Sitecore.SharedSource.DataImporter.Providers;
 
 namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
@@ -16,8 +17,8 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
         #region Constructor
 
         //constructor
-        public UrlToLink(Item i)
-            : base(i) {
+        public UrlToLink(Item i, ILogger l) : base(i, l)
+		{
 
         }
 

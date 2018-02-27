@@ -1,0 +1,14 @@
+﻿---
+ID: "e3a78c31-76d0-48e2-b31d-b8f44e4c5dbf"
+Parent: "2abce595-486f-4ce8-ac44-cb04374e7a42"
+Template: "3d915406-97f6-4e94-ac50-b7caf468a50f"
+Path: /sitecore/templates/Modules/Data Import/Branches/Sitecore Import Map/$name/Templates
+DB: master
+Languages:
+- Language: en
+  Versions:
+  - Version: 1
+    Fields:
+    - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
+      Hint: __Created
+      Value: 20140719T154851

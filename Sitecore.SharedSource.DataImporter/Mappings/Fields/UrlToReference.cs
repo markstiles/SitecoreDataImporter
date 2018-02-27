@@ -2,6 +2,8 @@
 using Sitecore.Data.Fields;
 using Sitecore.Data.Items;
 using Sitecore.SharedSource.DataImporter.Providers;
+using Sitecore.Diagnostics;
+using Sitecore.SharedSource.DataImporter.Logger;
 
 namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
     /// <summary>
@@ -13,9 +15,12 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
 
         private const string SiteHomeItemFieldName = "SiteHomeItem";
 
-        /// <summary>
+		///<summary>
+		/// SiteHomeItemID
+		/// </summary>
+        /// <value>
         /// Home item to user when creating Reference Field paths
-        /// </summary>
+        /// </value>
         public string SiteHomeItemID { get; set; }
 
         #endregion Properties
@@ -23,8 +28,8 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
         #region Constructor
 
         //constructor
-        public UrlToReference(Item i)
-            : base(i) {
+        public UrlToReference(Item i, ILogger l) : base(i, l)
+		{
             SiteHomeItemID = GetItemField(i, SiteHomeItemFieldName);
         }
 
@@ -33,6 +38,9 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
         #region IBaseField
 
         public override void FillField(IDataMap map, ref Item newItem, string importValue) {
+
+			Assert.IsNotNull(map, "map");
+			Assert.IsNotNull(newItem, "newItem");
 
             if (string.IsNullOrEmpty(importValue))
                 return;
@@ -96,32 +104,21 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
             return map.ToDB.GetItem(path);
         }
 
-        //// if you have the full URL with protocol and host
-        //private Item GetItemFromUrl(IDataMap map, string url)
-        //{
-        //    Item homeItem = map.ToDB.GetItem(SiteHomeItemID);
+        // if you have the full URL with protocol and host
+        private Item GetItemFromUrl(IDataMap map, string url)
+        {
+            Item homeItem = map.ToDB.GetItem(SiteHomeItemID);
 
-        //    if(homeItem == null)
-        //    {
-        //        throw new Exception(string.Format("For URL importing {0} must have a value and point to a valid item. Current Value: '{1}'", SiteHomeItemFieldName, SiteHomeItemID));
-        //    }
+            if(homeItem == null)
+            {
+                throw new Exception(string.Format("For URL importing {0} must have a value and point to a valid item. Current Value: '{1}'", SiteHomeItemFieldName, SiteHomeItemID));
+            }
 
-        //    string path = homeItem.Paths.FullPath + new Uri(url).PathAndQuery;
+            string path = homeItem.Paths.FullPath + new Uri(url).PathAndQuery;
 
-        //    return GetItemFromPath(map, path);    
-        //}
+            return GetItemFromPath(map, path);    
+        }
 
-        //// if you have just the path after the hostname
-        //private Item GetItemFromPath(IDataMap map, string path)
-        //{
-        //    // remove query string
-        //    if (path.Contains("?"))
-        //        path = path.Split('?')[0];
-
-        //    path = path.Replace(".aspx", "");
-
-        //    return map.ToDB.GetItem(path);
-        //}
 
         #endregion IBaseField
     }

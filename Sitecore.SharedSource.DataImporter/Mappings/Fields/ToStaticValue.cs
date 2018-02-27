@@ -3,6 +3,9 @@ using System.Linq;
 using Sitecore.Data.Fields;
 using Sitecore.Data.Items;
 using Sitecore.SharedSource.DataImporter.Providers;
+using Sitecore.Diagnostics;
+using Sitecore.SharedSource.DataImporter.Logger;
+
 namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
 
     /// <summary>
@@ -12,17 +15,20 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
 
         #region Properties
 
-        /// <summary>
+		///<summary>
+		/// Value
+		/// </summary>
+        /// <value>
         /// value to import
-        /// </summary>
+        /// </value>
         public string Value { get; set; }
 
         #endregion Properties
 
         #region Constructor
 
-        public ToStaticValue(Item i)
-            : base(i) {
+        public ToStaticValue(Item i, ILogger l) : base(i)
+		{
             Value = GetItemField(i, "Value");
         }
 
@@ -33,6 +39,7 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
         public string Name { get; set; }
 
         public void FillField(IDataMap map, ref Item newItem, string importValue) {
+			Assert.IsNotNull(newItem, "newItem");
             //ignore import value and store value provided
             Field f = newItem.Fields[NewItemField];
             if (f != null)

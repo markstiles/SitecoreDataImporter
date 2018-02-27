@@ -4,6 +4,7 @@ using Sitecore.Data.Fields;
 using Sitecore.Data.Items;
 using Sitecore.SharedSource.DataImporter.Providers;
 using Sitecore.SharedSource.DataImporter.Utility;
+using Sitecore.SharedSource.DataImporter.Logger;
 namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
 
     /// <summary>
@@ -23,8 +24,8 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
 
         #region Constructor
 
-        public ListToGuid(Item i)
-            : base(i) {
+        public ListToGuid(Item i, ILogger l) : base(i, l)
+		{
             //stores the source list value
             SourceList = GetItemField(i, "Source List");
         }

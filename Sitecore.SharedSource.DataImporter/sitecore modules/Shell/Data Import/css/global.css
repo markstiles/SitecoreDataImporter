@@ -1,0 +1,39 @@
+﻿* { font: bold 8pt tahoma; color: #555555; }
+.clear { clear:both; }
+
+body { background:#F0F1F2; margin:0px; padding:0px; }
+    .TextBox { width:400px; margin:0 0 5px 0; }
+    .MainWrapper { }
+	    .Section { width:100%; clear:both; float:left;
+		    border:1px solid #dddddd; background: none repeat scroll 0 0 #F0F1F2; font: 8pt tahoma;
+	    }
+	        .Controls {  padding:10px;  }
+		    .SectionTitle { margin:0 0 10px; font-size:18px; color:#003366; }
+		    h2 { background: none repeat scroll 0 0 #D9D9D9; border-bottom: 1px solid #CCCCCC;
+                border-top: 1px solid white; padding: 1px 2px; margin:0px;
+		    }
+		    .rowTitle { font-weight:bold; }
+		    .noButtons { margin:5px 0; }
+		    .rowSpacer { height:15px; }
+		    .formRow { margin:0 0 5px 0; border-left: 4px solid #CCCCCC; padding-left:8px;}
+		        select,
+		        option { color: black; font: 14px verdana; line-height:22px;}
+		        select { margin-right:10px; float:left; }
+		        
+		        .btnBox { display:inline-block; height:20px; margin:5px 0; }
+		        .btnMessage { float:left; padding:9px 0px 15px 5px; margin:1px; }
+		        .btn { float:left; padding: 3px 4px 3px 9px; margin:1px; }
+		        .btn:hover { background: url("/sitecore/shell/themes/standard/images/Ribbon/SmallButtonActive.png") repeat-x scroll 0 0 #fffbd3; 
+                    border-style:solid; border-width:1px; border-color:#ddcf9b #d2c08e #ccc2a3; margin:0px;             
+                }
+		            .btn img { float:left; }
+		            .btn input,
+		            .btn a { color:#303030; font-family: tahoma; font-size: 8pt; border:none; background:none; 
+		                            float:left; height:14px; padding:0 0 3px 20px; 
+                    }
+                        .btn input.refreshBtn {  background: url('/temp/IconCache/Applications/16x16/refresh.png') no-repeat 0 0; }
+		                .btn input.runBtn { background: url('/temp/IconCache/Applications/16x16/recycle.png') no-repeat 0 0; }
+		        .ImportForm { margin:0 0 10px; padding:0 0 10px; border-bottom:1px solid #cccccc; }
+			        .ImportForm label { width:150px; display:block; float:left; margin:0 5px 0 0; }
+	        .Message { width:96% }
+	            .Message textarea { width:100%; height:120px; }

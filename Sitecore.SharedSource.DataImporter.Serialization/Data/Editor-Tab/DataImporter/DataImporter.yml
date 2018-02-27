@@ -1,0 +1,32 @@
+﻿---
+ID: "6abc057d-f83f-470b-b0c6-01eb9cb1b03e"
+Parent: "65306e24-53af-461b-b9d9-95062715485a"
+Template: "a5aaca0d-77c0-4741-ab77-211cfbdd9e5c"
+Path: /sitecore/content/Applications/Content Editor/Editors/Modules/DataImporter/DataImporter
+DB: core
+SharedFields:
+- ID: "06d5295c-ed2f-4a54-9bf2-26228d113318"
+  Hint: __Icon
+  Value: Network/32x32/server_from_client.png
+- ID: "6f371c74-5bd5-4ebd-b10a-fc54716021ae"
+  Hint: Url
+  Value: /sitecore modules/Shell/Data Import/Default.aspx
+- ID: "ab8d0102-91f3-43b6-90aa-5a0641dc8521"
+  Hint: Icon
+  Value: /sitecore/shell/Themes/Standard/Network/32x32/server_from_client.png
+Languages:
+- Language: en
+  Fields:
+  - ID: "f7c42332-728e-48b7-bb3c-0d6883e45628"
+    Hint: Header
+    Value: Data Importer
+  Versions:
+  - Version: 1
+    Fields:
+    - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
+      Hint: __Created
+      Value: 20140428T120241
+    - ID: "5dd74568-4d4b-44c1-b513-0af5f4cda34f"
+      Hint: __Created by
+      Value: |
+        sitecore\admin

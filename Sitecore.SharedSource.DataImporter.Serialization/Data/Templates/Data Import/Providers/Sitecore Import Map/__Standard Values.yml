@@ -1,0 +1,61 @@
+﻿---
+ID: "513731d1-5abf-45f8-acb2-edeb737b3285"
+Parent: "96aac80c-ce36-43c5-93eb-eda101794aac"
+Template: "96aac80c-ce36-43c5-93eb-eda101794aac"
+Path: /sitecore/templates/Modules/Data Import/Providers/Sitecore Import Map/__Standard Values
+DB: master
+SharedFields:
+- ID: "0639f8e7-44ab-41ce-ae67-9987baf47e96"
+  Hint: Handler Assembly
+  Value: Sitecore.SharedSource.DataImporter
+- ID: "0790a745-13e8-44f1-aa17-469e8fc7d20e"
+  Hint: Handler Class
+  Value: Sitecore.SharedSource.DataImporter.Providers.SitecoreDataMap
+- ID: "1172f251-dad4-4efb-a329-0c63500e4f1e"
+  Hint: __Masters
+  Type: TreelistEx
+  Value: 
+- ID: "56c326ef-f5da-4818-ae74-e85130b60b84"
+  Hint: Import To Language
+  Value: "{AF584191-45C9-4201-8740-5409F4CF8BDD}"
+- ID: "8954b459-083b-446f-b8c0-40b90ce2e210"
+  Hint: Import To What Template
+  Value: "{CDC8C7D0-90A0-48E7-BE0E-C029A6A062D5}"
+- ID: "89e4a58a-d49d-4d9d-8aac-e10b82e6c1b7"
+  Hint: Folder By Path
+  Type: Checkbox
+  Value: 1
+- ID: "a0cb3965-8884-4c7a-8815-b6b2e5ced162"
+  Hint: __Editors
+  Type: TreelistEx
+  Value: "{6ABC057D-F83F-470B-B0C6-01EB9CB1B03E}"
+- ID: "a7c05d14-ebc8-4f08-a8c7-183fab7061cc"
+  Hint: Pull Item Name from What Fields
+  Value: @@name
+- ID: "d01499f0-1e31-4cd6-a2f4-ee17bd095ab1"
+  Hint: Import To Where
+  Value: "{CE2BD9A4-112D-4C9D-B4E7-BC331D3C0F34}"
+- ID: "f8b6f833-d85a-48e7-a17f-c926e39d9e65"
+  Hint: Import From Language
+  Value: "{AF584191-45C9-4201-8740-5409F4CF8BDD}"
+Languages:
+- Language: en
+  Versions:
+  - Version: 1
+    Fields:
+    - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
+      Hint: __Created
+      Value: 20091010T174100Z
+    - ID: "5bd803a6-65b4-4ec9-8759-340f2fcd152d"
+      Hint: Allow Item Name Match
+      Type: Checkbox
+      Value: 1
+    - ID: "9edcf70a-45d7-4c34-aabf-826f46afad7f"
+      Hint: Path Rewrites
+      Value: |
+        Treatment Updates;Programs
+        Annual Updates;Programs
+        Management Series;Programs
+    - ID: "d0569e0f-7d71-4671-90d5-aee173931751"
+      Hint: Import Root
+      Value: "{0DE95AE4-41AB-4D01-9EB0-67441B7C2450}"

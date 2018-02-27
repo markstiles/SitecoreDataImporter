@@ -109,9 +109,40 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
 			FileStream s = f.OpenRead();
 			byte[] bytes = new byte[s.Length];
 			s.Position = 0;
-			s.Read(bytes, 0, int.Parse(s.Length.ToString()));
+			int currentBytesRead = 0;
+			int totalBytesRead = 0;
+			while (s.Read(bytes, 0, int.Parse(s.Length.ToString())) > 0){
+				totalBytesRead += currentBytesRead;
+			}
+			
 			return bytes;
 		}
+
+        private void ProcessFields(object importRow, Item newItem)
+        {
+            //add in the field mappings
+            List<IBaseField> fieldDefs = GetFieldDefinitionsByRow(importRow);
+            ProcessFields(importRow, newItem, fieldDefs);
+        }
+        
+        private void ProcessFields(object importRow, Item newItem, List<IBaseField> fieldDefs)
+        {
+            //add in the field mappings
+            foreach (IBaseField d in fieldDefs)
+            {
+                string importValue = string.Empty;
+                try
+                {
+                    IEnumerable<string> values = GetFieldValues(d.GetExistingFieldNames(), importRow);
+                    importValue = String.Join(d.GetFieldValueDelimiter(), values);
+                    d.FillField(this, ref newItem, importValue);
+                }
+                catch (Exception ex)
+                {
+                    Logger.Log("Process Fields", string.Format("the FillField failed for field {1} on item {0}", newItem.Paths.FullPath, d.Name));
+                }
+            }
+        }
 
         #endregion Methods
     }

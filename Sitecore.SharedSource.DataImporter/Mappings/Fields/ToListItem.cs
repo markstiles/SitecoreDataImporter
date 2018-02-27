@@ -6,6 +6,8 @@ using Sitecore.Configuration;
 using Sitecore.Data.Fields;
 using Sitecore.Data.Items;
 using Sitecore.SharedSource.DataImporter.Providers;
+using Sitecore.Diagnostics;
+using Sitecore.SharedSource.DataImporter.Logger;
 
 namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
 {
@@ -18,14 +20,15 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
 
         #endregion properties
 
-        public ToListItem(Item i)  : base(i)
-        {
+        public ToListItem(Item i, ILogger l) : base(i, l)
+		{
             SelectionRootItem = GetItemField(i, "SelectionRootItem");
             Delimiter = GetItemField(i, "Delimiter");
         }
 
         public override void FillField(IDataMap map, ref Item newItem, string importValue)
         {
+			Assert.IsNotNull(newItem, "newItem");
             List<string> selectedList = new List<string>();
             if (string.IsNullOrEmpty(SelectionRootItem))
                 return;
@@ -39,22 +42,15 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
             if (string.IsNullOrEmpty(importValue) || !selectionValues.Any())
                 return;
             
-            List<string> importvalues = importValue.Split(new string[] { Delimiter }, StringSplitOptions.RemoveEmptyEntries).ToList();
+            List<string> importvalues = importValue.Split(new string[] { Delimiter }, StringSplitOptions.RemoveEmptyEntries).Select(i => i.Trim().ToLowerInvariant()).ToList();
             if (!importvalues.Any())
                 return;
-            
-            foreach (Item value in selectionValues) {
-                foreach (var temp in importvalues) {
-                    Field t = value.Fields["Text"];
-                    if (t == null)
-                        continue;
-                        
-                    if (!temp.Trim().ToLower().Equals(t.Value.Trim().ToLower()))
-                        continue;
 
-                    selectedList.Add(value.ID.ToString());
-                }
-            }
+	        selectedList.AddRange(selectionValues
+				.Where(v => v.Fields["Text"] != null)
+				.Where(v => importvalues.Contains(v.Fields["Text"].Value.Trim().ToLowerInvariant()))
+				.Select(v => v.ID.ToString()));
+            
 
             Field f = newItem.Fields[NewItemField];
             if (f == null || !selectedList.Any())

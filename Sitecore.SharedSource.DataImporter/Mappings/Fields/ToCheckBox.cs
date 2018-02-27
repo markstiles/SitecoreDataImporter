@@ -5,6 +5,7 @@ using System.Runtime.Remoting.Messaging;
 using Sitecore.Data.Fields;
 using Sitecore.Data.Items;
 using Sitecore.Pipelines.RenderField;
+using Sitecore.SharedSource.DataImporter.Logger;
 using Sitecore.SharedSource.DataImporter.Providers;
 using Sitecore.StringExtensions;
 
@@ -20,8 +21,8 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
 
         #endregion
 
-        public ToCheckBox(Item i) : base(i)
-        {
+        public ToCheckBox(Item i, ILogger l) : base(i, l)
+		{
             string pValues = GetItemField(i, "PositiveValues");
             string nValues = GetItemField(i, "NegativeValues");
 
@@ -45,7 +46,7 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
             
             bool b = false;
             if (!bool.TryParse(importValue.Trim().ToLower(), out b)) {
-                map.Logger.Log(newItem.Paths.FullPath, "Couldn't parse the boolean value", ProcessStatus.FieldError, ItemName(), importValue);
+                map.Logger.Log("ToCheckBox.FillField", string.Format("Couldn't parse the boolean value {0} for item {1}", importValue, newItem.Paths.FullPath));
                 return;
             }
                

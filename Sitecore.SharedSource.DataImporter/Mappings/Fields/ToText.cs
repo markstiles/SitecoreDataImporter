@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using Sitecore.Data.Fields;
 using Sitecore.Data.Items;
 using Sitecore.SharedSource.DataImporter.Providers;
+using Sitecore.Diagnostics;
+using Sitecore.SharedSource.DataImporter.Logger;
 
 namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
     /// <summary>
@@ -15,24 +17,28 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
         /// <summary>
         /// name field delimiter
         /// </summary>
-        public char[] comSplitr = { ',' };
+        protected readonly char[] comSplitr = { ',' };
 
-        /// <summary>
+		///<summary>
+		/// ExistingDataNames
+		/// </summary>
+        /// <value>
         /// the existing data fields you want to import
-        /// </summary>
+        /// </value>
         public IEnumerable<string> ExistingDataNames { get; set; }
 
         /// <summary>
-        /// the delimiter you want to separate imported data with
+        /// Delimiter
         /// </summary>
+        /// <value>the delimiter you want to separate imported data with</value>
         public string Delimiter { get; set; }
 
         #endregion Properties
 
         #region Constructor
 
-        public ToText(Item i)
-            : base(i) {
+        public ToText(Item i, ILogger l) : base(i)
+		{
             //store fields
             ExistingDataNames = GetItemField(i, "From What Fields").Split(comSplitr, StringSplitOptions.RemoveEmptyEntries);
             Delimiter = GetItemField(i, "Delimiter");
@@ -46,13 +52,14 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
 
         public virtual void FillField(IDataMap map, ref Item newItem, string importValue) {
 
+			Assert.IsNotNull(newItem, "newItem");
             if (string.IsNullOrEmpty(importValue))
                 return;
 
             //store the imported value as is
             Field f = newItem.Fields[NewItemField];
             if (f != null)
-                f.Value = importValue;
+                f.Value = importValue.Trim();
         }
 
         /// <summary>

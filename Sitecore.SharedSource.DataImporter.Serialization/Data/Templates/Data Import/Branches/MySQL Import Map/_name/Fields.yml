@@ -1,0 +1,14 @@
+﻿---
+ID: "a62ab566-2ce3-4477-93d3-ca741d1d9cee"
+Parent: "8de76477-71d7-4f68-9bd2-e189b438a8c1"
+Template: "98ef4356-8bfe-4f6a-a697-adfd0aad0b65"
+Path: /sitecore/templates/Modules/Data Import/Branches/MySQL Import Map/$name/Fields
+DB: master
+Languages:
+- Language: en
+  Versions:
+  - Version: 1
+    Fields:
+    - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
+      Hint: __Created
+      Value: 20130223T143058

@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using Sitecore.Data.Fields;
 using Sitecore.Data.Items;
+using Sitecore.SharedSource.DataImporter.Logger;
 using Sitecore.SharedSource.DataImporter.Providers;
 
 namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
@@ -11,7 +12,8 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
         public CultureInfo TargetCulture { get; set; }
         public CultureInfo ImportCulture { get; set; }
 
-        public ToNumber(Item i) : base(i) {
+        public ToNumber(Item i, ILogger l) : base(i, l)
+		{
             string tCulture = GetItemField(i, "TargetCulture");
             TargetCulture = (string.IsNullOrEmpty(tCulture)) ? CultureInfo.CurrentCulture : new CultureInfo(tCulture);
             string iCulture = GetItemField(i, "ImportCulture");

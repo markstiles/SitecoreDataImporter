@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using Sitecore.Data.Fields;
 using Sitecore.Data.Items;
+using Sitecore.SharedSource.DataImporter.Logger;
 using Sitecore.SharedSource.DataImporter.Providers;
 
 namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
@@ -8,8 +9,8 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
  
     public class ToInteger : ToText
     {
-        public ToInteger(Item i) : base(i)
-        {
+        public ToInteger(Item i, ILogger l) : base(i, l)
+		{
         }
 
         public override void FillField(IDataMap map, ref Item newItem, string importValue) {
@@ -20,7 +21,7 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
             int value = 0;
             if (!int.TryParse(importValue.Trim(), out value))
             {
-                map.Logger.Log(newItem.Paths.FullPath, "Couldn't parse the integer value", ProcessStatus.FieldError, ItemName(), importValue);
+                map.Logger.Log("ToInteger.FillField", string.Format("Couldn't parse the integer value {0} on item {1}", importValue, newItem.Paths.FullPath));
                 return;
             }
             

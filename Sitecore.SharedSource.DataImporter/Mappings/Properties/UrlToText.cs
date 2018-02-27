@@ -7,6 +7,7 @@ using System.Data;
 using Sitecore.SharedSource.DataImporter.Providers;
 using Sitecore.Links;
 using Sitecore.Data.Fields;
+using Sitecore.SharedSource.DataImporter.Logger;
 
 namespace Sitecore.SharedSource.DataImporter.Mappings.Properties {
     public class UrlToText : BaseMapping, IBaseProperty {
@@ -18,8 +19,8 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Properties {
         #region Constructor
 
         //constructor
-        public UrlToText(Item i)
-            : base(i) {
+        public UrlToText(Item i, ILogger l) : base(i)
+		{
         }
 
         #endregion Constructor
