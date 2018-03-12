@@ -7,17 +7,21 @@ using Sitecore.Data;
 using System.Collections.Specialized;
 using System.Xml.Linq;
 using Sitecore.SharedSource.DataImporter.Mappings.Fields;
+using Sitecore.Data.Fields;
 
 namespace Sitecore.SharedSource.DataImporter.HtmlScraper
 {
     public class ImportConfig
     {
         public string Name { get; set; }
+        public string BaseUrl { get; set; }
         public Item ImportLocation { get; set; }
         public bool IgnoreRootDirectories { get; set; }
         public bool MaintainHierarchy { get; set; }
         public bool ImportTextOnly { get; set; }
         public List<string> AllowedExtensions { get; set; }
+        public List<ItemNameCleanup> ItemNameCleanups { get; set; }
+        public List<PreProcessor> PreProcessors { get; set; }
         public List<string> ExcludeDirectories { get; set; }
         public string URLCount { get; set; }
         //public List<ImportMappings> ImportMappings { get; set; }
@@ -50,11 +54,14 @@ namespace Sitecore.SharedSource.DataImporter.HtmlScraper
                 MaintainHierarchy = config.Fields[Constants.FieldNames.MaintainHierarchy].Value == "1" ? true : false;
                 ImportTextOnly = config.Fields[Constants.FieldNames.ImportTextOnly].Value == "1" ? true : false;
                 AllowedExtensions = config.Fields[Constants.FieldNames.AllowedExtensions].Value.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
-               
+                ItemNameCleanups = GetItemNameCleanups(config, db);
+                PreProcessors = GetPreProcessors(config, db);
+                BaseUrl = config.Fields[Constants.FieldNames.BaseUrl].Value;
+
                 URLCount = config.Fields[Constants.FieldNames.URLCount].Value;
                 ExcludeDirectories = config.Fields[Constants.FieldNames.ExcludeDirectories].Value.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
                 SelectedMapping = config;
-                string storedValues = query;// config.Fields["URLs"].Value;
+                string storedValues = !string.IsNullOrEmpty(query) ? query : config.Fields["Query"].Value;
                 storedValues.Split(new[] { '\r' }, StringSplitOptions.RemoveEmptyEntries).ToList();
                 List<string> urls = storedValues.Split(new[] {'\n'}).ToList();
                 urls = urls.Where(u => !u.StartsWith("//")).ToList();
@@ -101,6 +108,42 @@ namespace Sitecore.SharedSource.DataImporter.HtmlScraper
                 storedList.AddRange(urls);
             }
         }
+
+      
+        private List<ItemNameCleanup> GetItemNameCleanups(Item config, Database db)
+        {
+            List<ItemNameCleanup> cleanups = new List<ItemNameCleanup>();
+            MultilistField cleanupItems = config.Fields[Constants.FieldNames.ItemNameCleanups];
+            foreach(var id in cleanupItems.TargetIDs)
+            {
+                var cleanupItem = db.GetItem(id);
+                ItemNameCleanup cleanup = new ItemNameCleanup();
+                cleanup.Find = cleanupItem.Fields["Find"].Value;
+                cleanup.Replace = cleanupItem.Fields["Replace"].Value;
+                cleanup.CleanupItem = cleanupItem;
+                cleanups.Add(cleanup);
+            }
+            return cleanups;
+        }
+
+        private List<PreProcessor> GetPreProcessors(Item config, Database db)
+        {
+            List<PreProcessor> processors = new List<PreProcessor>();
+            MultilistField processorItems = config.Fields[Constants.FieldNames.PreProcessors];
+            foreach (var id in processorItems.TargetIDs)
+            {
+                var item = db.GetItem(id);
+                PreProcessor processor = new PreProcessor();
+                processor.Identifier = item.Fields["Identifier"] != null ? item.Fields["Identifier"].Value : string.Empty;
+                processor.Action = item.Fields["Action"] != null ? item.Fields["Action"].Value : string.Empty;
+                processor.Type = item.Fields["Type"] != null ? item.Fields["Type"].Value : string.Empty;
+                processor.Method = item.Fields["Method"] != null ? item.Fields["Method"].Value : string.Empty;
+                processor.ProcessItem = item;
+                processors.Add(processor);
+            }
+            return processors;
+        }
+
 
     }
 }

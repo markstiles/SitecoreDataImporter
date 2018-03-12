@@ -39,7 +39,12 @@ namespace Sitecore.SharedSource.DataImporter.HtmlScraper
                 if (isMultiNodesData)
                 {
                     //TODO: this is worked for * but run some more test with differnt type mapping options of *
-                    node = doc.CreateNode(HtmlNodeType.Element, 0);
+                    if (node == null)
+                        node = doc.CreateNode(HtmlNodeType.Element, 0);
+                    else
+                    {
+                        node.ChildNodes.Clear();
+                    }
                     foreach (HtmlNode n in nodes)
                     {
                         node.AppendChild(n);

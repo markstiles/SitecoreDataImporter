@@ -94,13 +94,21 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
 		public override void ProcessCustomData(ref Item newItem, object importRow) {
 		}
 
-		/// <summary>
-		/// gets a field value from an item
-		/// </summary>
-		/// <param name="importRow"></param>
-		/// <param name="fieldName"></param>
-		/// <returns></returns>
-		protected override string GetFieldValue(object importRow, string fieldName) {
+        /// <summary>
+        /// Use this function to do any end of process custom reports 
+        /// </summary>
+        public override void ImportEndReport()
+        {
+
+        }
+
+        /// <summary>
+        /// gets a field value from an item
+        /// </summary>
+        /// <param name="importRow"></param>
+        /// <param name="fieldName"></param>
+        /// <returns></returns>
+        protected override string GetFieldValue(object importRow, string fieldName) {
 			
 			string item = importRow as string;
 			List<string> cols = SplitString(item, FieldDelimiter);

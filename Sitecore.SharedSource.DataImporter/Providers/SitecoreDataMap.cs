@@ -200,7 +200,15 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 				ProcessChildren(ref newItem, ref row);
         }
 
-		protected virtual void ProcessChildren(ref Item newParent, ref Item oldParent){
+
+        /// <summary>
+        /// Use this function to do any end of process custom reports 
+        /// </summary>
+        public override void ImportEndReport()
+        {
+        }
+
+        protected virtual void ProcessChildren(ref Item newParent, ref Item oldParent){
 			if (!oldParent.HasChildren)
 				return;
 

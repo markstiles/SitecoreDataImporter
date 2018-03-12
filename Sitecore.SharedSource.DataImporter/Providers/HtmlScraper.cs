@@ -17,6 +17,7 @@ using Sitecore.SharedSource.DataImporter.Mappings;
 using Sitecore.Data.Fields;
 using Sitecore.SharedSource.DataImporter.Processors;
 using System.Reflection;
+using Sitecore.SharedSource.DataImporter.Reporting;
 
 /// <summary>
 /// TODO: based on Dev Breakfast meeting input:
@@ -34,6 +35,8 @@ namespace Sitecore.SharedSource.DataImporter.Providers
         private Item ImportItem = null;
         private string ItemNameColumn = "ItemName";
         private string PathColumn = "Path";
+        private string ActionColumn = "ActionColumn";
+        private string RequestedURL = "RequestedURL";
         private NameValueCollection mappings;
         private List<Item> MappingFields;
 
@@ -42,6 +45,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers
             : base(db, ConnectionString, importItem)
         {
             ImportItem = importItem;
+
         }
 
         #region Override Methods
@@ -56,6 +60,8 @@ namespace Sitecore.SharedSource.DataImporter.Providers
             DataTable dt = new DataTable();
             dt.Columns.Add(ItemNameColumn);
             dt.Columns.Add(PathColumn);
+            dt.Columns.Add(RequestedURL);
+            dt.Columns.Add(ActionColumn);
 
             ImportConfig config = new ImportConfig(ImportItem, SitecoreDB, this.Query);
             config.ImportLocation = this.Parent;
@@ -103,6 +109,13 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 
         private void RunProcessor(Item fieldMap, Item newItem)
         {
+            //Check for warnings
+            MultilistField WarningTags = fieldMap.Fields["Warning Trigger Tags"];
+            if(WarningTags.Count > 0)
+            {
+                WriteTagWarnings.Run(newItem, fieldMap);
+            }
+
             //"To What Field"
             List<Item> processorList = new List<Item>();
             MultilistField processors = fieldMap.Fields["Post Processors"];
@@ -113,8 +126,6 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 
                 if (processor == null) { continue; }
 
-               
-                
                Processor.Execute(processor, newItem, fieldMap);
             }
         }
@@ -127,10 +138,37 @@ namespace Sitecore.SharedSource.DataImporter.Providers
         /// <param name="importRow"></param>
         public override void ProcessCustomData(ref Item newItem, object importRow)
         {
+            DataRow dataRow = importRow as DataRow;
+            string requestedURL = dataRow[RequestedURL].ToString();
+            ImportReporter.Write(newItem, Level.Info, "","", "Item Added/Updated", requestedURL);
+            //string preprocessorMessages = dataRow[DOMParserMessages].ToString();
+            //foreach (string message in preprocessorMessages.Split(new char[] { ',' }).ToList().Where(s => !string.IsNullOrWhiteSpace(s) && !string.IsNullOrWhiteSpace(s)))
+            //{
+            //    ImportReporter.Write(newItem, Level.Warning,message, "HTML Source", "DOM Parsing", requestedURL);
+            //}
 
             foreach (var field in MappingFields)
             {
                 RunProcessor(field, newItem);
+            }
+        }
+
+        public override CustomItemBase GetNewItemTemplate(object importRow)
+        {
+            DataRow dataRow = importRow as DataRow;
+            string templateID = dataRow[ActionColumn].ToString();
+
+            if (!string.IsNullOrEmpty(templateID))
+            {
+
+                BranchItem templateItem = SitecoreDB.GetItem(templateID);
+
+                return (CustomItemBase)templateItem;
+            }
+            else
+            {
+                return NewItemTemplate;
+
             }
         }
 
@@ -140,9 +178,17 @@ namespace Sitecore.SharedSource.DataImporter.Providers
             DataRow dataRow = importRow as DataRow;
             string parentPath = dataRow[PathColumn].ToString();
             string itemName = dataRow[ItemNameColumn].ToString();
-            parentPath = parentPath.Replace(itemName, "");
+            int lastIndexOfPath = parentPath.LastIndexOf('/');
 
-            
+            try {
+                parentPath = parentPath.Remove(lastIndexOfPath);
+            }
+            catch (Exception ex)
+            {
+                
+            }
+
+
             if (Config.MaintainHierarchy)
             {
                 parentItem = this.SitecoreDB.GetItem(parentPath);
@@ -186,6 +232,8 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 
         public string RemoveInvalidChars(string data, bool root)
         {
+            string originalName = data;
+
             if (data.Contains(".") && !root)
             {
                 int index = data.IndexOf('.');
@@ -193,17 +241,34 @@ namespace Sitecore.SharedSource.DataImporter.Providers
             }
 
             data = ItemUtil.ProposeValidItemName(data);
+
+            foreach (var cleanup in Config.ItemNameCleanups)
+            {
+                if (data.Contains(cleanup.Find))
+                {
+                    data = data.Replace(cleanup.Find, cleanup.Replace);
+                    ImportReporter.Write(cleanup.CleanupItem, Level.Info, " To: " + data + "", "Name > From: " + originalName, "Name Change","");
+                }
+            }
+
             return data;
         }
 
+        /// <summary>
+        /// Use this function to do any end of process custom reports 
+        /// </summary>
+        public override void ImportEndReport()
+        {
+            ImportReporter.Print();
+        }
 
-        private NameValueCollection DirectroyBuilder(List<string> directroies, ImportConfig selectedConfig)
+        private NameValueCollection DirectoryBuilder(List<string> directories, ImportConfig selectedConfig)
         {
             NameValueCollection dirs = new NameValueCollection();
             string prevDir = string.Empty;
             string rootPath = selectedConfig.ImportLocation.Paths.FullPath;
             bool root = true;
-            foreach (string dir in directroies)
+            foreach (string dir in directories)
             {
                 string directroy = RemoveInvalidChars(dir, root);
                 string fullPath = string.Empty;
@@ -227,13 +292,13 @@ namespace Sitecore.SharedSource.DataImporter.Providers
         }
 
 
-        private void BuildData(ImportConfig storedConfig, List<string> levels, string url, DataTable dataTable)
+        private void BuildData(ImportConfig config, List<string> levels, string url, DataTable dataTable)
         {
             
-            Item location = storedConfig.ImportLocation;
+            Item location = config.ImportLocation;
            
-            bool ignoreroot = storedConfig.IgnoreRootDirectories;
-            NameValueCollection directroies = Config.MaintainHierarchy ? DirectroyBuilder(levels, storedConfig) : null;
+            bool ignoreroot = config.IgnoreRootDirectories;
+            NameValueCollection directroies = Config.MaintainHierarchy ? DirectoryBuilder(levels, config) : null;
 
 
             //if MaintainHierarchy false then build it again with single 
@@ -279,20 +344,6 @@ namespace Sitecore.SharedSource.DataImporter.Providers
                 {
                     dirPath = dir;
                     name = dir.Split('/').Last();
-
-                    //if (!string.IsNullOrEmpty(prevDir))
-                    //{
-                    //    location = this.SitecoreDB.GetItem(prevDir);
-                    //}
-                    //else
-                    //{
-                    //    location = this.SitecoreDB.GetItem(dir);
-                    //}
-
-                    //if (location == null)
-                    //{
-                    //    location = storedConfig.ImportLocation;
-                    //}
                 }
                 else
                 {
@@ -314,8 +365,12 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 
                 HtmlNode.ElementsFlags.Remove("form");
                 HtmlDocument doc = new HtmlDocument();
+                dr[RequestedURL] = currentDirURL;
                 var contentHtml = WebContentRequest(currentDirURL);
                 doc.LoadHtml(contentHtml);
+
+                RunPreProcessors(config, doc, dr, currentDirURL);
+
 
                 foreach (var key in mappings)
                 {
@@ -328,7 +383,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers
                     if (!wasupdated || isOverride)
                     {
                         toFieldName = toFieldName.Replace("!", "");
-                        string value = FetchContent(doc, key, mappings, storedConfig);
+                        string value = FetchContent(doc, key, mappings, config);
                         dr[toFieldName] = value;
                         updatedFields.Add(toFieldName);
                     }                    
@@ -338,7 +393,20 @@ namespace Sitecore.SharedSource.DataImporter.Providers
             }
         }
 
+       
+        private void RunPreProcessors(ImportConfig config, HtmlDocument doc, DataRow dr, string currentDirURL)
+        {
 
+            foreach (var processor in config.PreProcessors)
+            {
+                string returnValue = Processor.Execute(processor.ProcessItem, doc, currentDirURL, NewItemTemplate.ID.ToString());
+
+                if (!string.IsNullOrEmpty(returnValue))
+                {
+                    dr[ActionColumn] = returnValue;
+                }
+            }
+        }
 
         public string FetchContent(HtmlDocument doc, object key, NameValueCollection mappings, ImportConfig storedConfig)
         {
@@ -431,5 +499,9 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 
             return content;
         }
+
+
+
+
     }
 }

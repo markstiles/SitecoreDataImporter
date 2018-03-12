@@ -1,4 +1,6 @@
 ﻿using Sitecore.Data.Items;
+using Sitecore.SharedSource.DataImporter.HtmlAgilityPack;
+using Sitecore.SharedSource.DataImporter.HtmlScraper;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -29,6 +31,27 @@ namespace Sitecore.SharedSource.DataImporter.Processors
 
             object obj = Activator.CreateInstance(assemblyType);
             myMethod.Invoke(obj, parameters);
+        }
+
+        public static string Execute(Item processor, HtmlDocument doc, string currentDirURL, string defaultTemplateID)
+        {
+            string type = processor.Fields["Type"].Value;
+            string method = processor.Fields["Method"].Value;
+            string nameSpaceInfo = (type.Split(',')[0]).Trim();
+            string dllInfo = (type.Split(',')[1]).Trim();
+            dllInfo += ".dll";
+            string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\";
+
+            Assembly assembly = Assembly.LoadFile(path + dllInfo);
+            Type assemblyType = assembly.GetType(nameSpaceInfo);
+            MethodInfo myMethod = assemblyType.GetMethod(method);
+
+            object[] parameters = {processor, doc, currentDirURL, defaultTemplateID};
+
+            object obj = Activator.CreateInstance(assemblyType);
+            var value = myMethod.Invoke(obj, parameters);
+
+            return value.ToString();
         }
     }
 }

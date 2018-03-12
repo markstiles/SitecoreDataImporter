@@ -12,172 +12,86 @@ using System.IO;
 using Sitecore.Resources.Media;
 using Sitecore.Configuration;
 using System.Drawing;
+using Sitecore.Data.Fields;
+using Sitecore.SharedSource.DataImporter.Processors.Helpers;
+using Sitecore.SharedSource.DataImporter.Reporting;
 
 namespace Sitecore.SharedSource.DataImporter.Processors
 {
     public class MediaImporter
     {
+        
         public void Run(Item processor, Item itemToProcess, Item fieldMapping)
         {
-            //SHOULD BE FROM SITECORE
-            Uri baseUri = new Uri("http://www.upmc.com");
+            ImportConfig config = new ImportConfig(fieldMapping.Parent.Parent, fieldMapping.Database, "");
+            Uri baseUri = new Uri(config.BaseUrl);
             BaseMapping baseMap = new BaseMapping(fieldMapping);
-            //SHOULD BE MOVED INTO SITECORE
-            //SHOULD BE MOVED INTO SITECORE. COULD TRY HAVING A LOOKUP BY NAME ON THE TEMPLATES FOLDER TO MATCH AGAINST THE EXTENSION.
-            var imageTemplate = itemToProcess.Database.GetTemplate("{C97BA923-8009-4858-BDD5-D8BE5FCCECF7}");
-            var jpgTemplate = itemToProcess.Database.GetTemplate("{EB3FB96C-D56B-4AC9-97F8-F07B24BB9BF7}");
-            var pdfTemplate = itemToProcess.Database.GetTemplate("{CC80011D-8EAE-4BFC-84F1-67ECD0223E9E}");
-            var fileTemplate = itemToProcess.Database.GetTemplate("{611933AC-CE0C-4DDC-9683-F830232DB150}");
-            Dictionary<string, string> TagMappings = new Dictionary<string, string>(){
-                { "img" , "src" },
-                { "a" , "href" }
-            };
-            Dictionary<string, TemplateItem> MediaMappings = new Dictionary<string, TemplateItem>() {
-                { "jpg", jpgTemplate },
-                { "pdf", pdfTemplate },
-                { "png", imageTemplate }
-            };
-
+            MediaProcessor mediaProcessor = new MediaProcessor(processor);
             HtmlDocument document = new HtmlDocument();
             string content = itemToProcess.Fields[baseMap.NewItemField].Value;
             document.LoadHtml(content);
 
             using (new SecurityModel.SecurityDisabler())
             {
-                foreach(var mapping in TagMappings)
+                foreach (var mediaType in mediaProcessor.MediaTypes)
                 {
-                    var nodes = document.DocumentNode.SelectNodes(string.Format("//{0}/@{1}",mapping.Key,mapping.Value));
+                    var nodes = document.DocumentNode.SelectNodes(string.Format("//{0}/@{1}",mediaType.Identifier,mediaType.Attribute));
                     if (nodes == null)
-                    {
                         continue;
-                    }
-                    foreach (var child in nodes)
+
+                    //select nodes in html where path ends with extension listed in config
+                    var targetedNodes = nodes.Where(n => n.Attributes[mediaType.Attribute].Value.Trim().ToLower()
+                                        .EndsWith(mediaType.Extension.Trim().ToLower()));
+
+                    foreach (var child in targetedNodes)
                     {
-                        string source = child.Attributes[mapping.Value].Value;
-                        if (string.IsNullOrEmpty(Path.GetExtension(source)))
+                        try
                         {
-                            continue;
-                        }
-                        if (!MediaMappings.ContainsKey(Path.GetExtension(source).ToLower().Replace(".","")))
-                        {
-                            continue;
-                        }
-                        Item importedMediaItem = null;
-                        Uri mediaSource = new Uri(baseUri, source);
-                        //SHOULD BE MOVED INTO SITECORE
-                        string destination = string.Empty;
-                        if(mediaSource.Host == baseUri.Host)
-                        {
-                            destination = string.Concat("/sitecore/media library/MigratedMedia/", Path.GetDirectoryName(source), "/");
-                        }
-                        else
-                        {
-                            destination = string.Concat("/sitecore/media library/MigratedMedia/", Path.GetDirectoryName(mediaSource.PathAndQuery), "/");
-                        }
-                        destination = destination.Replace("\\", "/").Replace("//", "/");
+                            //Make sure the selected tags have media items to import, with existing parameters to follow
+                            string source = child.Attributes[mediaType.Attribute].Value;
+                            string mediaExtension = Path.GetExtension(source);
+                            if (string.IsNullOrEmpty(source))
+                                continue;
 
+                          
+                            Uri mediaSource = new Uri(source, UriKind.RelativeOrAbsolute);
 
-                        if (string.IsNullOrEmpty(source))
-                        {
-                            continue;
-                        }
-                        var webRequest = WebRequest.Create(mediaSource);
-                        using (var webResponse = webRequest.GetResponse())
-                        {
-                            using (var stream = webResponse.GetResponseStream())
+                            if (mediaSource.IsAbsoluteUri)
                             {
-                                if (stream == null)
+                                if ((mediaSource.Host != baseUri.Host))
                                 {
                                     continue;
                                 }
-                                using (var memoryStream = new MemoryStream())
-                                {
-                                    stream.CopyTo(memoryStream);
+                            }
+                            else
+                            {
+                                //This is for internal/relative path images
+                                mediaSource = new Uri(baseUri, source);
+                            }
 
-                                    var mediaCreator = new MediaCreator();
-                                    if (itemToProcess.Database.GetItem(string.Concat(destination, ItemUtil.ProposeValidItemName(Path.GetFileNameWithoutExtension(source)))) != null)
-                                    {
-                                        continue;
-                                    }
-                                    var options = new MediaCreatorOptions
-                                    {
-                                        Versioned = true,
-                                        IncludeExtensionInItemName = false,
-                                        Database = itemToProcess.Database,
-                                        Destination = destination
-                                    };
-                                    importedMediaItem = mediaCreator.CreateFromStream(memoryStream, Path.GetFileNameWithoutExtension(source), options);
-                                    Image image;
+                            string destination = mediaProcessor.RetrieveDestination(processor, mediaProcessor.RootDestination, source, mediaSource, baseUri);
 
-                                    importedMediaItem.Editing.BeginEdit();
+                            Item importedMediaItem = MediaUpload.UploadMedia(mediaSource.ToString(), destination, itemToProcess);
 
-                                    importedMediaItem.Name = ItemUtil.ProposeValidItemName(Path.GetFileNameWithoutExtension(source));
-                                    //SHOULD BE MOVED INTO SITECORE AND MADE INTO A LOOP
-                                    if (Path.GetExtension(source) == "jpg")
-                                    {
-                                        importedMediaItem.ChangeTemplate(jpgTemplate);
-                                    }
-                                    else if (Path.GetExtension(source) == "pdf")
-                                    {
-                                        importedMediaItem.ChangeTemplate(pdfTemplate);
-                                    }
-                                    else
-                                    {
-                                        importedMediaItem.ChangeTemplate(fileTemplate);
-                                    }
+                            if (importedMediaItem != null)
+                            {
+                                var mediaUrl = "-/media/" + importedMediaItem.ID.ToShortID().ToString() + ".ashx";
 
-                                    importedMediaItem.Editing.BeginEdit();
-                                    if(importedMediaItem.Fields["Extension"] != null)
-                                    {
-                                        importedMediaItem.Fields["Extension"].Value = Path.GetExtension(source);
-                                    }
-                                    try
-                                    {
-                                        image = Image.FromStream(memoryStream);
-                                        if (importedMediaItem.Fields["Height"] != null)
-                                        {
-                                            importedMediaItem.Fields["Height"].Value = image.Height.ToString();
-                                        }
-                                        if (importedMediaItem.Fields["Width"] != null)
-                                        {
-                                            importedMediaItem.Fields["Width"].Value = image.Width.ToString();
-                                        }
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        //Stream is not an image, its a pdf
-                                    }
+                                //Swap the old link with the new link to our media library
+                                HtmlNode newChild = child.Clone();
+                                newChild.Attributes[mediaType.Attribute].Value = mediaUrl;
+                                content = content.Replace(child.OuterHtml, newChild.OuterHtml);
 
-                                    if (importedMediaItem.Fields["alt"] != null)
-                                    {
-                                        if (child.Attributes.Contains("alt"))
-                                        {
-                                            importedMediaItem.Fields["alt"].Value = child.Attributes["alt"].Value;
-                                        }
-                                        else
-                                        {
-                                            importedMediaItem.Fields["alt"].Value = importedMediaItem.Name;
-                                        }
-                                    }
-
-                                    importedMediaItem.Editing.EndEdit();
-                                }
+                                itemToProcess.Editing.BeginEdit();
+                                itemToProcess.Fields[baseMap.NewItemField].Value = content;
+                                itemToProcess.Editing.EndEdit();
+                                ImportReporter.Write(itemToProcess, Level.Info, string.Format("Link updated for: {0}",importedMediaItem.Name), baseMap.NewItemField, "Media Importer");
                             }
                         }
-                        importedMediaItem = itemToProcess.Database.GetItem(string.Concat(destination, ItemUtil.ProposeValidItemName(Path.GetFileNameWithoutExtension(source))));
-                        if (importedMediaItem != null)
+                        catch(Exception ex)
                         {
-                            //RESEARCH WHY THE ADDTIIONAL SITECORE MODULES PORTION ARRIVED. GETMEDIAURL SHOULD WORK WITHOUT FURTHER MODIFICATIONS
-                            var theURL = MediaManager.GetMediaUrl(importedMediaItem);
-                            var mediaUrl = HashingUtils.ProtectAssetUrl(theURL).Replace("/sitecore-modules/shell", "");
-
-                            HtmlNode newChild = child.Clone();
-                            newChild.Attributes[mapping.Value].Value = mediaUrl;
-
-                            content = content.Replace(child.OuterHtml, newChild.OuterHtml);
-                            itemToProcess.Editing.BeginEdit();
-                            itemToProcess.Fields[baseMap.NewItemField].Value = content;
-                            itemToProcess.Editing.EndEdit();
+                            ImportReporter.Write(itemToProcess, Level.Error,string.Format("There was an error importing media from {0}. Error: {1}.", string.Concat(baseUri, child.Attributes[mediaType.Attribute].Value),ex.Message),baseMap.NewItemField,"Media Import");
+                            //Error importing media and/or updating links to media
                         }
                     }
                 }

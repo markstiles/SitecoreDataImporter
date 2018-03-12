@@ -57,6 +57,14 @@ namespace Sitecore.SharedSource.DataImporter.Providers
         public override void ProcessCustomData(ref Item newItem, object importRow)
         {
         }
+
+        /// <summary>
+        /// Use this function to do any end of process custom reports 
+        /// </summary>
+        public override void ImportEndReport()
+        {
+
+        }
         
         /// <summary>
         /// gets custom data from a DataRow

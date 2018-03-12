@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Sitecore.SharedSource.DataImporter.HtmlScraper;
 using Sitecore.SharedSource.DataImporter.Mappings;
+using Sitecore.SharedSource.DataImporter.Reporting;
 
 namespace Sitecore.SharedSource.DataImporter.Processors
 {
@@ -16,6 +17,7 @@ namespace Sitecore.SharedSource.DataImporter.Processors
         {
             string findPattern = processor.Fields["Find"].Value;
             string replacePattern = processor.Fields["Replace"].Value;
+            string replaceReportingText = string.IsNullOrEmpty(replacePattern) ? "*remove*" : replacePattern;
             BaseMapping baseMap = new BaseMapping(fieldMapping);
             
             HtmlDocument document = new HtmlDocument();
@@ -24,30 +26,44 @@ namespace Sitecore.SharedSource.DataImporter.Processors
 
             HtmlNode node = Helper.HandleNodesLookup(findPattern, document);
 
-            using (new SecurityModel.SecurityDisabler())
+            try
             {
-                itemToProcess.Editing.BeginEdit();
-                if (node != null)
+                using (new SecurityModel.SecurityDisabler())
                 {
-                    if (findPattern.Contains("/*") && node.ChildNodes != null)
+                    itemToProcess.Editing.BeginEdit();
+                    if (node != null)
                     {
-                        foreach (var child in node.ChildNodes)
+                        if (findPattern.Contains("/*") && node.ChildNodes != null)
                         {
-                            content = content.Replace(child.OuterHtml, replacePattern);
-                            itemToProcess.Fields[baseMap.NewItemField].Value = content;
+                            foreach (var child in node.ChildNodes)
+                            {
+                                content = content.Replace(child.OuterHtml, replacePattern);
+                                itemToProcess.Fields[baseMap.NewItemField].Value = content;
+                            }
+                        }
+                        else
+                        {
+                            itemToProcess.Fields[baseMap.NewItemField].Value = content.Replace(node.OuterHtml, replacePattern);
+                        }
+                        ImportReporter.Write(itemToProcess, Level.Info, string.Format("Replaced '{0}' with '{1}'", findPattern, replaceReportingText), baseMap.NewItemField, "Cleanup");
+                    }
+                    else
+                    {
+                        bool occuruncesFound = itemToProcess.Fields[baseMap.NewItemField].Value.Contains(findPattern);
+                        itemToProcess.Fields[baseMap.NewItemField].Value = content.Replace(findPattern, replacePattern);
+                        if (occuruncesFound)
+                        {
+                            ImportReporter.Write(itemToProcess, Level.Info, string.Format("Replaced '{0}' with '{1}'", findPattern, replaceReportingText), baseMap.NewItemField, "Cleanup");
                         }
                     }
-                    else {
-                        itemToProcess.Fields[baseMap.NewItemField].Value = content.Replace(node.OuterHtml, replacePattern);
-                    }
-                }
-                else {
-                    itemToProcess.Fields[baseMap.NewItemField].Value = content.Replace(findPattern, replacePattern);
-                }
 
-                itemToProcess.Editing.EndEdit();
+                    itemToProcess.Editing.EndEdit();
+                }
             }
-
+            catch(Exception ex)
+            {
+                ImportReporter.Write(itemToProcess, Level.Info, string.Format("Replace failed on '{0}' with '{1}'", findPattern, replaceReportingText), baseMap.NewItemField, "Cleanup");
+            }
         }
     }
 }

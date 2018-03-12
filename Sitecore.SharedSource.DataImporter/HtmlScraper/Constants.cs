@@ -18,6 +18,11 @@ namespace Sitecore.SharedSource.DataImporter.HtmlScraper
             public const string AllowedExtensions = "Allowed URL Extensions";
             public const string URLCount = "Top x URLs";
             public const string ExcludeDirectories = "Exclude Directories";
+            public const string BaseUrl = "Base URL";
+            public const string DomCheckStrings = "Warning Tags";
+            public const string ItemNameCleanups = "Item Name Cleanups";
+            public const string PreProcessors = "Pre Processors";
+
 
         }
     }
