@@ -53,5 +53,25 @@ namespace Sitecore.SharedSource.DataImporter.Processors
 
             return value.ToString();
         }
+
+        public static void Execute(Item processor, ImportConfig config)
+        {
+            string type = processor.Fields["Type"].Value;
+            string method = processor.Fields["Method"].Value;
+            string nameSpaceInfo = (type.Split(',')[0]).Trim();
+            string dllInfo = (type.Split(',')[1]).Trim();
+            dllInfo += ".dll";
+            string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\";
+
+            Assembly assembly = Assembly.LoadFile(path + dllInfo);
+            Type assemblyType = assembly.GetType(nameSpaceInfo);
+            MethodInfo myMethod = assemblyType.GetMethod(method);
+
+            object[] parameters = { processor, config};
+
+            object obj = Activator.CreateInstance(assemblyType);
+            myMethod.Invoke(obj, parameters);
+        }
+
     }
 }

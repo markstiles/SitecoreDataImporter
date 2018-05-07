@@ -22,6 +22,7 @@ namespace Sitecore.SharedSource.DataImporter.HtmlScraper
         public List<string> AllowedExtensions { get; set; }
         public List<ItemNameCleanup> ItemNameCleanups { get; set; }
         public List<PreProcessor> PreProcessors { get; set; }
+        public List<PostProcessors> PostProcessors { get; set; }
         public List<string> ExcludeDirectories { get; set; }
         public string URLCount { get; set; }
         //public List<ImportMappings> ImportMappings { get; set; }
@@ -56,6 +57,7 @@ namespace Sitecore.SharedSource.DataImporter.HtmlScraper
                 AllowedExtensions = config.Fields[Constants.FieldNames.AllowedExtensions].Value.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
                 ItemNameCleanups = GetItemNameCleanups(config, db);
                 PreProcessors = GetPreProcessors(config, db);
+                PostProcessors = GetPostProcessors(config, db);
                 BaseUrl = config.Fields[Constants.FieldNames.BaseUrl].Value;
 
                 URLCount = config.Fields[Constants.FieldNames.URLCount].Value;
@@ -83,7 +85,19 @@ namespace Sitecore.SharedSource.DataImporter.HtmlScraper
                 if (AllowedExtensions != null && AllowedExtensions.Any())
                 {
                     StoredURLs = StoredURLs.Where(x => AllowedExtensions.Any(e => x.EndsWith(("." + e.Trim())))).ToList();
+
+                    if (pageURLs.Any(p => p.Contains("?")))
+                    {
+                        var queryPages = pageURLs;
+                        queryPages = queryPages.Select(u => u.TrimEnd('\r', '\n').ToLower()).ToList();
+                        queryPages = queryPages.Where(x => AllowedExtensions.Any(e => x.Contains(("." + e.Trim() + "?")))).ToList();
+                        StoredURLs.AddRange(queryPages);
+                    }
+
                 }
+
+
+                
 
                 if (int.TryParse(URLCount, out count))
                 {
@@ -92,6 +106,23 @@ namespace Sitecore.SharedSource.DataImporter.HtmlScraper
             }
         }
 
+        private List<PostProcessors> GetPostProcessors(Item config, Database db)
+        {
+            List<PostProcessors> processors = new List<PostProcessors>();
+            MultilistField processorItems = config.Fields[Constants.FieldNames.PostProcessors];
+            foreach (var id in processorItems.TargetIDs)
+            {
+                var item = db.GetItem(id);
+                PostProcessors processor = new PostProcessors();
+                processor.Identifier = item.Fields["Identifier"] != null ? item.Fields["Identifier"].Value : string.Empty;
+                processor.Action = item.Fields["Action"] != null ? item.Fields["Action"].Value : string.Empty;
+                processor.Type = item.Fields["Type"] != null ? item.Fields["Type"].Value : string.Empty;
+                processor.Method = item.Fields["Method"] != null ? item.Fields["Method"].Value : string.Empty;
+                processor.ProcessItem = item;
+                processors.Add(processor);
+            }
+            return processors;
+        }
 
         private void ImportFromSitemap(List<string> sitemapURLs, List<string> storedList) 
         {

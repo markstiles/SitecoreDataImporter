@@ -28,11 +28,17 @@ namespace Sitecore.SharedSource.DataImporter.HtmlScraper
         {
             CheckboxField keepHeirarchy = (CheckboxField)processor.Fields["Keep Folder Heirarchy"];
             string finalDestination;
+            string cleanSource = source;
+
+            if (cleanSource.Contains("?")) {
+                cleanSource = cleanSource.Remove(cleanSource.IndexOf('?'));
+            }
+
             if (keepHeirarchy.Checked)
             {
                 if (mediaSource.Host == baseUri.Host)
                 {
-                    finalDestination = string.Concat(rootDestination, Path.GetDirectoryName(source), "/").Replace("%20", "-");
+                    finalDestination = string.Concat(rootDestination, Path.GetDirectoryName(cleanSource), "/").Replace("%20", "-");
                 }
                 else
                 {
@@ -41,9 +47,9 @@ namespace Sitecore.SharedSource.DataImporter.HtmlScraper
             }
             else
             {
-                finalDestination = rootDestination;
+                finalDestination = rootDestination + "/";
             }
-            return finalDestination.Replace("\\", "/").Replace("//", "/");
+            return finalDestination.Replace("\\", "/").Replace("//", "/").Replace("/-/media/", "/");
         }
 
 

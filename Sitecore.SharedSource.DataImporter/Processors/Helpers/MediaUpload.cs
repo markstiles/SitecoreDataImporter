@@ -21,9 +21,14 @@ namespace Sitecore.SharedSource.DataImporter.Processors.Helpers
 
             string uploadedMediaPath = string.Empty;
             MediaItem mediaItem = null;
-            string extension = Path.GetExtension(mediaURl);
-            string mediaName = Path.GetFileName(mediaURl);
-            mediaName = mediaName.Replace(extension, "").Replace("-", " ").Replace("_", " ");
+            string cleanMediaURl = mediaURl;
+            if (mediaURl.Contains("?"))
+            {
+                cleanMediaURl = cleanMediaURl.Remove(cleanMediaURl.IndexOf('?'));
+            }
+            string extension = Path.GetExtension(cleanMediaURl);
+            string mediaName = Path.GetFileName(cleanMediaURl);
+            mediaName = mediaName.Replace(extension, "").Replace("-", " ").Replace("_", " ").Trim();
 
             //int nameStartIndex = mediaURl.LastIndexOf('/');
             //mediaURl.Substring(nameStartIndex).Replace(extension, "");

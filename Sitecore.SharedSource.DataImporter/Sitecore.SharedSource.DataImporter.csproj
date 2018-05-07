@@ -125,10 +125,12 @@
     <Compile Include="HtmlScraper\ItemNameCleanup.cs" />
     <Compile Include="HtmlScraper\MediaProcessor.cs" />
     <Compile Include="HtmlScraper\MediaType.cs" />
+    <Compile Include="HtmlScraper\PostProcessors.cs" />
     <Compile Include="HtmlScraper\PreProcessors.cs" />
     <Compile Include="Processors\DOMWarnings.cs" />
     <Compile Include="Processors\Process.cs" />
     <Compile Include="Processors\SetTemplate.cs" />
+    <Compile Include="Processors\UpdateLinks.cs" />
     <Compile Include="Reporting\ImportReporter.cs" />
     <Compile Include="Mappings\BaseMapping.cs" />
     <Compile Include="Mappings\Fields\IBaseField.cs" />

@@ -15,19 +15,21 @@ namespace Sitecore.SharedSource.DataImporter.Processors
     {
         public void Run(Item processor, Item itemToProcess, Item fieldMapping)
         {
+            BaseMapping baseMap = new BaseMapping(fieldMapping);
             string findPattern = processor.Fields["Find"].Value;
             string replacePattern = processor.Fields["Replace"].Value;
             string replaceReportingText = string.IsNullOrEmpty(replacePattern) ? "*remove*" : replacePattern;
-            BaseMapping baseMap = new BaseMapping(fieldMapping);
-            
-            HtmlDocument document = new HtmlDocument();
-            string content = itemToProcess.Fields[baseMap.NewItemField].Value;
-            document.LoadHtml(content);
 
-            HtmlNode node = Helper.HandleNodesLookup(findPattern, document);
 
             try
             {
+                
+                HtmlDocument document = new HtmlDocument();
+                string content = itemToProcess.Fields[baseMap.NewItemField].Value;
+                document.LoadHtml(content);
+
+                HtmlNode node = Helper.HandleNodesLookup(findPattern, document);
+
                 using (new SecurityModel.SecurityDisabler())
                 {
                     itemToProcess.Editing.BeginEdit();

@@ -1,4 +1,6 @@
-﻿using Sitecore.SharedSource.DataImporter.HtmlAgilityPack;
+﻿using Sitecore.Data.Items;
+using Sitecore.SharedSource.DataImporter.HtmlAgilityPack;
+using Sitecore.SharedSource.DataImporter.Reporting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +19,6 @@ namespace Sitecore.SharedSource.DataImporter.HtmlScraper
         /// <returns></returns>
         public static HtmlNode HandleNodesLookup(string htmlObj, HtmlDocument doc)
         {
-
             HtmlNode node = null;
             List<HtmlNode> nodes = new List<HtmlNode>();
             bool isMultiNodesData = htmlObj.Contains("/*");
@@ -84,7 +85,14 @@ namespace Sitecore.SharedSource.DataImporter.HtmlScraper
                     string option = data.ToCharArray().FirstOrDefault().ToString();
                     attrName = FormatXpath(data, option);
                     selector = selector.Replace(data, attrName);
-                    selector = selector.Replace("/[", "/*[");
+
+                    if (selector.Contains("/[@"))
+                    {
+                        selector = selector.Replace("/[@", "[@");
+                    }
+                    else {
+                        selector = selector.Replace("/[", "/*[");
+                    }
                 }
 
                 if (!isTagName)
@@ -123,16 +131,40 @@ namespace Sitecore.SharedSource.DataImporter.HtmlScraper
         {
             string formated = data;
             string value = data;
+            bool contains = false;
+
+            if (value.EndsWith("!")) {
+
+                contains = true;
+                value = value.Replace("!", "");
+            }
 
             switch (option)
             {
                 case ".":
                     value = value.Replace(".", "");
-                    formated = "[@class='" + value + "']";
+
+                    if (contains)
+                    {
+                        formated = "[contains(@class, '" + value + "')]";
+                    }
+                    else {
+                        formated = "[@class='" + value + "']";
+                    }
+
                     break;
                 case "#":
                     value = value.Replace("#", "");
                     formated = "[@id='" + value + "']";
+                    break;
+                case "@":
+
+                    if (value.Contains("=")) {
+
+                        string[] attrData = value.Split('=');
+                        formated = "["+attrData[0]+"='" + attrData[1] + "']";
+                    }
+
                     break;
             }
 
@@ -182,6 +214,34 @@ namespace Sitecore.SharedSource.DataImporter.HtmlScraper
             //        break;
             //}
 
+        }
+
+        public static string RemoveInvalidChars(ImportConfig Config, string data, bool root, bool report = true)
+        {
+            string originalName = data;
+
+            if (data.Contains(".") && !root)
+            {
+                int index = data.IndexOf('.');
+                data = data.Remove(index);
+            }
+
+            data = ItemUtil.ProposeValidItemName(data);
+
+            foreach (var cleanup in Config.ItemNameCleanups)
+            {
+                if (data.Contains(cleanup.Find))
+                {
+                    data = data.Replace(cleanup.Find, cleanup.Replace);
+
+                    if (report)
+                    {
+                        ImportReporter.Write(cleanup.CleanupItem, Level.Info, " To: " + data + "", "Name > From: " + originalName, "Name Change", "");
+                    }
+                }
+            }
+
+            return data;
         }
     }
 }

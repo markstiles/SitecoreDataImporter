@@ -40,8 +40,19 @@ namespace Sitecore.SharedSource.DataImporter.Processors
                         continue;
 
                     //select nodes in html where path ends with extension listed in config
-                    var targetedNodes = nodes.Where(n => n.Attributes[mediaType.Attribute].Value.Trim().ToLower()
-                                        .EndsWith(mediaType.Extension.Trim().ToLower()));
+                    List<HtmlNode> targetedNodes = nodes.Where(n => n.Attributes[mediaType.Attribute].Value.Trim().ToLower()
+                                        .EndsWith(mediaType.Extension.Trim().ToLower())).ToList();
+
+                    if (targetedNodes == null)
+                    {
+                        targetedNodes = nodes.Where(n => n.Attributes[mediaType.Attribute].Value.Trim().ToLower()
+                                        .Contains(mediaType.Extension.Trim().ToLower())).ToList();
+                    }
+                    else {
+                        targetedNodes.AddRange(nodes.Where(n => n.Attributes[mediaType.Attribute].Value.Trim().ToLower()
+                                        .Contains(mediaType.Extension.Trim().ToLower())).ToList());
+                    }
+
 
                     foreach (var child in targetedNodes)
                     {

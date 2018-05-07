@@ -20,10 +20,6 @@ using System.Reflection;
 using Sitecore.SharedSource.DataImporter.Reporting;
 
 /// <summary>
-/// TODO: based on Dev Breakfast meeting input:
-///     
-///       -Make the field mapping to use the same concept of this module by adding field mappings under the provider
-///       -Handle varios xpath mapping logic to target html element 
 /// 
 /// </summary>
 
@@ -110,7 +106,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers
         private void RunProcessor(Item fieldMap, Item newItem)
         {
             //Check for warnings
-            MultilistField WarningTags = fieldMap.Fields["Warning Trigger Tags"];
+            MultilistField WarningTags = fieldMap.Fields[DataImporter.HtmlScraper.Constants.FieldNames.WarningTriggerTags];
             if(WarningTags.Count > 0)
             {
                 WriteTagWarnings.Run(newItem, fieldMap);
@@ -118,7 +114,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 
             //"To What Field"
             List<Item> processorList = new List<Item>();
-            MultilistField processors = fieldMap.Fields["Post Processors"];
+            MultilistField processors = fieldMap.Fields[DataImporter.HtmlScraper.Constants.FieldNames.FieldPostProcessors];
 
             foreach (var targetId in processors.TargetIDs)
             {
@@ -230,35 +226,14 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 
         #endregion Override Methods
 
-        public string RemoveInvalidChars(string data, bool root)
-        {
-            string originalName = data;
 
-            if (data.Contains(".") && !root)
-            {
-                int index = data.IndexOf('.');
-                data = data.Remove(index);
-            }
-
-            data = ItemUtil.ProposeValidItemName(data);
-
-            foreach (var cleanup in Config.ItemNameCleanups)
-            {
-                if (data.Contains(cleanup.Find))
-                {
-                    data = data.Replace(cleanup.Find, cleanup.Replace);
-                    ImportReporter.Write(cleanup.CleanupItem, Level.Info, " To: " + data + "", "Name > From: " + originalName, "Name Change","");
-                }
-            }
-
-            return data;
-        }
 
         /// <summary>
         /// Use this function to do any end of process custom reports 
         /// </summary>
         public override void ImportEndReport()
         {
+            RunPostProcessors();
             ImportReporter.Print();
         }
 
@@ -270,7 +245,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers
             bool root = true;
             foreach (string dir in directories)
             {
-                string directroy = RemoveInvalidChars(dir, root);
+                string directroy = Helper.RemoveInvalidChars(Config, dir, root);
                 string fullPath = string.Empty;
 
                 if (string.IsNullOrEmpty(prevDir))
@@ -347,7 +322,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers
                 }
                 else
                 {
-                    name = RemoveInvalidChars(dir, root);
+                    name = Helper.RemoveInvalidChars(Config, dir, root);
                     dirPath = location.Paths.FullPath + "/" + name;
                     urlVal = dir;
                 }
@@ -382,7 +357,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers
                     wasupdated = IsDataInList(updatedFields, toFieldName);
                     if (!wasupdated || isOverride)
                     {
-                        toFieldName = toFieldName.Replace("!", "");
+                        //toFieldName = toFieldName.Replace("!", "");
                         string value = FetchContent(doc, key, mappings, config);
                         dr[toFieldName] = value;
                         updatedFields.Add(toFieldName);
@@ -408,6 +383,17 @@ namespace Sitecore.SharedSource.DataImporter.Providers
             }
         }
 
+        private void RunPostProcessors()
+        {
+            ImportConfig config = new ImportConfig(ImportItem, SitecoreDB, this.Query);
+            config.ImportLocation = this.Parent;
+
+            foreach (var processor in config.PostProcessors)
+            {
+                Processor.Execute(processor.ProcessItem, config);
+            }
+        }
+
         public string FetchContent(HtmlDocument doc, object key, NameValueCollection mappings, ImportConfig storedConfig)
         {
             string rowValue = string.Empty;
@@ -430,16 +416,34 @@ namespace Sitecore.SharedSource.DataImporter.Providers
             
             List<string> updatedIndexedFields = new List<string>();
             string htmlObj = string.Empty;
+            bool isAttrValue = false;
+            string attrName = string.Empty;
             string fieldname = string.Empty;
             HtmlNode node = null;
 
             htmlObj = key.ToString();
             fieldname = mappings[key.ToString()];
+
+            if (htmlObj.Contains("/@"))
+            {
+                isAttrValue = true;
+                List<string> attrItems = htmlObj.Split('/').Where(a => a.StartsWith("@")).ToList();
+                attrName = attrItems.Where(a => !a.Contains("=")).FirstOrDefault();
+                htmlObj = htmlObj.Replace("/" + attrName, "");
+                attrName = attrName.Replace("@", "");
+            }
+
             node = Helper.HandleNodesLookup(htmlObj, doc);
 
             if (node != null)
-            {              
-               rowValue = textOnly ? node.InnerText : node.InnerHtml;
+            {
+                if (isAttrValue && node.Attributes[attrName] != null)
+                {
+                    rowValue = node.Attributes[attrName].Value;
+                }
+                else {
+                    rowValue = textOnly ? node.InnerText : node.InnerHtml;
+                }
             }
 
             return rowValue;
