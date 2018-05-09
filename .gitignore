@@ -214,3 +214,7 @@ pip-log.txt
 #Mr Developer
 .mr.developer.cfg
 Sitecore.SharedSource.DataImporter/Sitecore.SharedSource.DataImporter.sln
+Sitecore.SharedSource.DataImporter/.vs/Sitecore.SharedSource.DataImporter/v15/Server/sqlite3/storage.ide-wal
+Sitecore.SharedSource.DataImporter/.vs/Sitecore.SharedSource.DataImporter/v15/Server/sqlite3/storage.ide-shm
+Sitecore.SharedSource.DataImporter/.vs/Sitecore.SharedSource.DataImporter/v15/Server/sqlite3/storage.ide
+Sitecore.SharedSource.DataImporter/.vs/Sitecore.SharedSource.DataImporter/v15/Server/sqlite3/db.lock
