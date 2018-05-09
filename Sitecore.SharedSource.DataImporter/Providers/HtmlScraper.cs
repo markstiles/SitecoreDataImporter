@@ -137,11 +137,8 @@ namespace Sitecore.SharedSource.DataImporter.Providers
             DataRow dataRow = importRow as DataRow;
             string requestedURL = dataRow[RequestedURL].ToString();
             ImportReporter.Write(newItem, Level.Info, "","", "Item Added/Updated", requestedURL);
-            //string preprocessorMessages = dataRow[DOMParserMessages].ToString();
-            //foreach (string message in preprocessorMessages.Split(new char[] { ',' }).ToList().Where(s => !string.IsNullOrWhiteSpace(s) && !string.IsNullOrWhiteSpace(s)))
-            //{
-            //    ImportReporter.Write(newItem, Level.Warning,message, "HTML Source", "DOM Parsing", requestedURL);
-            //}
+
+       
 
             foreach (var field in MappingFields)
             {
