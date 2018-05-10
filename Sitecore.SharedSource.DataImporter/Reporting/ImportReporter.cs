@@ -44,9 +44,22 @@ namespace Sitecore.SharedSource.DataImporter.Reporting
 
                 foreach (var item in ItemReports.Values)
                 {
-                    infoEntries.AddRange(item.LogEntries.Where(l => l.Type == Level.Info).ToList());
-                    warningsEntries.AddRange(item.LogEntries.Where(l => l.Type == Level.Warning).ToList());
-                    errorEntries.AddRange(item.LogEntries.Where(l => l.Type == Level.Error).ToList());
+                    var exportData = item.LogEntries.Where(l => l.Type == Level.Info);
+
+                    if (exportData.Count() > 0) {
+                        infoEntries.AddRange(exportData.ToList());
+                    }
+
+                    exportData = item.LogEntries.Where(l => l.Type == Level.Warning);
+                    if (exportData.Count() > 0)
+                    {
+                        warningsEntries.AddRange(exportData.ToList());
+                    }
+
+                    exportData = item.LogEntries.Where(l => l.Type == Level.Error);
+                    if (exportData.Count() > 0) {
+                        errorEntries.AddRange(exportData.ToList());
+                    }
                 }
 
                 if (infoEntries.Any())
@@ -59,11 +72,12 @@ namespace Sitecore.SharedSource.DataImporter.Reporting
                     logStreams.Add(Level.Warning, reportPath + "ContentMigrationReport.warnings." + timeStamp + ".csv");
                 }
 
-                if (!errorEntries.Any())
+                if (errorEntries.Any())
                 {
-                    errorEntries.Add(new LogEntry("No errors have been logged", string.Empty, Level.Error, string.Empty, string.Empty, string.Empty));
+                    logStreams.Add(Level.Error, reportPath + "ContentMigrationReport.errors." + timeStamp + ".csv");
+
+                    //errorEntries.Add(new LogEntry("No errors have been logged", string.Empty, Level.Error, string.Empty, string.Empty, string.Empty));
                 }
-                logStreams.Add(Level.Error, reportPath + "ContentMigrationReport.errors." + timeStamp + ".csv");
 
 
                 foreach (var log in logStreams)
