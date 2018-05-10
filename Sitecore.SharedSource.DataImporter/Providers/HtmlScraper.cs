@@ -395,13 +395,14 @@ namespace Sitecore.SharedSource.DataImporter.Providers
         {
             string rowValue = string.Empty;
             bool textOnly = false;
-
+            bool useXPath = false;
             try
             {
                 int index = mappings[key.ToString()].IndexOf('_');
                 string toWhatField = mappings[key.ToString()].Substring(0, index);
                 Item mappingItem = MappingFields.Where(f => f.Fields[DataImporter.HtmlScraper.Constants.FieldNames.FromWhatField].Value == key.ToString()
                     && f.Fields[DataImporter.HtmlScraper.Constants.FieldNames.ToWhatField].Value == toWhatField).FirstOrDefault();
+                useXPath = mappingItem.Fields[DataImporter.HtmlScraper.Constants.FieldNames.UseXpath].Value == "1" ? true : false;
 
                 if (mappingItem != null)
                 {
@@ -430,7 +431,13 @@ namespace Sitecore.SharedSource.DataImporter.Providers
                 attrName = attrName.Replace("@", "");
             }
 
-            node = Helper.HandleNodesLookup(htmlObj, doc);
+            if (useXPath)
+            {
+                node = Helper.HandleNodesLookup(htmlObj, doc, true);
+            }
+            else {
+                node = Helper.HandleNodesLookup(htmlObj, doc);
+            }
 
             if (node != null)
             {

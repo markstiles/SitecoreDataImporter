@@ -44,21 +44,21 @@ namespace Sitecore.SharedSource.DataImporter.Reporting
 
                 foreach (var item in ItemReports.Values)
                 {
-                    var exportData = item.LogEntries.Where(l => l.Type == Level.Info);
+                    var InfoData = item.LogEntries.Where(l => l.Type == Level.Info);
 
-                    if (exportData.Count() > 0) {
-                        infoEntries.AddRange(exportData.ToList());
+                    if (InfoData.Count() > 0) {
+                        infoEntries.AddRange(InfoData.ToList());
                     }
 
-                    exportData = item.LogEntries.Where(l => l.Type == Level.Warning);
-                    if (exportData.Count() > 0)
+                    var warningData = item.LogEntries.Where(l => l.Type == Level.Warning);
+                    if (warningData.Count() > 0)
                     {
-                        warningsEntries.AddRange(exportData.ToList());
+                        warningsEntries.AddRange(warningData.ToList());
                     }
 
-                    exportData = item.LogEntries.Where(l => l.Type == Level.Error);
-                    if (exportData.Count() > 0) {
-                        errorEntries.AddRange(exportData.ToList());
+                    var errorData = item.LogEntries.Where(l => l.Type == Level.Error);
+                    if (errorData.Count() > 0) {
+                        errorEntries.AddRange(errorData.ToList());
                     }
                 }
 

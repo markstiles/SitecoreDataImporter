@@ -15,6 +15,7 @@ namespace Sitecore.SharedSource.DataImporter.HtmlScraper
             public const string MaintainHierarchy = "Maintain Hierarchy";
             public const string FromWhatField = "From What Fields";
             public const string ToWhatField = "To What Field";
+            public const string UseXpath = "Use XPath For From";
             public const string AllowedExtensions = "Allowed URL Extensions";
             public const string URLCount = "Top x URLs";
             public const string ExcludeDirectories = "Exclude Directories";

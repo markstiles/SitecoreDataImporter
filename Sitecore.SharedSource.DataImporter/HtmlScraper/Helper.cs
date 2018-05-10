@@ -17,29 +17,30 @@ namespace Sitecore.SharedSource.DataImporter.HtmlScraper
         /// <param name="htmlObj"></param>
         /// <param name="doc"></param>
         /// <returns></returns>
-        public static HtmlNode HandleNodesLookup(string htmlObj, HtmlDocument doc)
+        public static HtmlNode HandleNodesLookup(string htmlObj, HtmlDocument doc, bool useXPath = false)
         {
             HtmlNode node = null;
             List<HtmlNode> nodes = new List<HtmlNode>();
             bool isMultiNodesData = htmlObj.Contains("/*");
-            htmlObj = isMultiNodesData ? htmlObj.Replace("/*", "") : htmlObj;
+
+            if (!useXPath) {
+                htmlObj = isMultiNodesData ? htmlObj.Replace("/*", "") : htmlObj;
+            }
+
             try
             {
-                //Not sure if this check is needed so to do somthing else. Check it latter.  
-                //if (htmlObj.Contains("/"))
-                //{
-                //    nodes = HandleXPathQuery(htmlObj, doc);
-                //}
-                //else
-                //{
-                //    nodes = HandleXPathQuery(htmlObj, doc);
-                //}
-
-                nodes = HandleXPathQuery(htmlObj, doc);
+               
+                if (useXPath)
+                {
+                    nodes = doc.DocumentNode.SelectNodes(htmlObj).ToList();
+                    isMultiNodesData = true;
+                }
+                else {
+                    nodes = HandleXPathQuery(htmlObj, doc);
+                }
 
                 if (isMultiNodesData)
                 {
-                    //TODO: this is worked for * but run some more test with differnt type mapping options of *
                     if (node == null)
                         node = doc.CreateNode(HtmlNodeType.Element, 0);
                     else
