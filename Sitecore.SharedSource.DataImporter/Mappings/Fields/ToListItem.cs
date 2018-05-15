@@ -6,6 +6,8 @@ using Sitecore.Configuration;
 using Sitecore.Data.Fields;
 using Sitecore.Data.Items;
 using Sitecore.SharedSource.DataImporter.Providers;
+using Sitecore.Diagnostics;
+using Sitecore.SharedSource.DataImporter.Logger;
 
 namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
 {
@@ -13,68 +15,48 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
     public class ToListItem : ToText, IBaseField
     {
         #region properties
-            private string selectionRootItem;
-
-            public string SelectionRootItem
-            {
-                get { return selectionRootItem; }
-                set { selectionRootItem = value; }
-            }
+            
+        public string SelectionRootItem { get; set; }
 
         #endregion properties
 
-        public ToListItem(Item i)  : base(i)
-        {
-            if (i.Fields["SelectionRootItem"] != null)
-            {
-                SelectionRootItem = i.Fields["SelectionRootItem"].Value;
-            }
-            if (i.Fields["Delimiter"] != null)
-            {
-                Delimiter = i.Fields["Delimiter"].Value;
-            }
+        public ToListItem(Item i, ILogger l) : base(i, l)
+		{
+            SelectionRootItem = GetItemField(i, "SelectionRootItem");
+            Delimiter = GetItemField(i, "Delimiter");
         }
 
-        public override void FillField(BaseDataMap map, ref Item newItem, string importValue)
+        public override void FillField(IDataMap map, ref Item newItem, string importValue)
         {
+			Assert.IsNotNull(newItem, "newItem");
             List<string> selectedList = new List<string>();
-            if (!string.IsNullOrEmpty(SelectionRootItem))
-            {
-                var master = Factory.GetDatabase("master");
-                Item root = master.GetItem(selectionRootItem);
-                if (root != null)
-                {
-                    ChildList selectionValues = new ChildList(root);
+            if (string.IsNullOrEmpty(SelectionRootItem))
+                return;
+            
+            var master = Factory.GetDatabase("master");
+            Item root = master.GetItem(SelectionRootItem);
+            if (root == null)
+                return;
+            
+            ChildList selectionValues = new ChildList(root);
+            if (string.IsNullOrEmpty(importValue) || !selectionValues.Any())
+                return;
+            
+            List<string> importvalues = importValue.Split(new string[] { Delimiter }, StringSplitOptions.RemoveEmptyEntries).Select(i => i.Trim().ToLowerInvariant()).ToList();
+            if (!importvalues.Any())
+                return;
 
-                    if (!string.IsNullOrEmpty(importValue) && selectionValues.Any())
-                    {
-                        List<string> importvalues = importValue.Split(new string[] { Delimiter }, StringSplitOptions.RemoveEmptyEntries).ToList();
-                        if (importvalues.Any())
-                        {
-                            foreach (Item value in selectionValues)
-                            {
-                                foreach (var temp in importvalues)
-                                {
-                                    if (value.Fields["Text"] != null)
-                                    { 
-                                        if (temp.Trim().ToLower().Equals(value.Fields["Text"].ToString().Trim().ToLower()))
-                                        {
-                                            selectedList.Add(value.ID.ToString());
-                                        }
-                                    }
-                                }
-                            }
+	        selectedList.AddRange(selectionValues
+				.Where(v => v.Fields["Text"] != null)
+				.Where(v => importvalues.Contains(v.Fields["Text"].Value.Trim().ToLowerInvariant()))
+				.Select(v => v.ID.ToString()));
+            
 
-                            Field f = newItem.Fields[NewItemField];
-                            //store the imported value as is         
-                            if (f != null && selectedList.Any())
-                            {
-                                f.Value = string.Join("|", selectedList);
-                            }
-                        }
-                    }
-                }
-            }
+            Field f = newItem.Fields[NewItemField];
+            if (f == null || !selectedList.Any())
+                return;
+
+            f.Value = string.Join("|", selectedList);
         }
     }
 }

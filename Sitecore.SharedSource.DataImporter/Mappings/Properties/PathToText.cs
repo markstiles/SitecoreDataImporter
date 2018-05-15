@@ -7,35 +7,34 @@ using Sitecore.Data.Fields;
 using System.Web;
 using Sitecore.SharedSource.DataImporter.Extensions;
 using System.Collections;
+using Sitecore.SharedSource.DataImporter.Logger;
 using Sitecore.SharedSource.DataImporter.Providers;
 
-namespace Sitecore.SharedSource.DataImporter.Mappings.Properties
-{
-	public class PathToText : BaseMapping, IBaseProperty {
+namespace Sitecore.SharedSource.DataImporter.Mappings.Properties {
+    public class PathToText : BaseMapping, IBaseProperty {
 
-		#region Properties
+        #region Properties
 
-		#endregion Properties
+        #endregion Properties
 
-		#region Constructor
+        #region Constructor
 
-		//constructor
-		public PathToText(Item i) : base(i) {
+        //constructor
+        public PathToText(Item i, ILogger l) : base(i) { }
 
-		}
+        #endregion Constructor
 
-		#endregion Constructor
+        #region IBaseProperty
 
-		#region Methods
+        public string Name { get; set; }
 
-		//fills it's own field
-        public void FillField(BaseDataMap map, ref Item newItem, Item importRow)
-        {
+        //fills it's own field
+        public void FillField(IDataMap map, ref Item newItem, Item importRow) {
             Field f = newItem.Fields[NewItemField];
-            if(f != null)
+            if (f != null)
                 f.Value = importRow.Paths.FullPath;
-		}
+        }
 
-		#endregion Methods
-	}
+        #endregion IBaseProperty
+    }
 }

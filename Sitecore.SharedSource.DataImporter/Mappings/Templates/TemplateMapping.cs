@@ -4,38 +4,39 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Sitecore.Data.Items;
+using Sitecore.SharedSource.DataImporter.Mappings.Fields;
+using Sitecore.SharedSource.DataImporter.Mappings.Properties;
 
 namespace Sitecore.SharedSource.DataImporter.Mappings.Templates {
 	public class TemplateMapping {
 
 		#region Properties
 
-		private string _FromWhatTemplate;
 		/// <summary>
 		/// the template the old item is from
 		/// </summary>
-		public string FromWhatTemplate {
-			get {
-				return _FromWhatTemplate;
-			}
-			set {
-				_FromWhatTemplate = value;
-			}
-		}
+        public string FromWhatTemplate { get; set; }
 
-		private string _ToWhatTemplate;
 		/// <summary>
 		/// the template the new item is going to
 		/// </summary>
-		public string ToWhatTemplate {
-			get {
-				return _ToWhatTemplate;
-			}
-			set {
-				_ToWhatTemplate = value;
-			}
-		}
+        public string ToWhatTemplate { get; set; }
 
+        /// <summary>
+        /// the definitions of fields to import
+        /// </summary>
+        public List<IBaseField> FieldDefinitions { get; set; }
+
+        /// <summary>
+        /// List of properties
+        /// </summary>
+        public List<IBaseProperty> PropertyDefinitions { get; set; }
+
+        /// <summary>
+        /// List of properties
+        /// </summary>
+        public List<IBaseFieldWithReference> ReferenceFieldDefinitions { get; set; }
+        
 		#endregion
 
 		//constructor
@@ -43,8 +44,5 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Templates {
 			FromWhatTemplate = i.Fields["From What Template"].Value;
 			ToWhatTemplate = i.Fields["To What Template"].Value;
 		}
-
-		
-
 	}
 }

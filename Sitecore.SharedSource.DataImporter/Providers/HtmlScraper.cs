@@ -18,6 +18,7 @@ using Sitecore.Data.Fields;
 using Sitecore.SharedSource.DataImporter.Processors;
 using System.Reflection;
 using Sitecore.SharedSource.DataImporter.Reporting;
+using Sitecore.SharedSource.DataImporter.Logger;
 
 /// <summary>
 /// 
@@ -37,8 +38,8 @@ namespace Sitecore.SharedSource.DataImporter.Providers
         private List<Item> MappingFields;
 
       
-        public HtmlScraper(Database db, string ConnectionString, Item importItem)
-            : base(db, ConnectionString, importItem)
+        public HtmlScraper(Database db, string ConnectionString, Item importItem, ILogger l)
+            : base(db, ConnectionString, importItem, l)
         {
             ImportItem = importItem;
 
@@ -59,16 +60,16 @@ namespace Sitecore.SharedSource.DataImporter.Providers
             dt.Columns.Add(RequestedURL);
             dt.Columns.Add(ActionColumn);
 
-            ImportConfig config = new ImportConfig(ImportItem, SitecoreDB, this.Query);
-            config.ImportLocation = this.Parent;
+            ImportConfig config = new ImportConfig(ImportItem, ToDB, this.Query);
+            config.ImportLocation = ImportToWhere;
             Config = config;
 
             //ImportContent(config);
             //List<string> lines = new List<string>();
 
-            if (ItemNameDataField == "[URL]")
+            if (ItemNameFields.FirstOrDefault() == "[URL]")
             {
-                ItemNameDataField = ItemNameColumn;
+                //ItemNameFields = ItemNameColumn;
             }
 
             //Adding columns to the table from field mapping
@@ -118,7 +119,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 
             foreach (var targetId in processors.TargetIDs)
             {
-                Item processor = this.SitecoreDB.GetItem(targetId);
+                Item processor = ToDB.GetItem(targetId);
 
                 if (processor == null) { continue; }
 
@@ -154,18 +155,18 @@ namespace Sitecore.SharedSource.DataImporter.Providers
             if (!string.IsNullOrEmpty(templateID))
             {
 
-                BranchItem templateItem = SitecoreDB.GetItem(templateID);
+                BranchItem templateItem = ToDB.GetItem(templateID);
 
                 return (CustomItemBase)templateItem;
             }
             else
             {
-                return NewItemTemplate;
+                return ImportToWhatTemplate;
 
             }
         }
 
-        protected override Item GetParentNode(object importRow, string newItemName)
+        public override Item GetParentNode(object importRow, string newItemName)
         {
             Item parentItem = null;
             DataRow dataRow = importRow as DataRow;
@@ -184,7 +185,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 
             if (Config.MaintainHierarchy)
             {
-                parentItem = this.SitecoreDB.GetItem(parentPath);
+                parentItem = ToDB.GetItem(parentPath);
             }
 
             if (parentItem == null)
@@ -201,7 +202,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers
         /// <param name="importRow"></param>
         /// <param name="fieldName"></param>
         /// <returns></returns>
-        protected override string GetFieldValue(object importRow, string fieldName)
+        public override string GetFieldValue(object importRow, string fieldName)
         {
             string toFieldName = fieldName;
             if (fieldName != ItemNameColumn)
@@ -228,11 +229,11 @@ namespace Sitecore.SharedSource.DataImporter.Providers
         /// <summary>
         /// Use this function to do any end of process custom reports 
         /// </summary>
-        public override void ImportEndReport()
-        {
-            RunPostProcessors();
-            ImportReporter.Print();
-        }
+        //public override void ImportEndReport()
+        //{
+        //    RunPostProcessors();
+        //    ImportReporter.Print();
+        //}
 
         private NameValueCollection DirectoryBuilder(List<string> directories, ImportConfig selectedConfig)
         {
@@ -325,10 +326,10 @@ namespace Sitecore.SharedSource.DataImporter.Providers
                 }
 
                 dr[PathColumn] = dirPath;
-                if (ItemNameDataField == "[URL]" || ItemNameDataField == ItemNameColumn)
-                {                  
+                //if (ItemNameDataField == "[URL]" || ItemNameDataField == ItemNameColumn)
+                //{                  
                     dr[ItemNameColumn] = name;
-                }
+                //}
 
                 string currentDirURL = string.Empty;
                 currentDirURL = url.Substring(0, url.IndexOf(urlVal));
@@ -371,7 +372,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 
             foreach (var processor in config.PreProcessors)
             {
-                string returnValue = Processor.Execute(processor.ProcessItem, doc, currentDirURL, NewItemTemplate.ID.ToString());
+                string returnValue = Processor.Execute(processor.ProcessItem, doc, currentDirURL, ImportToWhatTemplate.ID.ToString());
 
                 if (!string.IsNullOrEmpty(returnValue))
                 {
@@ -382,8 +383,8 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 
         private void RunPostProcessors()
         {
-            ImportConfig config = new ImportConfig(ImportItem, SitecoreDB, this.Query);
-            config.ImportLocation = this.Parent;
+            ImportConfig config = new ImportConfig(ImportItem, ToDB, this.Query);
+            config.ImportLocation = ImportToWhere;
 
             foreach (var processor in config.PostProcessors)
             {
@@ -457,20 +458,27 @@ namespace Sitecore.SharedSource.DataImporter.Providers
         private NameValueCollection GetMappings()
         {
             NameValueCollection mappings = new NameValueCollection();
-            Item fieldDefinitions = GetItemByTemplate(ImportItem, FieldsFolderID);
+            Item fieldDefinitions = GetItemByTemplate(ImportItem, FieldsFolderTemplateID);
             ChildList fields = fieldDefinitions.GetChildren();
             MappingFields = new List<Item>();
             foreach (Item field in fields)
             {
                 MappingFields.Add(field);
                 BaseMapping baseMap = new BaseMapping(field);
-                string fromFieldName = baseMap.OldItemField;
+                //string fromFieldName = baseMap.OldItemField;
                 string toFieldName = baseMap.NewItemField + "_" + Guid.NewGuid().ToString().Replace("-", ""); 
-                mappings.Add(fromFieldName, toFieldName);
+                mappings.Add("fromFieldName", toFieldName);
             }
             return mappings;
         }
 
+        protected Item GetItemByTemplate(Item parent, string TemplateID)
+        {
+            IEnumerable<Item> x = from Item i in parent.GetChildren()
+                                  where i.Template.ID.Equals(TemplateID)
+                                  select i;
+            return (x.Any()) ? x.First() : null;
+        }
 
         private bool IsDataInList(List<string> dataList, string data)
         {

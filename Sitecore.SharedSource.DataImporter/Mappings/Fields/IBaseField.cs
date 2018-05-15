@@ -11,14 +11,15 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
 	/// <summary>
 	/// The IBaseField is the interface required for all Data Importer fields to function properly
 	/// </summary>
-	public interface IBaseField {
+	public interface IBaseField : IBaseMapping {
 
 		#region Methods
-
-	    /// <summary>
-	    /// gets the name of the field
-	    /// </summary>
-	    string ItemName();
+        
+        /// <summary>
+        /// Used to differentiate fields from each other
+        /// </summary>
+        /// <returns></returns>
+        string Name { get; set; }
 
         /// <summary>
         /// This uses the imported value to modify the newly created item. 
@@ -26,7 +27,7 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
         /// <param name="map">provides settings related to the import</param>
         /// <param name="newItem">the newly created item</param>
         /// <param name="importValue">the imported value</param>
-        void FillField(BaseDataMap map, ref Item newItem, string importValue);
+        void FillField(IDataMap map, ref Item newItem, string importValue);
 
         /// <summary>
         /// returns a list of the field names from the import row that you want to import into this field 

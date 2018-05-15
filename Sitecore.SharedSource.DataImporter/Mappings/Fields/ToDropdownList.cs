@@ -5,6 +5,8 @@ using Sitecore.Data.Fields;
 using Sitecore.Data.Items;
 using Sitecore.SharedSource.DataImporter.Extensions;
 using Sitecore.SharedSource.DataImporter.Providers;
+using Sitecore.Diagnostics;
+using Sitecore.SharedSource.DataImporter.Logger;
 
 namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
 {
@@ -13,63 +15,46 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
     {
         #region properties
 
-        private string selectionRootItem;
-
-        public string SelectionRootItem
-        {
-            get { return selectionRootItem; }
-            set { selectionRootItem = value; }
-        }
+        public string SelectionRootItem { get; set; }
 
         #endregion properties
 
-        public ToDropdownList(Item i) : base(i)
-        {
-            if (i.Fields["SelectionRootItem"] != null)
-            {
-                SelectionRootItem = i.Fields["SelectionRootItem"].Value;
-            }
+        public ToDropdownList(Item i, ILogger l) : base(i, l)
+		{
+            SelectionRootItem = GetItemField(i, "SelectionRootItem");
         }
 
         #region private methods
 
-        public override void FillField(BaseDataMap map, ref Item newItem, string importValue)
+        public override void FillField(IDataMap map, ref Item newItem, string importValue)
         {
+			Assert.IsNotNull(newItem, "newItem");
             string selectedValue = string.Empty;
 
-            if (!string.IsNullOrEmpty(SelectionRootItem))
-            {
-                var master = Factory.GetDatabase("master");
-                Item root = master.GetItem(selectionRootItem);
-                if (root != null)
-                {
-                    ChildList selectionValues = new ChildList(root);
-                    
-                    if (!string.IsNullOrEmpty(importValue) && selectionValues.Any())
-                    {
-                        if (importValue.IsNotNull())
-                        {
-                            foreach (Item value in selectionValues)
-                            {
-                                if (value.Fields["Text"] != null)
-                                {
-                                    if (importValue.Trim().ToLower().Equals(value.Fields["Text"].ToString().Trim().ToLower()))
-                                    {
-                                        selectedValue = value.ID.ToString();
-                                    }
-                                }
-                            }
+            if (string.IsNullOrEmpty(SelectionRootItem))
+                return;
+            
+            var master = Factory.GetDatabase("master");
+            Item root = master.GetItem(SelectionRootItem);
+            if (root == null)
+                return;
+            
+            ChildList selectionValues = new ChildList(root);
+            if (string.IsNullOrEmpty(importValue) || !selectionValues.Any())
+                return;
 
-                            Field f = newItem.Fields[NewItemField];
-                            //store the imported value as is         
-                            if (f != null && selectedValue.IsNotNull())
-                            {
-                                f.Value = selectedValue;
-                            }
-                        }
-                    }
-                }
-            }
+            if (!importValue.IsNotNull())
+                return;
+
+	        importValue = importValue.Trim().ToLowerInvariant();
+	        selectedValue = selectionValues.FirstOrDefault(v => v.Fields["Text"] != null && v.Fields["Text"].Value.Trim().ToLowerInvariant() == importValue)?.ID.ToString();
+            
+
+            Field f = newItem.Fields[NewItemField];
+            if (f == null || !selectedValue.IsNotNull())
+                return;
+            
+            f.Value = selectedValue;
         }
 
         #endregion

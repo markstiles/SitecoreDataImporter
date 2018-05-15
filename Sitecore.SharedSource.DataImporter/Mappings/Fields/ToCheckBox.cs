@@ -1,117 +1,62 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using Sitecore.Data.Fields;
 using Sitecore.Data.Items;
+using Sitecore.Pipelines.RenderField;
+using Sitecore.SharedSource.DataImporter.Logger;
 using Sitecore.SharedSource.DataImporter.Providers;
 using Sitecore.StringExtensions;
 
 namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
 {
     
-    public class ToCheckBox : ToText, IBaseField
+    public class ToCheckBox : ToText
     {
         #region properties
-        private string positiveValues;
-
-        public string PositiveValues
-        {
-            get { return positiveValues; }
-            set { positiveValues = value; }
-        }
-  
-        private string negativeValues;
-
-        public string NegativeValues
-        {
-            get { return negativeValues; }
-            set { negativeValues = value; }
-        }
-                
+        
         public List<string> PositiveValuesList { get; set; }
         public List<string> NegativeValuesList { get; set; }
 
-        private List<string> messages;
-        private const string FileLink = @"D:/data/log.txt";
-
         #endregion
 
-        public ToCheckBox(Item i) : base(i)
-        {
-            if (i.Fields["PositiveValues"] != null)
-            {
-                PositiveValues = i.Fields["PositiveValues"].Value;
-            }
+        public ToCheckBox(Item i, ILogger l) : base(i, l)
+		{
+            string pValues = GetItemField(i, "PositiveValues");
+            string nValues = GetItemField(i, "NegativeValues");
 
-            if (i.Fields["NegativeValues"] != null)
-            {
-                NegativeValues = i.Fields["NegativeValues"].Value;
-            }
+            const string delimiter = ",";
 
-            messages = new List<string>();
-            SetupLists();
+            PositiveValuesList = (!string.IsNullOrEmpty(pValues)) 
+                ? pValues.Split(new string[] { delimiter }, StringSplitOptions.RemoveEmptyEntries).ToList()
+                : new List<string>();
+            
+            NegativeValuesList = (!string.IsNullOrEmpty(nValues)) 
+                ? nValues.Split(new string[] { delimiter }, StringSplitOptions.RemoveEmptyEntries).ToList()
+                : new List<string>();
         }
 
         #region public methods
 
-        public override void FillField(BaseDataMap map, ref Item newItem, string importValue)
+        public override void FillField(IDataMap map, ref Item newItem, string importValue)
         {
-            string checkBoxValue = "0";
-            if (!importValue.IsNullOrEmpty())
-            {
-                importValue = importValue.Trim().ToLower();
-            }
-
-            if (PositiveValuesList.Any() && NegativeValuesList.Any())
-            {  
-                if (PositiveValuesList.Select(x => x.Trim().ToLower()).Contains(importValue))
-                {
-                    checkBoxValue = "1";
-                }
-                else if (NegativeValuesList.Select(x => x.Trim().ToLower()).Contains(importValue))
-                {
-                    checkBoxValue = "0";
-                }
-               
-                Field f = newItem.Fields[NewItemField];
-                //store the imported value as is         
-                Log("f", f.ToString());
-                if (f != null)
-                {
-                    
-                    f.Value = checkBoxValue;                    
-                }
-                //Log("******************* end loop", "*********************");
-                //System.IO.File.WriteAllLines(FileLink,messages);
-            }
+            if (importValue.IsNullOrEmpty())
+                return;
             
+            bool b = false;
+            if (!bool.TryParse(importValue.Trim().ToLower(), out b)) {
+                map.Logger.Log("ToCheckBox.FillField", string.Format("Couldn't parse the boolean value {0} for item {1}", importValue, newItem.Paths.FullPath));
+                return;
+            }
+               
+            Field f = newItem.Fields[NewItemField];
+            if (f == null)
+                return;
+    
+            f.Value = (b) ? "1" : "0";                    
         }
 
         #endregion
-
-        #region private methods
-
-        private void SetupLists()
-        {        
-            const string delimiter = ",";
-
-            if (!string.IsNullOrEmpty(PositiveValues))
-            {                
-                Log("positive values", PositiveValues);
-                PositiveValuesList = PositiveValues.Split(new string[] { delimiter }, StringSplitOptions.RemoveEmptyEntries).ToList();
-            }
-            if (!string.IsNullOrEmpty(NegativeValues))
-            {
-                Log("negative values", NegativeValues);
-                NegativeValuesList = NegativeValues.Split(new string[] { delimiter }, StringSplitOptions.RemoveEmptyEntries).ToList();
-            }
-        }
-
-        private void Log(string message, string value)
-        {
-            messages.Add(string.Concat(message,": ", value));
-        }
-
-        #endregion private methods
     }
 }

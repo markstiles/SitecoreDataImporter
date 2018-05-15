@@ -11,30 +11,28 @@ using System.Web;
 using Sitecore.SharedSource.DataImporter.Mappings.Fields;
 using Sitecore.SharedSource.DataImporter.Extensions;
 using System.Collections;
+using Sitecore.SharedSource.DataImporter.Logger;
 
-namespace Sitecore.SharedSource.DataImporter.Providers
-{
-	public class SqlDataMap : BaseDataMap {
-		
-		#region Properties
+namespace Sitecore.SharedSource.DataImporter.Providers {
+    public class SqlDataMap : BaseDataMap {
 
-		#endregion Properties
+        #region Properties
 
-		#region Constructor
+        #endregion Properties
 
-		public SqlDataMap(Database db, string connectionString, Item importItem) : base (db, connectionString, importItem) {
-		}
-		
-		#endregion Constructor
+        #region Constructor
 
-        #region Override Methods
+        public SqlDataMap(Database db, string connectionString, Item importItem, ILogger l) : base(db, connectionString, importItem, l) { }
+
+        #endregion Constructor
+
+        #region IDataMap Methods
 
         /// <summary>
         /// uses a SqlConnection to get data
         /// </summary>
         /// <returns></returns>
-        public override IEnumerable<object> GetImportData()
-        {
+        public override IEnumerable<object> GetImportData() {
             DataSet ds = new DataSet();
             SqlConnection dbCon = new SqlConnection(this.DatabaseConnectionString);
             dbCon.Open();
@@ -44,7 +42,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers
             dbCon.Close();
 
             DataTable dt = ds.Tables[0].Copy();
-            
+
             return (from DataRow dr in dt.Rows
                     select dr).Cast<object>();
         }
@@ -54,32 +52,21 @@ namespace Sitecore.SharedSource.DataImporter.Providers
         /// </summary>
         /// <param name="newItem"></param>
         /// <param name="importRow"></param>
-        public override void ProcessCustomData(ref Item newItem, object importRow)
-        {
-        }
+        public override void ProcessCustomData(ref Item newItem, object importRow) { }
 
-        /// <summary>
-        /// Use this function to do any end of process custom reports 
-        /// </summary>
-        public override void ImportEndReport()
-        {
-
-        }
-        
         /// <summary>
         /// gets custom data from a DataRow
         /// </summary>
         /// <param name="importRow"></param>
         /// <param name="fieldName"></param>
         /// <returns></returns>
-        protected override string GetFieldValue(object importRow, string fieldName)
-        {
+        public override string GetFieldValue(object importRow, string fieldName) {
             DataRow item = importRow as DataRow;
             object f = item[fieldName];
             return (f != null) ? f.ToString() : string.Empty;
         }
 
-        #endregion Override Methods
+        #endregion IDataMap Methods
 
         #region Methods
 

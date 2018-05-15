@@ -7,10 +7,11 @@ using Sitecore.Data.Items;
 
 namespace Sitecore.SharedSource.DataImporter.Utility
 {
-    class StringUtility
+    public static class StringUtility
     {
+		private static IReadOnlyCollection<string> EscapeWords = new []{"ancestor", "and", "child", "descendant", "div", "false", "following", "mod", "or", "parent", "preceding", "self", "true", "xor"};
         /// <summary>
-        /// This method checks to see if there are any sections in the xpath that contain dashes and wraps them in pound signs if it does unless it's a guid
+        /// This method wraps each section in pound signs unless it's a guid or field query
         /// </summary>
         /// <param name="s">
         /// The XPath string
@@ -37,9 +38,9 @@ namespace Sitecore.SharedSource.DataImporter.Utility
             {
                 Match m = r.Match(strArr[z]);
 
-                //if it contains a dash and it's not a guid
-                if ((strArr[z].Contains("-") || (strArr[z].StartsWith("0"))) && !m.Success)
-                {
+				//if it's not a guid, empty, or starts with an asterisk
+				if ((strArr[z].Contains("-") || (strArr[z].StartsWith("0")) || strArr[z].Split(' ').Intersect(EscapeWords).Any()) && !m.Success)
+				{
                     strArr[z] = "#" + strArr[z] + "#";
                 }
             }
@@ -51,7 +52,7 @@ namespace Sitecore.SharedSource.DataImporter.Utility
         /// <summary>
         /// This is used to get a trimmed down name suitable for Sitecore
         /// </summary>
-        public static string GetNewItemName(string nameValue, int maxLength)
+        public static string GetValidItemName(string nameValue, int maxLength)
         {
             string newItemName = StripInvalidChars(ItemUtil.ProposeValidItemName(nameValue));
 

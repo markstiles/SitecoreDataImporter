@@ -13,68 +13,50 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.Remoting;
 using Sitecore.Web.UI.WebControls;
+using Sitecore.SharedSource.DataImporter.Extensions;
+using Sitecore.SharedSource.DataImporter.Logger;
 
 namespace Sitecore.SharedSource.DataImporter.Providers {
-	public class CSVDataMap : BaseDataMap {
+    public class CSVDataMap : BaseDataMap {
 
 		#region Properties
 
-		private string _FieldDelimiter = string.Empty;
-		public string FieldDelimiter {
-			get {
-				return (_FieldDelimiter.Equals(string.Empty)) ? "," : _FieldDelimiter;
-			}
-			set {
-				_FieldDelimiter = value;
-			}
-		}
+		public string FieldDelimiter { get; set; }
 
-		private string _EncodingType = string.Empty;
-		public string EncodingType {
-			get {
-				return _EncodingType;
-			}
-			set {
-				_EncodingType = value;
-			}
-		}
+		public string EncodingType { get; set; }
 
 		#endregion Properties
 
         #region Constructor
 
-		public CSVDataMap(Database db, string ConnectionString, Item importItem)
-            : base(db, ConnectionString, importItem) {
+		public CSVDataMap(Database db, string ConnectionString, Item importItem, ILogger l)
+            : base(db, ConnectionString, importItem, l) {
 
-			FieldDelimiter = importItem["Field Delimiter"];
-			EncodingType = importItem["Encoding Type"];
+			FieldDelimiter = ImportItem.GetItemField("Field Delimiter", Logger);
+            EncodingType = ImportItem.GetItemField("Encoding Type", Logger);
 		}
 
         #endregion Constructor
 
-        #region Override Methods
+        #region IDataMap Methods
 
-		/// <summary>
+        /// <summary>
 		/// uses the query field to retrieve file data
 		/// </summary>
 		/// <returns></returns>
         public override IEnumerable<object> GetImportData() {
 
 			if (!File.Exists(this.Query)) {
-				Log("Error", string.Format("the file: '{0}' could not be found. Try moving the file under the webroot.", this.Query));
+				Logger.Log("N/A", string.Format("the file: '{0}' could not be found. Try moving the file under the webroot.", this.Query), ProcessStatus.Error);
 				return Enumerable.Empty<object>();
 			}
 
 			Encoding et = Encoding.GetEncoding("utf-8");
 			int ei = -1;
 			if(!EncodingType.Equals("")) {
-				Encoding eTemp; 
-				if(int.TryParse(EncodingType, out ei))
-					eTemp = Encoding.GetEncoding(ei);
-				else
-					eTemp = Encoding.GetEncoding(EncodingType);
-				if (eTemp != null)
-					et = eTemp;
+				et = (int.TryParse(EncodingType, out ei)) 
+                    ? Encoding.GetEncoding(ei) 
+                    : Encoding.GetEncoding(EncodingType);
 			}
 
 			byte[] bytes = GetFileBytes(this.Query);
@@ -91,24 +73,15 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
 		/// </summary>
 		/// <param name="newItem"></param>
 		/// <param name="importRow"></param>
-		public override void ProcessCustomData(ref Item newItem, object importRow) {
-		}
+        public override void ProcessCustomData(ref Item newItem, object importRow) { }
 
-        /// <summary>
-        /// Use this function to do any end of process custom reports 
-        /// </summary>
-        public override void ImportEndReport()
-        {
-
-        }
-
-        /// <summary>
-        /// gets a field value from an item
-        /// </summary>
-        /// <param name="importRow"></param>
-        /// <param name="fieldName"></param>
-        /// <returns></returns>
-        protected override string GetFieldValue(object importRow, string fieldName) {
+		/// <summary>
+		/// gets a field value from an item
+		/// </summary>
+		/// <param name="importRow"></param>
+		/// <param name="fieldName"></param>
+		/// <returns></returns>
+        public override string GetFieldValue(object importRow, string fieldName) {
 			
 			string item = importRow as string;
 			List<string> cols = SplitString(item, FieldDelimiter);
@@ -120,11 +93,11 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
 			return s;
 		}
 
-		#endregion Override Methods
+        #endregion IDataMap Methods
 
         #region Methods
-		
-		protected List<string> SplitString(string str, string splitter){
+
+        protected List<string> SplitString(string str, string splitter){
             // string split options set to none so that empty columns are allowed
             // useful for importing large csv files, so you don't have to check the content
 			return str.Split(new string[] { splitter }, StringSplitOptions.None).ToList();
@@ -136,9 +109,40 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
 			FileStream s = f.OpenRead();
 			byte[] bytes = new byte[s.Length];
 			s.Position = 0;
-			s.Read(bytes, 0, int.Parse(s.Length.ToString()));
+			int currentBytesRead = 0;
+			int totalBytesRead = 0;
+			while (s.Read(bytes, 0, int.Parse(s.Length.ToString())) > 0){
+				totalBytesRead += currentBytesRead;
+			}
+			
 			return bytes;
 		}
+
+        private void ProcessFields(object importRow, Item newItem)
+        {
+            //add in the field mappings
+            List<IBaseField> fieldDefs = GetFieldDefinitionsByRow(importRow);
+            ProcessFields(importRow, newItem, fieldDefs);
+        }
+        
+        private void ProcessFields(object importRow, Item newItem, List<IBaseField> fieldDefs)
+        {
+            //add in the field mappings
+            foreach (IBaseField d in fieldDefs)
+            {
+                string importValue = string.Empty;
+                try
+                {
+                    IEnumerable<string> values = GetFieldValues(d.GetExistingFieldNames(), importRow);
+                    importValue = String.Join(d.GetFieldValueDelimiter(), values);
+                    d.FillField(this, ref newItem, importValue);
+                }
+                catch (Exception ex)
+                {
+                    Logger.Log("Process Fields", string.Format("the FillField failed for field {1} on item {0}", newItem.Paths.FullPath, d.Name));
+                }
+            }
+        }
 
         #endregion Methods
     }

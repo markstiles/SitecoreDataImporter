@@ -3,79 +3,70 @@ using System.Collections.Generic;
 using Sitecore.Data.Fields;
 using Sitecore.Data.Items;
 using Sitecore.SharedSource.DataImporter.Providers;
+using Sitecore.Diagnostics;
+using Sitecore.SharedSource.DataImporter.Logger;
 
-namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
-{
+namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
     /// <summary>
     /// this stores the plain text import value as is into the new field
     /// </summary>
+    public class ToText : BaseMapping, IBaseField {
 
-    public class ToText : BaseMapping, IBaseField
-    {		
-		#region Properties 
+        #region Properties
 
         /// <summary>
         /// name field delimiter
         /// </summary>
-		public char[] comSplitr = { ',' };
+        protected readonly char[] comSplitr = { ',' };
 
-		private IEnumerable<string> _existingDataNames;
-		/// <summary>
-		/// the existing data fields you want to import
+		///<summary>
+		/// ExistingDataNames
 		/// </summary>
-        public IEnumerable<string> ExistingDataNames {
-			get {
-				return _existingDataNames;
-			}
-			set {
-				_existingDataNames = value;
-			}
-		}
+        /// <value>
+        /// the existing data fields you want to import
+        /// </value>
+        public IEnumerable<string> ExistingDataNames { get; set; }
 
-		private string _delimiter;
-		/// <summary>
-		/// the delimiter you want to separate imported data with
-		/// </summary>
-        public string Delimiter {
-			get {
-				return _delimiter;
-			}
-			set {
-				_delimiter = value;
-			}
-		}
-		
-		#endregion Properties
-		
-		#region Constructor
+        /// <summary>
+        /// Delimiter
+        /// </summary>
+        /// <value>the delimiter you want to separate imported data with</value>
+        public string Delimiter { get; set; }
 
-		public ToText(Item i) : base(i) {
+        #endregion Properties
+
+        #region Constructor
+
+        public ToText(Item i, ILogger l) : base(i)
+		{
             //store fields
-            ExistingDataNames = i.Fields["From What Fields"].Value.Split(comSplitr, StringSplitOptions.RemoveEmptyEntries);
-			Delimiter = i.Fields["Delimiter"].Value;
-		}
+            ExistingDataNames = GetItemField(i, "From What Fields").Split(comSplitr, StringSplitOptions.RemoveEmptyEntries);
+            Delimiter = GetItemField(i, "Delimiter");
+        }
 
-		#endregion Constructor
-		
-		#region Methods
+        #endregion Constructor
 
-		public virtual void FillField(BaseDataMap map, ref Item newItem, string importValue) {
+        #region IBaseField
+
+        public string Name { get; set; }
+
+        public virtual void FillField(IDataMap map, ref Item newItem, string importValue) {
+
+			Assert.IsNotNull(newItem, "newItem");
+            if (string.IsNullOrEmpty(importValue))
+                return;
+
             //store the imported value as is
             Field f = newItem.Fields[NewItemField];
-            if(f != null)
-                f.Value = importValue;
-		}
-
-        #endregion Methods
-
-        #region IBaseField Methods
+            if (f != null)
+                f.Value = importValue.Trim();
+        }
 
         /// <summary>
         /// returns a string list of fields to import
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<string> GetExistingFieldNames()
-        {
+        public IEnumerable<string> GetExistingFieldNames() {
             return ExistingDataNames;
         }
 
@@ -83,11 +74,10 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
         /// return the delimiter to separate imported values with
         /// </summary>
         /// <returns></returns>
-        public string GetFieldValueDelimiter()
-        {
+        public string GetFieldValueDelimiter() {
             return Delimiter;
         }
 
-        #endregion IBaseField Methods
+        #endregion IBaseField
     }
 }
