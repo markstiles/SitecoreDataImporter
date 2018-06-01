@@ -4,11 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using Sitecore.FakeDb;
 using Sitecore.SharedSource.DataImporter.Utility;
 
-namespace Sitecore.SharedSource.DataImporter.Tests {
+namespace Sitecore.SharedSource.DataImporter.Tests.Utility {
 	[TestFixture, Category("Utility Tests")]
-	public class UtilityTests {
+	public class UtilityTests : BaseFakeDBTestFixture {
 
 		[Test]
 		public void CleanXPathTest() {
@@ -23,14 +24,20 @@ namespace Sitecore.SharedSource.DataImporter.Tests {
 		}
 
 		[Test]
-		public void StripInvalidCharsTest() {
-			string s1 = "a>b<c:d\"[e]f?g/h\\i|j";
-			string r1 = StringUtility.StripInvalidChars(s1);
-			Assert.AreEqual("abcdefghij", r1);
+		public void StripInvalidCharsTest()
+        {
+            using (Db db = GetSampleDb())
+		    {
+		        db.Configuration.Settings["InvalidItemNameChars"] = @"\/:?|[]";
+                string s1 = "abc:d[e]f?g/h\\i|j";
+		        string r1 = StringUtility.StripInvalidChars(s1);
+		        Assert.AreEqual("abcdefghij", r1);
+		    }
 		}
 
 		[Test]
-		public void TrimTextTest() {
+		public void TrimTextTest()
+        {
 			string s1 = "123456789";
 			string r1 = StringUtility.TrimText(s1, 5, string.Empty);
 			Assert.AreEqual(r1, "12345");
