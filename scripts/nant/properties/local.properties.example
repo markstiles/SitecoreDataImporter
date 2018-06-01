@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<!-- This example file contains only the bare minimum of properties required to get your local instance up 
+and running. There are additional default properties from dev.properties that you may wish to override. -->
+<project>
+  
+  <!-- Local site instance settings -->
+  <property name="Build.Configuration" value="Debug" />
+  <!-- Visual Studio Target Number: 2012 = 11.0, 2013 = 12.0, 2015 = 14.0, 2017 = 15.0-->
+  <property name="MSBuild.Version" value="15.0" />
+
+  <property name="Project.Protocol" value="http" />
+  <property name="Project.Domain" value="sc824.local" />
+  <property name="Project.Url" value="${Project.Protocol}://${Project.Domain}" />
+  <property name="Project.Name" value="SitecoreCognitiveServices" />
+  <property name="Project.Serialization" value="D:\inetpub\wwwroot\gitroot\sitecorecognitiveservices\serialization\Sitecore.SharedSource.CognitiveServices\" />
+  <property name="Project.FileRoot" value="D:\inetpub\wwwroot\sc824" />
+    
+  <property name="Gulp.DeployFolder" value="D:\\inetpub\\wwwroot\\sc824" />
+  
+  <property name="Testing.LicensePath" value="${Project.FileRoot}\Data" />
+    
+</project>

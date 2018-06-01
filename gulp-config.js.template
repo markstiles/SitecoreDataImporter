@@ -1,0 +1,15 @@
+module.exports = function () {
+  var instanceRoot = "${Gulp.DeployFolder}";
+  var config = {
+    websiteRoot: instanceRoot + "\\Website",
+    sitecoreLibraries: instanceRoot + "\\Website\\bin",
+    licensePath: instanceRoot + "\\Data\\license.xml",
+    solutionName: "${Project.Name}",
+    buildConfiguration: "${Build.Configuration}",
+    buildPlatform: "Any CPU",
+    buildToolsVersion: ${MSBuild.Version}, 
+    publishPlatform: "AnyCpu",
+    runCleanBuilds: false
+  };
+  return config;
+}

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<project>
+
+	<!-- 
+		this targets file defines general functions useful in nant builds.  anything
+		related to detecting 32 vs. 64 bit environments is taken from:
+		http://www.jaxidian.org/update/2009/07/16/50/
+	-->
+
+	<script language="C#" prefix="ProjectFunctions">
+    <references>
+			<include name="System.dll" />
+		</references>
+    <imports>
+			<import namespace="System.Diagnostics" />
+    </imports>
+		<code>
+			<![CDATA[
+				[System.Runtime.InteropServices.DllImport("kernel32.dll")]
+				public static extern bool IsWow64Process(System.IntPtr hProcess, out bool lpSystemInfo);
+
+				[Function("TargetArchitecture")]
+				public string TargetArchitecture()
+				{
+					bool is64 = false;
+					IsWow64Process(Process.GetCurrentProcess().Handle, out is64);
+					Console.WriteLine("Current architecture: " + (is64 ? "x64" : "x86"));
+					return is64 ? "x64" : "x86";
+				}
+			]]>
+		</code>
+	</script>
+
+	<script language="C#" prefix="ProjectFunctions" >
+    <imports>
+			<import namespace="System.Collections.Generic" />
+    </imports>
+		<code>
+			<![CDATA[
+				public static void ScriptMain(Project project) 
+				{
+					if (!project.Verbose) 
+					{
+						return;
+					}
+				
+					project.Log(Level.Info, "======== Property Values ========");
+					foreach (DictionaryEntry entry in project.Properties)
+					{
+						project.Log(Level.Info, "\t{0}: {1}", entry.Key, entry.Value);
+					}
+					project.Log(Level.Info, "=================================");
+				}
+			]]>
+		</code>
+	</script>
+
+</project>

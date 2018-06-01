@@ -11,6 +11,36 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sitecore.SharedSource.DataI
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sitecore.SharedSource.DataImporter.Serialization", "Sitecore.SharedSource.DataImporter.Serialization\Sitecore.SharedSource.DataImporter.Serialization.csproj", "{D8DE6A89-458C-409C-B191-6F883533D69B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Configuration", "Configuration", "{BB8368FA-BE14-4A3A-8FAD-BDA6CBDB8C64}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		NuGet.config = NuGet.config
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Gulp", "Gulp", "{751C49B8-4129-4BFA-9834-7E1B7119368B}"
+	ProjectSection(SolutionItems) = preProject
+		gulpfile.js = gulpfile.js
+		scripts\habitat.js = scripts\habitat.js
+		package.json = package.json
+		scripts\unicorn.js = scripts\unicorn.js
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Templates", "Templates", "{4784AB7A-0B87-436A-8E96-D4D63BB9C0E2}"
+	ProjectSection(SolutionItems) = preProject
+		Sitecore.SharedSource.DataImporter\Properties\PublishProfiles\deploy.pubxml.template = Sitecore.SharedSource.DataImporter\Properties\PublishProfiles\deploy.pubxml.template
+		gulp-config.js.template = gulp-config.js.template
+		publishsettings.targets.template = publishsettings.targets.template
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Properties", "Properties", "{36A40F78-1E26-4067-89AA-81962EF1BE63}"
+	ProjectSection(SolutionItems) = preProject
+		scripts\nant\properties\default.properties = scripts\nant\properties\default.properties
+		scripts\nant\global.properties = scripts\nant\global.properties
+		scripts\nant\properties\local.properties = scripts\nant\properties\local.properties
+		scripts\nant\properties\local.properties.example = scripts\nant\properties\local.properties.example
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,6 +66,11 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{751C49B8-4129-4BFA-9834-7E1B7119368B} = {BB8368FA-BE14-4A3A-8FAD-BDA6CBDB8C64}
+		{4784AB7A-0B87-436A-8E96-D4D63BB9C0E2} = {BB8368FA-BE14-4A3A-8FAD-BDA6CBDB8C64}
+		{36A40F78-1E26-4067-89AA-81962EF1BE63} = {BB8368FA-BE14-4A3A-8FAD-BDA6CBDB8C64}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EC0D5025-C8E0-4E8F-A86A-723F585B7382}

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<project name="SitecoreCognitiveServices" default="help">
+
+	<!-- Bootstrap -->
+	<property name="dir.src" value="..\..\src" />	
+	
+	<!-- Load the global environment -->
+	<property name="include.mask" value="global.properties" />
+	<call target="-includeall" />
+	
+	<!-- Default targets -->
+	<property name="include.mask" value="targets/*.targets" />
+	<call target="-includeall" />
+
+	<!-- Tell the user which environment we're using -->
+	<echo message="Using environment: ${env}" />
+
+    <!-- Include Common Dev Properties -->
+    <include buildfile="properties/default.properties" failonerror="true" />
+  
+	<!-- Load the properties for the configured environment -->
+	<include buildfile="properties/${env}.properties" failonerror="true" />
+
+	<!-- A target for including all the files in a directory -->
+	<target name="-includeall">
+		<foreach item="File" property="included.file">
+			<in>
+				<items>
+					<include name="${include.mask}" />
+				</items>
+			</in>
+			<do>
+				<include buildfile="${included.file}" failonerror="true" />
+			</do>
+		</foreach>
+	</target>
+	
+</project>

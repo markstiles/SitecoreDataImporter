@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<project>
+
+	<target name="help" description="Shows a help message">
+		<echo>
+			This is the solution Nant file.			
+			Try: nant -projecthelp for a list of tasks you can run			
+		</echo>
+	</target>
+
+	<target name="init" description="Copies all templates and replaces tokens">
+		<loadtasks assembly="nanttasks/NantTasks.NVelocity.dll"/>			
+		<nvelocity>
+			<fileset>
+				<exclude name="${dir.src}/**/bin/**/*" />
+				<exclude name="${dir.src}/**/Debug/**/*" />
+				<exclude name="${dir.src}/**/Release/**/*" />
+				<include name="${dir.src}/Sitecore.SharedSource.DataImporter.*/**/*.template" />				
+				<include name="${dir.src}/Feature/**/code/**/*.template" />				
+				<include name="${dir.src}/Feature/**/tests/**/*.template" />				
+				<include name="${dir.src}/Feature/**/serialization/**/*.template" />				
+				<include name="${dir.src}/Foundation/**/code/**/*.template" />				
+				<include name="${dir.src}/Foundation/**/tests/**/*.template" />		
+				<include name="${dir.src}/Foundation/**/serialization/**/*.template" />		
+				<include name="${dir.src}/Project/**/code/**/*.template" />	
+				<include name="${dir.src}/Project/**/tests/**/*.template" />
+				<include name="${dir.src}/Project/**/serialization/**/*.template" />
+				<include name="${dir.src}/../*.template" /> <!-- root directory -->
+			</fileset>
+		</nvelocity>
+		<nvelocity>
+			<fileset>
+				<include name="${dir.src}/**/*.${env}" />
+			</fileset>
+		</nvelocity>		
+	</target>		
+	
+	
+	<target name="buildall" description="Builds the solution">
+		<loadtasks assembly="nant/nantcontrib-0.85/bin/NAnt.Contrib.Tasks.dll" />
+		<echo message="Building with configuration: ${build.configuration}" />
+
+		<property name="_target.arch" value="${ProjectFunctions::TargetArchitecture()}" />
+		<if test="${property::exists('target.architecture') and not(string::get-length('target.architecture') == 0)}">
+			<property name="_target.arch" value="${target.architecture}" />
+			<echo message="Targeting architecture: ${_target.arch}..." />
+		</if>
+
+		<msbuild project="SitecoreCognitiveServices.sln" verbosity="minimal" >
+			<property name="Configuration" value="${build.configuration}" />
+			<property name="TargetArch" value="${_target.arch}" />
+		</msbuild>
+	</target>
+	
+	<target name="clean" description="Cleans all of the target build directories">
+		<delete>
+			<fileset>                                               
+			</fileset>
+		</delete>
+	</target> 
+			
+</project>

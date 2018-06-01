@@ -7,7 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Sitecore.SharedSource.DataImporter.Tests {
-    [TestFixture, Category("Processor Tests")]
+
+    [TestFixture]
     public class ProcessorTests {
 
         protected DefaultLogger l;
@@ -16,7 +17,5 @@ namespace Sitecore.SharedSource.DataImporter.Tests {
         public void Setup() {
             l = new DefaultLogger();
         }
-
-        
     }
 }

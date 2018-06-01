@@ -216,3 +216,7 @@ pip-log.txt
 packages/
 lib/
 .vs/
+gulp-config.js
+publishsettings.targets
+node_modules/
+Sitecore.SharedSource.DataImporter.Tests/App.config
