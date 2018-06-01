@@ -42,6 +42,51 @@ namespace Sitecore.SharedSource.DataImporter.Tests
             public static string FromFieldValue = "20180601T174200Z";
         }
 
+        public static class ToDate
+        {
+            public static ID DefinitionId => new ID("{41111111-1111-1111-1111-111111111112}");
+            public static ID NewItemId => new ID("{41111111-1111-1111-1111-111111111113}");
+            public static ID OldItemId => new ID("{41111111-1111-1111-1111-111111111114}");
+
+            public static string ToFieldName = "ToFieldName";
+            public static string FromFieldName = "FromFieldName";
+            public static string FromFieldValue = "Some Other Value";
+        }
+
+        public static class ToNumber
+        {
+            public static ID DefinitionId => new ID("{61111111-1111-1111-1111-111111111112}");
+            public static ID NewItemId => new ID("{61111111-1111-1111-1111-111111111113}");
+            public static ID OldItemId => new ID("{61111111-1111-1111-1111-111111111114}");
+
+            public static string ToFieldName = "ToFieldName";
+            public static string FromFieldName = "FromFieldName";
+            public static string ImportValue = "5";
+        }
+
+        public static class ToStaticValue
+        {
+            public static ID DefinitionId => new ID("{51111111-1111-1111-1111-111111111112}");
+            public static ID NewItemId => new ID("{51111111-1111-1111-1111-111111111113}");
+            public static ID OldItemId => new ID("{51111111-1111-1111-1111-111111111114}");
+
+            public static string ToFieldName = "ToFieldName";
+            public static string FromFieldName = "FromFieldName";
+            public static string ValueFieldName = "Value";
+            public static string ValueFieldValue = "ABCDEFG";
+        }
+
+        public static class ToText
+        {
+            public static ID DefinitionId => new ID("{31111111-1111-1111-1111-111111111112}");
+            public static ID NewItemId => new ID("{31111111-1111-1111-1111-111111111113}");
+            public static ID OldItemId => new ID("{31111111-1111-1111-1111-111111111114}");
+
+            public static string ToFieldName = "ToFieldName";
+            public static string FromFieldName = "FromFieldName";
+            public static string FromFieldValue = "Some Other Value";
+        }
+
         public static class TemplateExtensions
         {
             public static ID TemplateID => new ID("{baaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa}");
@@ -99,6 +144,74 @@ namespace Sitecore.SharedSource.DataImporter.Tests
                             { TestingConstants.DateToText.FromFieldName, TestingConstants.DateToText.FromFieldValue }
                         }
                     }   
+                },
+                new DbItem("To Date Items")
+                {
+                    Children =
+                    {
+                        new DbItem("Definition", TestingConstants.ToDate.DefinitionId)
+                        {
+                            { TestingConstants.Shared.ToWhatField, TestingConstants.ToDate.ToFieldName },
+                            { TestingConstants.Shared.FromWhatFields, TestingConstants.ToDate.FromFieldName }
+                        },
+                        new DbItem("New Item", TestingConstants.ToDate.NewItemId)
+                        {
+                            { TestingConstants.ToDate.ToFieldName, "" }
+                        },
+                        new DbItem("Old Item", TestingConstants.ToDate.OldItemId)
+                        {
+                            { TestingConstants.ToDate.FromFieldName, TestingConstants.ToDate.FromFieldValue }
+                        }
+                    }
+                },
+                new DbItem("To Number Items")
+                {
+                    Children =
+                    {
+                        new DbItem("Definition", TestingConstants.ToNumber.DefinitionId)
+                        {
+                            { TestingConstants.Shared.ToWhatField, TestingConstants.ToNumber.ToFieldName },
+                        },
+                        new DbItem("New Item", TestingConstants.ToNumber.NewItemId)
+                        {
+                            { TestingConstants.ToNumber.ToFieldName, "" }
+                        }
+                    }
+                },
+                new DbItem("To Static Value Items")
+                {
+                    Children =
+                    {
+                        new DbItem("Definition", TestingConstants.ToStaticValue.DefinitionId)
+                        {
+                            { TestingConstants.Shared.ToWhatField, TestingConstants.ToStaticValue.ToFieldName },
+                            { TestingConstants.Shared.FromWhatFields, TestingConstants.ToStaticValue.FromFieldName },
+                            { TestingConstants.ToStaticValue.ValueFieldName, TestingConstants.ToStaticValue.ValueFieldValue }
+                        },
+                        new DbItem("New Item", TestingConstants.ToStaticValue.NewItemId)
+                        {
+                            { TestingConstants.ToStaticValue.ToFieldName, "" }
+                        }
+                    }
+                },
+                new DbItem("To Text Items")
+                {
+                    Children =
+                    {
+                        new DbItem("Definition", TestingConstants.ToText.DefinitionId)
+                        {
+                            { TestingConstants.Shared.ToWhatField, TestingConstants.ToText.ToFieldName },
+                            { TestingConstants.Shared.FromWhatFields, TestingConstants.ToText.FromFieldName }
+                        },
+                        new DbItem("New Item", TestingConstants.ToText.NewItemId)
+                        {
+                            { TestingConstants.ToText.ToFieldName, "" }
+                        },
+                        new DbItem("Old Item", TestingConstants.ToText.OldItemId)
+                        {
+                            { TestingConstants.ToText.FromFieldName, TestingConstants.ToText.FromFieldValue }
+                        }
+                    }
                 },
                 new DbItem("Item Extensions")
                 {
