@@ -19,7 +19,7 @@ using Sitecore.Web.UI.WebControls;
 using Sitecore.Layouts;
 using Sitecore.FakeDb;
 
-namespace Sitecore.SharedSource.DataImporter.Tests
+namespace Sitecore.SharedSource.DataImporter.Tests.Extensions
 {
 	[TestFixture]
 	public class ExtensionTests : BaseFakeDBTestFixture
