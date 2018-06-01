@@ -89,9 +89,6 @@
     <Reference Include="Sitecore.Kernel">
       <HintPath>..\packages\Sitecore.Kernel.NoReferences.8.2.170614\lib\NET452\Sitecore.Kernel.dll</HintPath>
       <Private>True</Private>
-    <Reference Include="Sitecore.Kernel, Version=8.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\Sitecore.Kernel.dll</HintPath>
     </Reference>
     <Reference Include="Sitecore.Logging, Version=10.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Sitecore.Logging.NoReferences.8.2.170614\lib\NET452\Sitecore.Logging.dll</HintPath>
@@ -260,7 +257,6 @@
     <Compile Include="Processors\TrimValue.cs" />
     <Compile Include="Processors\UpdateLinks.cs" />
     <Compile Include="Processors\WriteTagWarnings.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\BaseDataMap.cs" />
     <Compile Include="Providers\CSVDataMap.cs" />
     <Compile Include="Providers\HtmlScraper.cs" />

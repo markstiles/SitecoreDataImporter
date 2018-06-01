@@ -46,6 +46,14 @@
     <None Include="Data\Editor-Tab\DataImporter.yml" />
     <None Include="Data\Editor-Tab\DataImporter\DataImporter.yml" />
     <None Include="Data\System-Folder\Data Imports.yml" />
+    <None Include="Data\System-Folder\Data Imports\Sitecore Import Map.yml" />
+    <None Include="Data\System-Folder\Data Imports\Sitecore Import Map2.yml" />
+    <None Include="Data\System-Folder\Data Imports\Sitecore Import Map2\Fields.yml" />
+    <None Include="Data\System-Folder\Data Imports\Sitecore Import Map2\Properties.yml" />
+    <None Include="Data\System-Folder\Data Imports\Sitecore Import Map2\Templates.yml" />
+    <None Include="Data\System-Folder\Data Imports\Sitecore Import Map\Fields.yml" />
+    <None Include="Data\System-Folder\Data Imports\Sitecore Import Map\Properties.yml" />
+    <None Include="Data\System-Folder\Data Imports\Sitecore Import Map\Templates.yml" />
     <None Include="Data\Templates\2b7ed962-3fae-492a-9fde-b2bb212a99c0\Pull Item Name from What Field.yml" />
     <None Include="Data\Templates\58c1b76c-4582-4bc4-b259-817d572d47ec\From What Template.yml" />
     <None Include="Data\Templates\58c1b76c-4582-4bc4-b259-817d572d47ec\Preseve Component ID.yml" />
@@ -192,6 +200,10 @@
     <None Include="Data\Templates\Data Import\Providers\SQL Import Map.yml" />
     <None Include="Data\Templates\Data Import\Providers\SQL Import Map\__Standard Values.yml" />
     <None Include="Data\Templates\f37df260-906a-4f0a-9b64-f2bb8ba9dc65\Recursively Fetch Children.yml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Data\System-Folder\81acf41e-cbdb-44e4-b79c-83848d0e3202\" />
+    <Folder Include="Data\System-Folder\Data Imports\Sitecore Import Map_81acf41e-cbdb-44e4-b79c-83848d0e3202\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

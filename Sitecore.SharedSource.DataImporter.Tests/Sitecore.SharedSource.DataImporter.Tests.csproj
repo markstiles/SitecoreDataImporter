@@ -92,12 +92,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseFakeDBTestFixture.cs" />
-    <Compile Include="ExtensionTests.cs" />
+    <Compile Include="Extensions\ExtensionTests.cs" />
     <Compile Include="Mappings\Fields\ChildrenToTextTests.cs" />
     <Compile Include="Mappings\Fields\DateToTextTests.cs" />
-    <Compile Include="ProcessorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UtilityTests.cs" />
+    <Compile Include="Utility\UtilityTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Sitecore.SharedSource.DataImporter\Sitecore.SharedSource.DataImporter.csproj">
