@@ -574,9 +574,8 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
         /// <summary>
         /// gets the parent of the new item created. will create folders based on name or date if configured to
         /// </summary>
-        public virtual Item GetParentNode(object importRow, string newItemName)
-
-
+        public virtual Item GetParentNode(object importRow, string newItemName) { 
+            
 			Item thisParent = ImportToWhere;
             if (FolderByDate) {
 				FolderTemplate = GetImportFolderTemplate();
