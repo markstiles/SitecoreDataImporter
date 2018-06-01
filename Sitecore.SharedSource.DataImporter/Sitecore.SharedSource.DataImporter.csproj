@@ -126,13 +126,6 @@
     <Content Include="App_Config\Include\Rainbow.config">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="App_Config\Include\Unicorn\Unicorn.UI.config" />
-    <Content Include="App_Config\Include\Unicorn\Unicorn.PowerShell.config" />
-    <Content Include="App_Config\Include\Unicorn\Unicorn.DataProvider.config" />
-    <Content Include="App_Config\Include\Unicorn\Unicorn.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="App_Config\Include\Unicorn\Unicorn.AutoPublish.config" />
     <Content Include="App_Config\Include\DataImporter\Sitecore.SharedSource.DataImporter.config">
       <SubType>Designer</SubType>
     </Content>
@@ -141,6 +134,12 @@
       <SubType>ASPXCodeBehind</SubType>
     </Content>
     <Content Include="sitecore modules\Editors\logs\placeholder.txt" />
+    <Content Include="App_Config\Include\Unicorn\Unicorn.UI.config" />
+    <Content Include="App_Config\Include\Unicorn\Unicorn.PowerShell.config" />
+    <Content Include="App_Config\Include\Unicorn\Unicorn.Dilithium.config.example" />
+    <Content Include="App_Config\Include\Unicorn\Unicorn.DataProvider.config" />
+    <Content Include="App_Config\Include\Unicorn\Unicorn.config" />
+    <Content Include="App_Config\Include\Unicorn\Unicorn.AutoPublish.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
