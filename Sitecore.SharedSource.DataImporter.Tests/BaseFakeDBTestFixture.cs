@@ -41,6 +41,13 @@ namespace Sitecore.SharedSource.DataImporter.Tests
             public static string FromFieldName = "FromFieldName";
             public static string FromFieldValue = "20180601T174200Z";
         }
+
+        public static class TemplateExtensions
+        {
+            public static ID TemplateID => new ID("{baaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa}");
+            public static ID InheritedTemplateID => new ID("{baaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaab}");
+            public static ID PageID => new ID("{31111111-1111-1111-1111-111111111111}");
+        }
     }
 
     public class BaseFakeDBTestFixture
@@ -92,6 +99,18 @@ namespace Sitecore.SharedSource.DataImporter.Tests
                             { TestingConstants.DateToText.FromFieldName, TestingConstants.DateToText.FromFieldValue }
                         }
                     }   
+                },
+                new DbItem("Item Extensions")
+                {
+                    Children =
+                    {
+                        new DbTemplate("Inherited Template", TestingConstants.TemplateExtensions.InheritedTemplateID),
+                        new DbTemplate("Template", TestingConstants.TemplateExtensions.TemplateID)
+                        {
+                            BaseIDs = new[] { TestingConstants.TemplateExtensions.InheritedTemplateID }
+                        },
+                        new DbItem("Page", TestingConstants.TemplateExtensions.PageID, TestingConstants.TemplateExtensions.TemplateID)
+                    }
                 }
             };
         }

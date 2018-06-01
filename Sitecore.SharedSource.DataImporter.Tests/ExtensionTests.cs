@@ -19,28 +19,66 @@ using Sitecore.Web.UI.WebControls;
 using Sitecore.Layouts;
 using Sitecore.FakeDb;
 
-namespace Sitecore.SharedSource.DataImporter.Tests {
-	[TestFixture, Category("Extension Tests")]
-	public class ExtensionTests {
-        
-		[Test]
-		public void ToDateFieldTest() {
-			DateTime dt = new DateTime(2010, 1, 1, 1, 1, 1);
-			string correctDFV = "20100101T010101";
-			string dfv = dt.ToDateFieldValue();
-			Assert.AreEqual(correctDFV, dfv);
-		}
+namespace Sitecore.SharedSource.DataImporter.Tests
+{
+	[TestFixture]
+	public class ExtensionTests : BaseFakeDBTestFixture
+    {
 
-		[Test]
-		public void IsIDTest() {
-			TemplateItem i = Sitecore.Configuration.Factory.GetDatabase("master").Items["/sitecore/content"].Template;
-			bool isMain = i.IsID("{E3E2D58C-DF95-4230-ADC9-279924CECE84}");
-			bool isStandard = i.IsID("{1930BBEB-7805-471A-A3BE-4858AC7CF696}");
-			bool isNon = i.IsID("{00000000-0000-0000-0000-000000000000}");
-			Assert.IsTrue(isMain);
-			Assert.IsTrue(isStandard);
-			Assert.IsFalse(isNon);
-		}
+	    public Db _database;
+
+        [SetUp]
+        public void Setup()
+        {
+            _database = GetSampleDb();
+
+        }
+
+        [Test]
+        public void ToDateFieldTest()
+        {
+            DateTime dt = new DateTime(2010, 1, 1, 1, 1, 1);
+            string correctDFV = "20100101T010101";
+            string dfv = dt.ToDateFieldValue();
+            Assert.AreEqual(correctDFV, dfv);
+        }
         
-	}
+        [Test]
+	    public void IsId_NullTemplate_Returns_False()
+	    {
+	        var val = TemplateExtensions.IsID(null, TestingConstants.TemplateExtensions.TemplateID.ToString());
+
+	        Assert.AreEqual(false, val);
+	    }
+
+	    [Test]
+	    public void IsId_InvalidTemplateString_Returns_False()
+	    {
+	        Item i = _database.GetItem(TestingConstants.TemplateExtensions.TemplateID);
+
+	        var val = i.Template.IsID(null);
+
+	        Assert.AreEqual(false, val);
+	    }
+
+	    [Test]
+	    public void IsId_TemplateString_Matches_ItemTemplateReturns_True()
+	    {
+	        Item i = _database.GetItem(TestingConstants.TemplateExtensions.PageID);
+
+	        var val = i.Template.IsID(TestingConstants.TemplateExtensions.TemplateID.ToString());
+
+	        Assert.AreEqual(true, val);
+	    }
+
+	    [Test]
+	    public void IsId_TemplateString_IsBaseTemplate_Returns_True()
+	    {
+	        Item i = _database.GetItem(TestingConstants.TemplateExtensions.PageID);
+
+	        var val = i.Template.IsID(TestingConstants.TemplateExtensions.InheritedTemplateID.ToString());
+
+	        Assert.AreEqual(true, val);
+	    }
+    }
 }
