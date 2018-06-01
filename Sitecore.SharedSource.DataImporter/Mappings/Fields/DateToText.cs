@@ -20,6 +20,7 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
     public class DateToText : BaseMapping, IBaseFieldWithReference
     {
 		#region Properties
+
 		protected readonly char[] comSplitr = { ',' };
 
 		#endregion Properties
@@ -48,12 +49,10 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
 			Field field = newItem.Fields[NewItemField];
 			if (field != null)
 				field.Value = value;
-		}        
+		}
 
         #endregion IBaseProperty
-		
-
-
+        
         public string GetExistingFieldName()
         {
             return GetItemField(InnerItem, "From What Fields");

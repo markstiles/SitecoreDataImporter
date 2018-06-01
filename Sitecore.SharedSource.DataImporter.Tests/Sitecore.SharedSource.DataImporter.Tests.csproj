@@ -94,6 +94,7 @@
     <Compile Include="BaseFakeDBTestFixture.cs" />
     <Compile Include="ExtensionTests.cs" />
     <Compile Include="Mappings\Fields\ChildrenToTextTests.cs" />
+    <Compile Include="Mappings\Fields\DateToTextTests.cs" />
     <Compile Include="ProcessorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProviderTests.cs" />

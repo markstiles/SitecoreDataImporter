@@ -10,6 +10,15 @@ namespace Sitecore.SharedSource.DataImporter.Tests
 {
     public static class TestingConstants
     {
+        public static class Shared
+        {
+            public static string EnglishLanguageCode = "en";
+            public static string ToWhatField = "To What Field";
+            public static string HandlerClass = "Handler Class";
+            public static string HandlerAssembly = "Handler Assembly";
+            public static string FromWhatFields = "From What Fields";
+        }
+
         public static class ChildrenToText
         {
             public static ID DefinitionId => new ID("{11111111-1111-1111-1111-111111111112}");
@@ -18,46 +27,41 @@ namespace Sitecore.SharedSource.DataImporter.Tests
             public static ID OldItemWithChildren => new ID("{11111111-1111-1111-1111-111111111115}");
             public static ID Child1Id => new ID("{11111111-1111-1111-1111-111111111116}");
             public static ID Child2Id => new ID("{11111111-1111-1111-1111-111111111117}");
-            public static string ToFieldValue = "ToFieldValue";
+
+            public static string ToFieldName = "ToFieldName";
         }
 
-        public static class Shared
+        public static class DateToText
         {
-            public static string EnglishLanguageCode = "en";
+            public static ID DefinitionId => new ID("{21111111-1111-1111-1111-111111111111}");
+            public static ID NewItemId => new ID("{21111111-1111-1111-1111-111111111112}");
+            public static ID OldItemId => new ID("{21111111-1111-1111-1111-111111111113}");
 
+            public static string ToFieldName = "ToFieldName";
+            public static string FromFieldName = "FromFieldName";
+            public static string FromFieldValue = "20180601T174200Z";
         }
     }
 
     public class BaseFakeDBTestFixture
     {
         #region Sample DB
-
+        
         protected Db GetSampleDb()
         {
             return new Db
             {
-                new DbItem("ChildrenToTextItems")
+                new DbItem("Children To Text Items")
                 {
                     Children =
                     {
                         new DbItem("Definition", TestingConstants.ChildrenToText.DefinitionId)
                         {
-                            Fields =
-                            {
-                                new DbField("To What Field")
-                                {
-                                    { TestingConstants.Shared.EnglishLanguageCode, TestingConstants.ChildrenToText.ToFieldValue }
-                                },
-                                new DbField("Handler Class"),
-                                new DbField("Handler Assembly")
-                            }
+                            { TestingConstants.Shared.ToWhatField, TestingConstants.ChildrenToText.ToFieldName }
                         },
                         new DbItem("New Item", TestingConstants.ChildrenToText.NewItemId)
                         {
-                            Fields =
-                            {
-                                new DbField(TestingConstants.ChildrenToText.ToFieldValue) 
-                            }
+                            { TestingConstants.ChildrenToText.ToFieldName, "" }
                         },
                         new DbItem("No Children", TestingConstants.ChildrenToText.OldItemNoChildren),
                         new DbItem("With Children", TestingConstants.ChildrenToText.OldItemWithChildren)
@@ -69,6 +73,25 @@ namespace Sitecore.SharedSource.DataImporter.Tests
                             }
                         }
                     }
+                },
+                new DbItem("Date To Text Items")
+                {
+                    Children =
+                    {
+                        new DbItem("Definition", TestingConstants.DateToText.DefinitionId)
+                        {
+                            { TestingConstants.Shared.ToWhatField, TestingConstants.DateToText.ToFieldName },
+                            { TestingConstants.Shared.FromWhatFields, TestingConstants.DateToText.FromFieldName }
+                        },
+                        new DbItem("New Item", TestingConstants.DateToText.NewItemId)
+                        {
+                            { TestingConstants.DateToText.ToFieldName, "" }
+                        },
+                        new DbItem("Old Item", TestingConstants.DateToText.OldItemId)
+                        {
+                            { TestingConstants.DateToText.FromFieldName, TestingConstants.DateToText.FromFieldValue }
+                        }
+                    }   
                 }
             };
         }
