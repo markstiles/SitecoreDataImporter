@@ -482,6 +482,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
         /// <returns></returns>
         public abstract IEnumerable<object> GetImportData();
 
+        
         /// <summary>
         /// this is used to process custom fields or properties
         /// </summary>
@@ -573,7 +574,8 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
         /// <summary>
         /// gets the parent of the new item created. will create folders based on name or date if configured to
         /// </summary>
-        public virtual Item GetParentNode(object importRow, string newItemName) {
+        public virtual Item GetParentNode(object importRow, string newItemName)
+
 
 			Item thisParent = ImportToWhere;
             if (FolderByDate) {

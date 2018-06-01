@@ -218,5 +218,10 @@ lib/
 .vs/
 gulp-config.js
 publishsettings.targets
+Sitecore.SharedSource.DataImporter/Sitecore.SharedSource.DataImporter.sln
+Sitecore.SharedSource.DataImporter/.vs/Sitecore.SharedSource.DataImporter/v15/Server/sqlite3/storage.ide-wal
+Sitecore.SharedSource.DataImporter/.vs/Sitecore.SharedSource.DataImporter/v15/Server/sqlite3/storage.ide-shm
+Sitecore.SharedSource.DataImporter/.vs/Sitecore.SharedSource.DataImporter/v15/Server/sqlite3/storage.ide
+Sitecore.SharedSource.DataImporter/.vs/Sitecore.SharedSource.DataImporter/v15/Server/sqlite3/db.lock
 node_modules/
 Sitecore.SharedSource.DataImporter.Tests/App.config
