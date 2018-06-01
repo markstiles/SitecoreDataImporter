@@ -136,7 +136,6 @@
     <Content Include="sitecore modules\Editors\logs\placeholder.txt" />
     <Content Include="App_Config\Include\Unicorn\Unicorn.UI.config" />
     <Content Include="App_Config\Include\Unicorn\Unicorn.PowerShell.config" />
-    <Content Include="App_Config\Include\Unicorn\Unicorn.Dilithium.config.example" />
     <Content Include="App_Config\Include\Unicorn\Unicorn.DataProvider.config" />
     <Content Include="App_Config\Include\Unicorn\Unicorn.config" />
     <Content Include="App_Config\Include\Unicorn\Unicorn.AutoPublish.config" />

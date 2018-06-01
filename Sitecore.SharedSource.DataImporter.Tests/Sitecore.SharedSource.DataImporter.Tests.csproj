@@ -93,6 +93,7 @@
   <ItemGroup>
     <Compile Include="BaseFakeDBTestFixture.cs" />
     <Compile Include="ExtensionTests.cs" />
+    <Compile Include="Mappings\Fields\ChildrenToTextTests.cs" />
     <Compile Include="ProcessorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProviderTests.cs" />
@@ -105,15 +106,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="AppCopy.config.template">
-      <SubType>Designer</SubType>
-    </None>
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Mappings\Fields\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>
