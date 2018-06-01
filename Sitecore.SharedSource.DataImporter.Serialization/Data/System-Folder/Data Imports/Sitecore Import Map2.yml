@@ -1,0 +1,37 @@
+﻿---
+ID: "004e43d6-27bb-4544-9323-031a12477e3e"
+Parent: "236fda64-d3db-43ec-be1d-9d0297ff4492"
+Template: "96aac80c-ce36-43c5-93eb-eda101794aac"
+Path: /sitecore/system/Modules/Data Imports/Sitecore Import Map2
+DB: master
+BranchID: "f1199728-0560-43db-80aa-46ec0b5d0ece"
+SharedFields:
+- ID: "06d5295c-ed2f-4a54-9bf2-26228d113318"
+  Hint: __Icon
+  Value: Business/32x32/data_refresh.png
+- ID: "56c326ef-f5da-4818-ae74-e85130b60b84"
+  Hint: Import To Language
+  Value: "{AF584191-45C9-4201-8740-5409F4CF8BDD}"
+- ID: "8954b459-083b-446f-b8c0-40b90ce2e210"
+  Hint: Import To What Template
+  Value: "{EF8CE619-360F-4B7C-8603-A36652282E62}"
+- ID: "a7c05d14-ebc8-4f08-a8c7-183fab7061cc"
+  Hint: Pull Item Name from What Fields
+  Value: Title
+- ID: "d01499f0-1e31-4cd6-a2f4-ee17bd095ab1"
+  Hint: Import To Where
+  Value: 
+- ID: "f8b6f833-d85a-48e7-a17f-c926e39d9e65"
+  Hint: Import From Language
+  Value: "{AF584191-45C9-4201-8740-5409F4CF8BDD}"
+Languages:
+- Language: en
+  Versions:
+  - Version: 1
+    Fields:
+    - ID: "1f03f44c-dd3a-4148-bee7-0724310827b8"
+      Hint: Query
+      Value: /sitecore/content/Articles/2016/08/01//*
+    - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
+      Hint: __Created
+      Value: 20180403T205544Z

@@ -45,17 +45,11 @@ Languages:
     Fields:
     - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
       Hint: __Created
-      Value: 20091010T174100Z
+      Value: 20091010T134100
     - ID: "5bd803a6-65b4-4ec9-8759-340f2fcd152d"
       Hint: Allow Item Name Match
       Type: Checkbox
       Value: 1
-    - ID: "9edcf70a-45d7-4c34-aabf-826f46afad7f"
-      Hint: Path Rewrites
-      Value: |
-        Treatment Updates;Programs
-        Annual Updates;Programs
-        Management Series;Programs
     - ID: "d0569e0f-7d71-4671-90d5-aee173931751"
       Hint: Import Root
       Value: "{0DE95AE4-41AB-4D01-9EB0-67441B7C2450}"
