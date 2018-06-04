@@ -42,6 +42,32 @@ namespace Sitecore.SharedSource.DataImporter.Tests
             public static string FromFieldValue = "20180601T174200Z";
         }
 
+        public static class FromChildValueToText
+        {
+            public static ID DefinitionId => new ID("{71111111-1111-1111-1111-111111111111}");
+            public static ID NewItemId => new ID("{71111111-1111-1111-1111-111111111112}");
+            public static ID OldItemId => new ID("{71111111-1111-1111-1111-111111111113}");
+            public static ID OldItemNoChildrenId => new ID("{71111111-1111-1111-1111-111111111115}");
+            public static ID ChildTemplateId => new ID("{71111111-1111-1111-1111-111111111114}");
+
+            public static string ToFieldName = "ToFieldName";
+            public static string FromFieldName = "FromFieldName";
+            public static string FromFieldValue = "20180601T174200Z";
+            public static string ChildTemplateFieldName = "Child Template";
+        }
+
+        public static class ListToGuid
+        {
+            public static ID DefinitionId => new ID("{81111111-1111-1111-1111-111111111112}");
+            public static ID NewItemId => new ID("{81111111-1111-1111-1111-111111111113}");
+            public static ID SourceItemId => new ID("{81111111-1111-1111-1111-111111111115}");
+
+            public static string ToFieldName = "ToFieldName";
+            public static string SourceListFieldName = "Source List";
+            public static string SourceListFieldValue = "/sitecore/content/List To Guid/Source List";
+            public static string SourceItemName = "ItemName";
+        }
+
         public static class ToDate
         {
             public static ID DefinitionId => new ID("{41111111-1111-1111-1111-111111111112}");
@@ -144,6 +170,54 @@ namespace Sitecore.SharedSource.DataImporter.Tests
                             { TestingConstants.DateToText.FromFieldName, TestingConstants.DateToText.FromFieldValue }
                         }
                     }   
+                },
+                new DbItem("From Child Value To Text")
+                {
+                    Children =
+                    {
+                        new DbItem("Definition", TestingConstants.FromChildValueToText.DefinitionId)
+                        {
+                            { TestingConstants.Shared.ToWhatField, TestingConstants.FromChildValueToText.ToFieldName },
+                            { TestingConstants.Shared.FromWhatFields, TestingConstants.FromChildValueToText.FromFieldName },
+                            { TestingConstants.FromChildValueToText.ChildTemplateFieldName, TestingConstants.FromChildValueToText.ChildTemplateId.ToString() }
+                        },
+                        new DbItem("New Item", TestingConstants.FromChildValueToText.NewItemId)
+                        {
+                            { TestingConstants.FromChildValueToText.ToFieldName, "" }
+                        },
+                        new DbItem("Old Item", TestingConstants.FromChildValueToText.OldItemId)
+                        {
+                            Children = {
+                                new DbItem("New Item Child", new ID(Guid.NewGuid()), TestingConstants.FromChildValueToText.ChildTemplateId)
+                                {
+                                    { TestingConstants.FromChildValueToText.FromFieldName, TestingConstants.FromChildValueToText.FromFieldValue }
+                                }
+                            }
+                        },
+                        new DbItem("Old Item No Children", TestingConstants.FromChildValueToText.OldItemNoChildrenId)
+                    }
+                },
+                new DbItem("List To Guid")
+                {
+                    Children =
+                    {
+                        new DbItem("Definition", TestingConstants.ListToGuid.DefinitionId)
+                        {
+                            { TestingConstants.Shared.ToWhatField, TestingConstants.ListToGuid.ToFieldName },
+                            { TestingConstants.ListToGuid.SourceListFieldName, TestingConstants.ListToGuid.SourceListFieldValue }
+                        },
+                        new DbItem("New Item", TestingConstants.ListToGuid.NewItemId)
+                        {
+                            { TestingConstants.ListToGuid.ToFieldName, "" }
+                        },
+                        new DbItem("Source List")
+                        {
+                            Children =
+                            {
+                                new DbItem(TestingConstants.ListToGuid.SourceItemName, TestingConstants.ListToGuid.SourceItemId)
+                            }
+                        }
+                    }
                 },
                 new DbItem("To Date Items")
                 {
