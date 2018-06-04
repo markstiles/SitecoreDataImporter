@@ -54,15 +54,23 @@ namespace Sitecore.SharedSource.DataImporter.Utility
         /// </summary>
         public static string GetValidItemName(string nameValue, int maxLength)
         {
-            string newItemName = StripInvalidChars(ItemUtil.ProposeValidItemName(nameValue));
+            var proposedName = ItemUtil.ProposeValidItemName(nameValue);
 
-            return TrimText(newItemName, maxLength, string.Empty);
+            var newItemName = StripInvalidChars(proposedName);
+
+            var trimmedName = TrimText(newItemName, maxLength, string.Empty);
+
+            return trimmedName;
         }
 
         public static string TrimText(string val, int maxLength, string endingString)
         {
             string strRetVal = val;
-            return (val.Length > maxLength) ? val.Substring(0, maxLength) + endingString : strRetVal;
+            var adjustedValue = (val.Length > maxLength) 
+                ? val.Substring(0, maxLength) + endingString 
+                : strRetVal;
+
+            return adjustedValue;
         }
 
         public static string StripInvalidChars(string val)

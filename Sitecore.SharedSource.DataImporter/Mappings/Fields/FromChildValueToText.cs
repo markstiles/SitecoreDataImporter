@@ -14,7 +14,6 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
     /// </summary>
     public class FromChildValueToText : BaseMapping, IBaseProperty
     {
-
         public string ChildTemplate { get; set; }
         public string FieldName { get; set; }
 
@@ -31,6 +30,7 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
         #region IBaseField
 
         public string Name { get; set; }
+
         public void FillField(IDataMap map, ref Item newItem, Item importRow)
         {
             if (importRow.Children == null || string.IsNullOrEmpty(FieldName) || string.IsNullOrEmpty(ChildTemplate))
@@ -54,8 +54,6 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
                 f.Value = value;
             }
         }
-
-      
 
         #endregion IBaseField
     }
