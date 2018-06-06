@@ -20,6 +20,7 @@ using Sitecore.Globalization;
 using Sitecore.Data.Managers;
 using Sitecore.Configuration;
 using Sitecore.SharedSource.DataImporter.Logger;
+using Sitecore.SharedSource.DataImporter.Mappings.Processors;
 
 namespace Sitecore.SharedSource.DataImporter.Providers {
     /// <summary>
@@ -31,6 +32,10 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
         #region Static IDs
 
         public static readonly string FieldsFolderTemplateID = "{98EF4356-8BFE-4F6A-A697-ADFD0AAD0B65}";
+
+        public static readonly string PostProcessorFolderTemplateID = "{BE3A36A8-9589-401A-8549-D0E06FDB4F13}";
+
+        public static readonly string PostProcessorTemplateID = "{4CDC6570-140F-426B-85B7-5DE0C67B31FA}";
 
         public static readonly string CommonFolderTemplateID = "{A87A00B1-E6DB-45AB-8B54-636FEC3B5523}";
 
@@ -60,6 +65,8 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
         /// the definitions of fields to import
         /// </summary>
         public List<IBaseField> FieldDefinitions { get; set; }
+
+        public List<IPostProcessor> PostProcessors { get; set; }
 
         /// <summary>
         /// the connection string to the database you're importing from
@@ -155,6 +162,9 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
 
             //populate field definitions
             FieldDefinitions = GetFieldDefinitions(ImportItem);
+
+            //populate post processors
+            PostProcessors = GetPostProcessors(ImportItem);
         }
 
         #endregion Constructor
@@ -289,58 +299,62 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
 					var fieldFolder = ((LookupField) child.Fields["Fields"]).TargetItem;
 					foreach (Item sharedChild in fieldFolder.GetChildren())
 					{
-						l.Add(GenerateFieldMapping(sharedChild));
+					    //create an item to get the class / assembly name from
+					    BaseMapping bm = new BaseMapping(child);
+					    var field = GenerateType<IBaseField>(sharedChild, bm.HandlerClass, bm.HandlerAssembly);
+                        if(field != null)
+                            l.Add(field);
 					}
 				}
 				else
 				{
-					l.Add(GenerateFieldMapping(child));
+				    BaseMapping bm = new BaseMapping(child);
+				    var field = GenerateType<IBaseField>(child, bm.HandlerClass, bm.HandlerAssembly);
+                    if(field != null)
+                        l.Add(field);
 				}
 			}
 
             return l.Where(x => x != null).ToList();
         }
 
-		private IBaseField GenerateFieldMapping(Item child)
-		{
-			//create an item to get the class / assembly name from
-			BaseMapping bm = new BaseMapping(child);
+        protected virtual List<IPostProcessor> GetPostProcessors(Item i)
+        {
+            List<IPostProcessor> processors = new List<IPostProcessor>();
 
-			//check for assembly
-			if (string.IsNullOrEmpty(bm.HandlerAssembly))
-			{
-				Logger.Log("BaseDataMap.GenerateFieldMapping", string.Format("the field's Handler Assembly is not defined on item {0}: {1}", child.Paths.FullPath, bm.HandlerAssembly));
-				return null;
-			}
+            //check for fields folder
+            Item ProcessorFolder = i.GetChildByTemplate(PostProcessorFolderTemplateID);
+            if (ProcessorFolder.IsNull())
+            {
+                Logger.Log(i.Paths.FullPath, "there is no 'Post Processors' folder on the import item", ProcessStatus.ImportDefinitionError);
+                return processors;
+            }
 
-			//check for class
-			if (string.IsNullOrEmpty(bm.HandlerClass))
-			{
-				Logger.Log("BaseDataMap.GenerateFieldMapping", string.Format("the field's Handler Class is not defined on item {0}: {1}", child.Paths.FullPath, bm.HandlerClass));
-				return null;
-			}
+            //check for any children
+            if (!ProcessorFolder.HasChildren)
+            {
+                Logger.Log(i.Paths.FullPath, "there are no post processors to run after the import", ProcessStatus.ImportDefinitionError);
+                return processors;
+            }
 
-			//create the object from the class and cast as base field to add it to field definitions
-			IBaseField bf = null;
-			try
-			{
-				bf = (IBaseField)Sitecore.Reflection.ReflectionUtil.CreateObject(bm.HandlerAssembly, bm.HandlerClass, new object[] { child, Logger });
-			}
-			catch (FileNotFoundException)
-			{
-				Logger.Log("BaseDataMap.GenerateFieldMapping", string.Format("the field's binary specified could not be found on item {0} : {1}", child.Paths.FullPath, bm.HandlerAssembly));
-			}
+            List<Item> childItems = ProcessorFolder
+                .GetChildren()
+                .Where(c => c.TemplateID.Guid == new Guid(PostProcessorTemplateID))
+                .ToList();
+            foreach (Item child in childItems)
+            {
+                var handlerClass = child.GetItemField("Handler Class", Logger);
+                var handlerAssembly = child.GetItemField("Handler Assembly", Logger);
+                var processor = GenerateType<IPostProcessor>(child, handlerClass, handlerAssembly);
+                if(processor != null)
+                    processors.Add(processor);
+            }
 
-			if (bf != null)
-				return bf;
-			else
-				Logger.Log("BaseDataMap.GenerateFieldMapping", string.Format("the field's class type could not be instantiated {0} :{1}", child.Paths.FullPath, bm.HandlerClass));
-			return null;
-		}
-
+            return processors.Where(x => x != null).ToList();
+        }
+        
         protected virtual List<IBaseFieldWithReference> GetReferenceFieldDefinitions(Item i)
         {
-
             List<IBaseFieldWithReference> l = new List<IBaseFieldWithReference>();
 
             //check for fields folder
@@ -364,33 +378,45 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
                 //create an item to get the class / assembly name from
                 BaseMapping bm = new BaseMapping(child);
 
-                //check for assembly
-                if (string.IsNullOrEmpty(bm.HandlerAssembly)) {
-                    Logger.Log(child.Paths.FullPath, "the field's Handler Assembly is not defined", ProcessStatus.ImportDefinitionError, child.Name, bm.HandlerAssembly);
-                    continue;
-                }
-
-                //check for class
-                if (string.IsNullOrEmpty(bm.HandlerClass)) {
-                    Logger.Log(child.Paths.FullPath, "the field's Handler Class is not defined", ProcessStatus.ImportDefinitionError, child.Name, bm.HandlerClass);
-                    continue;
-                }
-
-                //create the object from the class and cast as base field to add it to field definitions
-                IBaseFieldWithReference bf = null;
-                try {
-                    bf = (IBaseFieldWithReference)Sitecore.Reflection.ReflectionUtil.CreateObject(bm.HandlerAssembly, bm.HandlerClass, new object[] { child });
-                } catch (FileNotFoundException fnfe) {
-                    Logger.Log(child.Paths.FullPath, "the field's binary specified could not be found", ProcessStatus.ImportDefinitionError, child.Name, bm.HandlerAssembly);
-                }
-
-                if (bf != null)
-                    l.Add(bf);
-                else
-                    Logger.Log(child.Paths.FullPath, "the field's class type could not be instantiated", ProcessStatus.ImportDefinitionError, child.Name, bm.HandlerClass);
+                var fieldRef = GenerateType<IBaseFieldWithReference>(child, bm.HandlerClass, bm.HandlerAssembly);
+                if(fieldRef != null)
+                    l.Add(fieldRef);
             }
 
             return l;
+        }
+
+        private T GenerateType<T>(Item child, string handlerClass, string handlerAssembly)
+        {
+            //check for assembly
+            if (string.IsNullOrEmpty(handlerAssembly))
+            {
+                Logger.Log("BaseDataMap.GenerateFieldMapping", string.Format("the field's Handler Assembly is not defined on item {0}: {1}", child.Paths.FullPath, handlerAssembly));
+                return default(T);
+            }
+
+            //check for class
+            if (string.IsNullOrEmpty(handlerClass))
+            {
+                Logger.Log("BaseDataMap.GenerateFieldMapping", string.Format("the field's Handler Class is not defined on item {0}: {1}", child.Paths.FullPath, handlerClass));
+                return default(T);
+            }
+
+            //create the object from the class and cast as base field to add it to field definitions
+            try
+            {
+                T typeObj = (T)Sitecore.Reflection.ReflectionUtil.CreateObject(handlerAssembly, handlerClass, new object[] { child, Logger });
+                if (typeObj != null)
+                    return typeObj;
+            }
+            catch (FileNotFoundException)
+            {
+                Logger.Log("BaseDataMap.GenerateFieldMapping", string.Format("the field's binary specified could not be found on item {0} : {1}", child.Paths.FullPath, handlerAssembly));
+            }
+
+            Logger.Log("BaseDataMap.GenerateFieldMapping", string.Format("the field's class type could not be instantiated {0} :{1}", child.Paths.FullPath, handlerClass));
+
+            return default(T);
         }
 
         /// <summary>
@@ -481,7 +507,6 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
         /// </summary>
         /// <returns></returns>
         public abstract IEnumerable<object> GetImportData();
-
         
         /// <summary>
         /// this is used to process custom fields or properties

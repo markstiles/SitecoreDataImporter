@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Sitecore.SharedSource.DataImporter.Mappings.Processors;
 
 namespace Sitecore.SharedSource.DataImporter.Providers {
     public interface IDataMap {
@@ -21,6 +22,8 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
         int ItemNameMaxLength { get; set; }
 
         List<IBaseField> FieldDefinitions { get; set; }
+
+        List<IPostProcessor> PostProcessors { get; set; }
 
         string DatabaseConnectionString { get; set; }
 

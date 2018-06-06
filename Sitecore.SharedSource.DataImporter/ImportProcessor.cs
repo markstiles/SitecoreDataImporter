@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading;
 using Sitecore.Data;
 using Sitecore.Jobs;
+using Sitecore.SharedSource.DataImporter.Mappings.Processors;
 
 namespace Sitecore.SharedSource.DataImporter
 {
@@ -35,7 +36,6 @@ namespace Sitecore.SharedSource.DataImporter
 		/// </summary>
 		public void Process()
 		{
-
 			Logger.Log("N/A", string.Format("Import Started at: {0}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")));
 
 			if (Sitecore.Context.Job != null)
@@ -104,6 +104,18 @@ namespace Sitecore.SharedSource.DataImporter
 						Sitecore.Context.Job.Status.Messages.Add(string.Format("Processed item {0} of {1}", line, totalLines));
 					}
 				}
+
+			    foreach (IPostProcessor p in DataMap.PostProcessors)
+			    {
+			        try
+			        {
+                        p.Process(DataMap);
+			        }
+			        catch (Exception ex)
+			        {
+			            Logger.Log(string.Format("Post Processor of type: {0} failed. Error: {1}", p.GetType(), ex), "N/A", ProcessStatus.PostProcessorError, "N/A", "N/A");
+                    }
+			    }
 			}
             
 			//if no messages then you're good

@@ -1,0 +1,14 @@
+﻿---
+ID: "e2b737d5-8a60-4361-8690-106a56f8c998"
+Parent: "20b1f9c1-9c09-49c9-b760-6ffde99c35ea"
+Template: "be3a36a8-9589-401a-8549-d0e06fdb4f13"
+Path: /sitecore/templates/Modules/Data Import/Branches/CSV Import Map/$name/Post Processors
+DB: master
+Languages:
+- Language: en
+  Versions:
+  - Version: 1
+    Fields:
+    - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
+      Hint: __Created
+      Value: 20180606T134706Z

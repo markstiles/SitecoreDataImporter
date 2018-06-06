@@ -239,6 +239,8 @@
     <Compile Include="Mappings\Fields\UrlToLink.cs" />
     <Compile Include="Mappings\Fields\UrlToReference.cs" />
     <Compile Include="Mappings\IBaseMapping.cs" />
+    <Compile Include="Mappings\Processors\PostProcessorItem.cs" />
+    <Compile Include="Mappings\Processors\IPostProcessor.cs" />
     <Compile Include="Mappings\Properties\IBaseProperty.cs" />
     <Compile Include="Mappings\Properties\PathToText.cs" />
     <Compile Include="Mappings\Properties\UrlToText.cs" />
