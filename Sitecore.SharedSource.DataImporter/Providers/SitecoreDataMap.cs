@@ -956,6 +956,40 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
 
             return d;
         }
+
+        protected virtual List<IBaseFieldWithReference> GetReferenceFieldDefinitions(Item i)
+        {
+            List<IBaseFieldWithReference> l = new List<IBaseFieldWithReference>();
+
+            //check for fields folder
+            Item Fields = i.GetChildByTemplate(ReferenceFieldsFolderTemplateID);
+            if (Fields.IsNull())
+            {
+                Logger.Log("BaseDataMap.GetReferenceFieldDefinitions", string.Format("there is no 'Reference Fields' folder on the import item {0}", i.Paths.FullPath));
+                return l;
+            }
+
+            //check for any children
+            if (!Fields.HasChildren)
+            {
+                Logger.Log("BaseDataMap.GetReferenceFieldDefinitions", string.Format("there are no reference fields to import on  on the import item {0}", ImportItem.Paths.FullPath));
+                return l;
+            }
+
+            ChildList c = Fields.GetChildren();
+            foreach (Item child in c)
+            {
+                //create an item to get the class / assembly name from
+                BaseMapping bm = new BaseMapping(child);
+
+                var fieldRef = GenerateType<IBaseFieldWithReference>(child, bm.HandlerClass, bm.HandlerAssembly, new object[] { child });
+                if (fieldRef != null)
+                    l.Add(fieldRef);
+            }
+
+            return l;
+        }
+
         public override Item GetParentNode(object importRow, string newItemName)
         {
             var item = base.GetParentNode(importRow, newItemName);

@@ -301,7 +301,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
 					{
 					    //create an item to get the class / assembly name from
 					    BaseMapping bm = new BaseMapping(child);
-					    var field = GenerateType<IBaseField>(sharedChild, bm.HandlerClass, bm.HandlerAssembly);
+					    var field = GenerateType<IBaseField>(sharedChild, bm.HandlerClass, bm.HandlerAssembly, new object[] { child, Logger });
                         if(field != null)
                             l.Add(field);
 					}
@@ -309,7 +309,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
 				else
 				{
 				    BaseMapping bm = new BaseMapping(child);
-				    var field = GenerateType<IBaseField>(child, bm.HandlerClass, bm.HandlerAssembly);
+				    var field = GenerateType<IBaseField>(child, bm.HandlerClass, bm.HandlerAssembly, new object[] { child, Logger });
                     if(field != null)
                         l.Add(field);
 				}
@@ -343,9 +343,9 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
                 .ToList();
             foreach (Item child in childItems)
             {
-                var handlerClass = child.GetItemField("Handler Class", Logger);
-                var handlerAssembly = child.GetItemField("Handler Assembly", Logger);
-                var processor = GenerateType<IPostProcessor>(child, handlerClass, handlerAssembly);
+                var handlerClass = child.GetItemField("Processor Class", Logger);
+                var handlerAssembly = child.GetItemField("Processor Assembly", Logger);
+                var processor = GenerateType<IPostProcessor>(child, handlerClass, handlerAssembly, new object[] { });
                 if(processor != null)
                     processors.Add(processor);
             }
@@ -353,40 +353,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
             return processors.Where(x => x != null).ToList();
         }
         
-        protected virtual List<IBaseFieldWithReference> GetReferenceFieldDefinitions(Item i)
-        {
-            List<IBaseFieldWithReference> l = new List<IBaseFieldWithReference>();
-
-            //check for fields folder
-            Item Fields = i.GetChildByTemplate(ReferenceFieldsFolderTemplateID);
-            if (Fields.IsNull())
-            {
-                Logger.Log("BaseDataMap.GetReferenceFieldDefinitions", string.Format("there is no 'Reference Fields' folder on the import item {0}", i.Paths.FullPath));
-                return l;
-            }
-
-            //check for any children
-            if (!Fields.HasChildren)
-			{
-				Logger.Log("BaseDataMap.GetReferenceFieldDefinitions", string.Format("there are no reference fields to import on  on the import item {0}", ImportItem.Paths.FullPath));
-				return l;
-            }
-
-            ChildList c = Fields.GetChildren();
-            foreach (Item child in c)
-            {
-                //create an item to get the class / assembly name from
-                BaseMapping bm = new BaseMapping(child);
-
-                var fieldRef = GenerateType<IBaseFieldWithReference>(child, bm.HandlerClass, bm.HandlerAssembly);
-                if(fieldRef != null)
-                    l.Add(fieldRef);
-            }
-
-            return l;
-        }
-
-        private T GenerateType<T>(Item child, string handlerClass, string handlerAssembly)
+        public T GenerateType<T>(Item child, string handlerClass, string handlerAssembly, object[] instantiationParameters)
         {
             //check for assembly
             if (string.IsNullOrEmpty(handlerAssembly))
@@ -405,7 +372,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
             //create the object from the class and cast as base field to add it to field definitions
             try
             {
-                T typeObj = (T)Sitecore.Reflection.ReflectionUtil.CreateObject(handlerAssembly, handlerClass, new object[] { child, Logger });
+                T typeObj = (T)Sitecore.Reflection.ReflectionUtil.CreateObject(handlerAssembly, handlerClass, instantiationParameters);
                 if (typeObj != null)
                     return typeObj;
             }

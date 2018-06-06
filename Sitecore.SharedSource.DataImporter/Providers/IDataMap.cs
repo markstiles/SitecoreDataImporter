@@ -104,6 +104,8 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
         /// <returns></returns>
         Item GetParentNode(object importRow, string newItemName);
 
+        T GenerateType<T>(Item child, string handlerClass, string handlerAssembly, object[] instantiationParameters);
+
         #endregion Methods
     }
 }
