@@ -43,6 +43,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Data\System-Folder\81acf41e-cbdb-44e4-b79c-83848d0e3202\" />
+    <Folder Include="Data\System-Folder\Data Imports\Sitecore Import Map_81acf41e-cbdb-44e4-b79c-83848d0e3202\" />
+  </ItemGroup>
+  <ItemGroup>
     <None Include="Data\Editor-Tab\DataImporter.yml" />
     <None Include="Data\Editor-Tab\DataImporter\DataImporter.yml" />
     <None Include="Data\System-Folder\Data Imports.yml" />
@@ -63,19 +67,23 @@
     <None Include="Data\Templates\Data Import\Branches\CSV Import Map.yml" />
     <None Include="Data\Templates\Data Import\Branches\CSV Import Map\_name.yml" />
     <None Include="Data\Templates\Data Import\Branches\CSV Import Map\_name\Fields.yml" />
+    <None Include="Data\Templates\Data Import\Branches\CSV Import Map\_name\Post Processors.yml" />
     <None Include="Data\Templates\Data Import\Branches\MySQL Import Map.yml" />
     <None Include="Data\Templates\Data Import\Branches\MySQL Import Map\_name.yml" />
     <None Include="Data\Templates\Data Import\Branches\MySQL Import Map\_name\Fields.yml" />
+    <None Include="Data\Templates\Data Import\Branches\MySQL Import Map\_name\Post Processors.yml" />
     <None Include="Data\Templates\Data Import\Branches\Sitecore Import Map.yml" />
     <None Include="Data\Templates\Data Import\Branches\Sitecore Import Map\_name.yml" />
     <None Include="Data\Templates\Data Import\Branches\Sitecore Import Map\_name\Components.yml" />
     <None Include="Data\Templates\Data Import\Branches\Sitecore Import Map\_name\Fields.yml" />
+    <None Include="Data\Templates\Data Import\Branches\Sitecore Import Map\_name\Post Processors.yml" />
     <None Include="Data\Templates\Data Import\Branches\Sitecore Import Map\_name\Properties.yml" />
     <None Include="Data\Templates\Data Import\Branches\Sitecore Import Map\_name\Reference Fields.yml" />
     <None Include="Data\Templates\Data Import\Branches\Sitecore Import Map\_name\Templates.yml" />
     <None Include="Data\Templates\Data Import\Branches\SQL Import Map.yml" />
     <None Include="Data\Templates\Data Import\Branches\SQL Import Map\_name.yml" />
     <None Include="Data\Templates\Data Import\Branches\SQL Import Map\_name\Fields.yml" />
+    <None Include="Data\Templates\Data Import\Branches\SQL Import Map\_name\Post Processors.yml" />
     <None Include="Data\Templates\Data Import\Folders.yml" />
     <None Include="Data\Templates\Data Import\Folders\Component Folder.yml" />
     <None Include="Data\Templates\Data Import\Folders\Component Folder\__Standard Values.yml" />
@@ -85,6 +93,8 @@
     <None Include="Data\Templates\Data Import\Folders\Field Folder\__Standard Values.yml" />
     <None Include="Data\Templates\Data Import\Folders\Import Map Folder.yml" />
     <None Include="Data\Templates\Data Import\Folders\Import Map Folder\__Standard Values.yml" />
+    <None Include="Data\Templates\Data Import\Folders\Post Processor Folder.yml" />
+    <None Include="Data\Templates\Data Import\Folders\Post Processor Folder\__Standard Values.yml" />
     <None Include="Data\Templates\Data Import\Folders\Property Folder.yml" />
     <None Include="Data\Templates\Data Import\Folders\Property Folder\__Standard Values.yml" />
     <None Include="Data\Templates\Data Import\Folders\Reference Fields.yml" />
@@ -140,6 +150,11 @@
     <None Include="Data\Templates\Data Import\Mappings\Fields\UrlToReference\UrlToReference.yml" />
     <None Include="Data\Templates\Data Import\Mappings\Fields\UrlToReference\UrlToReference\SiteHomeItem.yml" />
     <None Include="Data\Templates\Data Import\Mappings\Fields\UrlToReference\__Standard Values.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Processors.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Processors\Post Processor.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Processors\Post Processor\Post Processor.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Processors\Post Processor\Post Processor\Processor Assembly.yml" />
+    <None Include="Data\Templates\Data Import\Mappings\Processors\Post Processor\Post Processor\Processor Class.yml" />
     <None Include="Data\Templates\Data Import\Mappings\Properties.yml" />
     <None Include="Data\Templates\Data Import\Mappings\Properties\ChildrenToText.yml" />
     <None Include="Data\Templates\Data Import\Mappings\Properties\ChildrenToText\__Standard Values.yml" />
@@ -200,10 +215,6 @@
     <None Include="Data\Templates\Data Import\Providers\SQL Import Map.yml" />
     <None Include="Data\Templates\Data Import\Providers\SQL Import Map\__Standard Values.yml" />
     <None Include="Data\Templates\f37df260-906a-4f0a-9b64-f2bb8ba9dc65\Recursively Fetch Children.yml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Data\System-Folder\81acf41e-cbdb-44e4-b79c-83848d0e3202\" />
-    <Folder Include="Data\System-Folder\Data Imports\Sitecore Import Map_81acf41e-cbdb-44e4-b79c-83848d0e3202\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
