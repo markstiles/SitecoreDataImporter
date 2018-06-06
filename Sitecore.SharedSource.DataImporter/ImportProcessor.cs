@@ -105,9 +105,17 @@ namespace Sitecore.SharedSource.DataImporter
 					}
 				}
 
-			    foreach (IPostProcessor p in DataMap.PostProcessors)
+			    var currentPostProcessor = 1;
+                var postProcessorCount = DataMap.PostProcessors.Count;
+                foreach (IPostProcessor p in DataMap.PostProcessors)
 			    {
-			        try
+			        if (Sitecore.Context.Job != null)
+			        {
+			            Sitecore.Context.Job.Status.Processed = currentPostProcessor;
+			            Sitecore.Context.Job.Status.Messages.Add(string.Format("Processing post processor {0} of {1}", currentPostProcessor, postProcessorCount));
+			        }
+
+                    try
 			        {
                         p.Process(DataMap);
 			        }
@@ -115,6 +123,8 @@ namespace Sitecore.SharedSource.DataImporter
 			        {
 			            Logger.Log(string.Format("Post Processor of type: {0} failed. Error: {1}", p.GetType(), ex), "N/A", ProcessStatus.PostProcessorError, "N/A", "N/A");
                     }
+
+			        currentPostProcessor++;
 			    }
 			}
             
