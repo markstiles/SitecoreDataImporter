@@ -76,7 +76,9 @@ namespace Sitecore.SharedSource.DataImporter.Utility
         public static string StripInvalidChars(string val)
         {
 			StringBuilder sb = new StringBuilder();
-			Dictionary<char,char> invalid = Sitecore.Configuration.Settings.InvalidItemNameChars.ToDictionary<char, char>(a => a);
+			Dictionary<char,char> invalid = Configuration.Settings.InvalidItemNameChars
+                .Distinct()
+                .ToDictionary(a => a);
 			foreach(char c in val){
 				if(!invalid.ContainsKey(c))
 					sb.Append(c);

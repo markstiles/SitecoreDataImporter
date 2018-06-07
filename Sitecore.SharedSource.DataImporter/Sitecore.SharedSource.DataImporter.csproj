@@ -136,11 +136,11 @@
     <Content Include="App_Config\Include\DataImporter\Sitecore.SharedSource.DataImporter.config">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="sitecore modules\Editors\css\global.css" />
-    <Content Include="sitecore modules\Editors\Default.aspx">
+    <Content Include="sitecore modules\Shell\Data Importer\css\global.css" />
+    <Content Include="sitecore modules\Shell\Data Importer\Default.aspx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>
-    <Content Include="sitecore modules\Editors\logs\placeholder.txt" />
+    <Content Include="sitecore modules\Shell\Data Importer\logs\placeholder.txt" />
     <Content Include="App_Config\Include\Unicorn\Unicorn.UI.config" />
     <Content Include="App_Config\Include\Unicorn\Unicorn.PowerShell.config" />
     <Content Include="App_Config\Include\Unicorn\Unicorn.DataProvider.config" />
@@ -154,7 +154,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\PublishProfiles\deploy.pubxml" />
-    <Content Include="sitecore modules\Editors\scripts\Sample.bat" />
+    <Content Include="sitecore modules\Shell\Data Importer\scripts\Sample.bat" />
     <None Include="Web.config">
       <SubType>Designer</SubType>
     </None>
@@ -264,11 +264,11 @@
     <Compile Include="Providers\SitecoreDataMap.cs" />
     <Compile Include="Providers\SqlDataMap.cs" />
     <Compile Include="Reporting\ImportReporter.cs" />
-    <Compile Include="sitecore modules\Editors\Default.aspx.cs">
+    <Compile Include="sitecore modules\Shell\Data Importer\Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="sitecore modules\Editors\Default.aspx.designer.cs">
+    <Compile Include="sitecore modules\Shell\Data Importer\Default.aspx.designer.cs">
       <DependentUpon>Default.aspx</DependentUpon>
     </Compile>
     <Compile Include="Utility\DateTimeUtil.cs" />

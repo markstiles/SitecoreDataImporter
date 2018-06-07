@@ -91,16 +91,20 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
         public IEnumerable<ComponentMapping> ComponentMappingDefinitions { get; set; }
         
         public Item ImportRoot { get; set; }
+
 		public bool DeleteOnOverwrite { get; set; }
 
 		public bool AllowItemNameMatch { get; set; }
+
 		public bool PreserveChildren { get; set; }
 
-		#endregion Properties
+        public bool KeepOriginalItemID { get; set; }
 
-		#region Fields
+        #endregion Properties
 
-		public Language ImportFromLanguage { get; set; }
+        #region Fields
+
+        public Language ImportFromLanguage { get; set; }
 
         public bool RecursivelyFetchChildren { get; set; }
 		public Dictionary<string,string> PathRewrites { get; set; }
@@ -132,8 +136,9 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
 	        DeleteOnOverwrite = ImportItem.GetItemBool("Delete On Overwrite");
 			PreserveChildren = ImportItem.GetItemBool("Preserve Children on Delete");
 			AllowItemNameMatch = ImportItem.GetItemBool("Allow Item Name Match");
+            KeepOriginalItemID = ImportItem.GetItemBool("Keep Original Item ID");
 
-			PathRewrites = ImportItem.GetItemField("Path Rewrites", Logger)
+            PathRewrites = ImportItem.GetItemField("Path Rewrites", Logger)
 				.Split(new[] {Environment.NewLine}, StringSplitOptions.RemoveEmptyEntries)
 				.ToDictionary(s => s.Split(';')[0], s => s.Split(';')[1]);
 		}
@@ -391,7 +396,9 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
 	            //if not found then create one
                 if (newItem == null)
                 {
-                     newItem = ItemManager.AddFromTemplate(newItemName, nItemTemplate.ID, parent, GetItemID(((Item) importRow)));
+                     newItem = (KeepOriginalItemID)
+                        ? ItemManager.AddFromTemplate(newItemName, nItemTemplate.ID, parent, GetItemID((Item) importRow))
+                        : ItemManager.AddFromTemplate(newItemName, nItemTemplate.ID, parent);
                 }
 
                 if (newItem == null)

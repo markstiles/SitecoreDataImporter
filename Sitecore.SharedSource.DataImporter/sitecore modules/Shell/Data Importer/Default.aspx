@@ -86,8 +86,7 @@
             <div class="Controls">
 			    <div class="formRow">
                     <asp:Button ID="btnImport" Text="Run Import" OnClick="btnImport_Click" runat="server" BackColor="#474747" ForeColor="White" BorderWidth="0" Width="100px" Height="30px"  />
-					<asp:Button ID="btnPostImport" Text="Run Post Import Cleanup" OnClick="btnPostImport_Click" runat="server" BackColor="#474747" ForeColor="White" BorderWidth="0" Width="150px" Height="30px" />
-                </div>
+				</div>
                 <div class="rowSpacer"></div>
                 <div class="formRow">
                     <div class="rowTitle">Messages:</div>
