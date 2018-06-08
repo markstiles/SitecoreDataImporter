@@ -10,7 +10,7 @@ SharedFields:
   Value: Network/32x32/server_from_client.png
 - ID: "6f371c74-5bd5-4ebd-b10a-fc54716021ae"
   Hint: Url
-  Value: /sitecore modules/Editors/Default.aspx
+  Value: /sitecore modules/Shell/Data Importer/Default.aspx
 - ID: "ab8d0102-91f3-43b6-90aa-5a0641dc8521"
   Hint: Icon
   Value: /sitecore/shell/Themes/Standard/Network/32x32/server_from_client.png

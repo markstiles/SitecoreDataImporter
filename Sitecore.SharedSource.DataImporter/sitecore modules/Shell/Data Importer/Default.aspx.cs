@@ -72,7 +72,9 @@ namespace Sitecore.SharedSource.DataImporter.Editors
 
         #region Import
 
-        protected void btnImport_Click(object sender, EventArgs e) {
+        protected void btnImport_Click(object sender, EventArgs e)
+        {
+            txtMessage.Text = "";
 
             //check import item
             if (importItem == null)
@@ -127,9 +129,9 @@ namespace Sitecore.SharedSource.DataImporter.Editors
                     new object[] { currentDB, ddlConnStr.SelectedValue, importItem, l }
                 );
             }
-            catch (FileNotFoundException fnfe)
+            catch (Exception ex)
             {
-                Log("Error", string.Format("the binary {0} could not be found", ha.Value));
+                Log("Error", ex.ToString());
                 txtMessage.Text = log.ToString();
                 return;
             }
@@ -165,35 +167,7 @@ namespace Sitecore.SharedSource.DataImporter.Editors
         }
 
         #endregion Import
-        
-        #region Post Import
-
-        protected void btnPostImport_Click(object sender, EventArgs e)
-        {
-            var jobOptions = new Sitecore.Jobs.JobOptions(
-                                    "PostImport",
-                                    "Post Import",
-                                    Sitecore.Context.Site.Name,
-                                    this,
-                                    "HandlePostImport",
-                                    new object[] { });
-
-            Sitecore.Jobs.JobManager.Start(jobOptions);
-
-            repJobs.DataSource = Jobs;
-            repJobs.DataBind();
-        }
-
-        protected void HandlePostImport()
-        {
-            DefaultLogger l = new DefaultLogger();
-            new PostImport(l).Process();
-            
-            WriteLogs(l);
-        }
-
-        #endregion Post Import
-
+       
         public IEnumerable<Sitecore.Jobs.Job> Jobs
         {
             get
@@ -206,7 +180,7 @@ namespace Sitecore.SharedSource.DataImporter.Editors
         private void WriteLogs(DefaultLogger l)
         {
             foreach (KeyValuePair<string, List<ImportRow>> kvp in l.GetLogRecords()) {
-                string logPath = string.Format(@"{0}sitecore modules\Shell\Data Import\logs\{1}.{2}.{3}.csv",
+                string logPath = string.Format(@"{0}sitecore modules\Shell\Data Importer\logs\{1}.{2}.{3}.csv",
                                     HttpRuntime.AppDomainAppPath, importItem.DisplayName.Replace(" ", "-"),
                                     DateTime.Now.ToString("yyyy.MM.dd.H.mm.ss"),
                                     kvp.Key);
