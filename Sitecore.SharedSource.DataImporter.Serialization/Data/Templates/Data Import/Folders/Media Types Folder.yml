@@ -1,0 +1,25 @@
+﻿---
+ID: "41637a0c-556a-4b86-9805-828a13dd8cd3"
+Parent: "36d08db6-263a-439a-9be7-2f23ac188ac1"
+Template: "ab86861a-6030-46c5-b394-e8f99e8b87db"
+Path: /sitecore/templates/Modules/Data Import/Folders/Media Types Folder
+DB: master
+SharedFields:
+- ID: "06d5295c-ed2f-4a54-9bf2-26228d113318"
+  Hint: __Icon
+  Value: Other/32x32/bullet_ball_blue.png
+- ID: "12c33f3f-86c5-43a5-aeb4-5598cec45116"
+  Hint: __Base template
+  Type: tree list
+  Value: "{1930BBEB-7805-471A-A3BE-4858AC7CF696}"
+- ID: "f7d48a55-2158-4f02-9356-756654404f73"
+  Hint: __Standard values
+  Value: "{700CA303-3E6B-4B94-9201-8FD9B7393CB3}"
+Languages:
+- Language: en
+  Versions:
+  - Version: 1
+    Fields:
+    - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
+      Hint: __Created
+      Value: 20180108T185929Z

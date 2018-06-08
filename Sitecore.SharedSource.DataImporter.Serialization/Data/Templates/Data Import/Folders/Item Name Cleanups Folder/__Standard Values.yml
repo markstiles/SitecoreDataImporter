@@ -1,0 +1,23 @@
+﻿---
+ID: "539ccd75-b92f-4827-981c-0b3c7fc0afc2"
+Parent: "e8284f7a-9ba0-469e-a49b-5df78a95407d"
+Template: "e8284f7a-9ba0-469e-a49b-5df78a95407d"
+Path: /sitecore/templates/Modules/Data Import/Folders/Item Name Cleanups Folder/__Standard Values
+DB: master
+SharedFields:
+- ID: "1172f251-dad4-4efb-a329-0c63500e4f1e"
+  Hint: __Masters
+  Type: TreelistEx
+  Value: "{1E02FFC5-2CDA-4D74-86F6-5A23DCF9D9C5}"
+Languages:
+- Language: en
+  Versions:
+  - Version: 1
+    Fields:
+    - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
+      Hint: __Created
+      Value: 20180307T181223Z
+    - ID: "5dd74568-4d4b-44c1-b513-0af5f4cda34f"
+      Hint: __Created by
+      Value: |
+        sitecore\Admin

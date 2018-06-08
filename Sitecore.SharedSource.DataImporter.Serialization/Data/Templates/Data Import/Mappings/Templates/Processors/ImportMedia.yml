@@ -1,0 +1,22 @@
+﻿---
+ID: "f56e8012-3b7e-4781-a1d5-e83004f1b0ba"
+Parent: "96651355-92cc-4ee0-b0c9-d12110e13b35"
+Template: "ab86861a-6030-46c5-b394-e8f99e8b87db"
+Path: /sitecore/templates/Modules/Data Import/Mappings/Templates/Processors/ImportMedia
+DB: master
+SharedFields:
+- ID: "06d5295c-ed2f-4a54-9bf2-26228d113318"
+  Hint: __Icon
+  Value: Applications/32x32/photo_scenery.png
+- ID: "12c33f3f-86c5-43a5-aeb4-5598cec45116"
+  Hint: __Base template
+  Type: tree list
+  Value: "{16921A7D-8C7E-4EC6-9380-5DC10EBB6F32}"
+Languages:
+- Language: en
+  Versions:
+  - Version: 1
+    Fields:
+    - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
+      Hint: __Created
+      Value: 20171228T152444Z

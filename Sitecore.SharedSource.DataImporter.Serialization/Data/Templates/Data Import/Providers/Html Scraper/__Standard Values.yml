@@ -1,0 +1,41 @@
+﻿---
+ID: "73ace00e-4211-47ed-abf4-20b510294fa0"
+Parent: "8c445567-92cb-4d7e-8ec1-c91667062211"
+Template: "8c445567-92cb-4d7e-8ec1-c91667062211"
+Path: /sitecore/templates/Modules/Data Import/Providers/Html Scraper/__Standard Values
+DB: master
+SharedFields:
+- ID: "02bab16b-d351-4502-a579-f3d6e0edb4f8"
+  Hint: Item Name Max Length
+  Value: 65
+- ID: "0639f8e7-44ab-41ce-ae67-9987baf47e96"
+  Hint: Handler Assembly
+  Value: Sitecore.SharedSource.DataImporter
+- ID: "06d5295c-ed2f-4a54-9bf2-26228d113318"
+  Hint: __Icon
+  Value: office/32x32/brickwall.png
+- ID: "0790a745-13e8-44f1-aa17-469e8fc7d20e"
+  Hint: Handler Class
+  Value: Sitecore.SharedSource.DataImporter.Providers.HtmlScraper
+- ID: "1172f251-dad4-4efb-a329-0c63500e4f1e"
+  Hint: __Masters
+  Type: TreelistEx
+  Value: "{BE3A36A8-9589-401A-8549-D0E06FDB4F13}"
+- ID: "56c326ef-f5da-4818-ae74-e85130b60b84"
+  Hint: Import To Language
+  Value: "{AF584191-45C9-4201-8740-5409F4CF8BDD}"
+- ID: "a0cb3965-8884-4c7a-8815-b6b2e5ced162"
+  Hint: __Editors
+  Type: TreelistEx
+  Value: "{6ABC057D-F83F-470B-B0C6-01EB9CB1B03E}"
+- ID: "a7c05d14-ebc8-4f08-a8c7-183fab7061cc"
+  Hint: Pull Item Name from What Fields
+  Value: "[URL]"
+Languages:
+- Language: en
+  Versions:
+  - Version: 1
+    Fields:
+    - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
+      Hint: __Created
+      Value: 20160919T193836Z

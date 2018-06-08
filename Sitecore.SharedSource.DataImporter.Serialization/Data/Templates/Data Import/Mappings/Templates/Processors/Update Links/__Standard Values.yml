@@ -1,0 +1,23 @@
+﻿---
+ID: "e0e3b493-707a-4d36-844e-f616a7bb36f1"
+Parent: "7ba9fca6-f473-42fe-bf20-72c16e07c27b"
+Template: "7ba9fca6-f473-42fe-bf20-72c16e07c27b"
+Path: /sitecore/templates/Modules/Data Import/Mappings/Templates/Processors/Update Links/__Standard Values
+DB: master
+Languages:
+- Language: en
+  Versions:
+  - Version: 1
+    Fields:
+    - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
+      Hint: __Created
+      Value: 20180430T182624Z
+    - ID: "53459a32-b526-4ee8-8ee6-dc0054b14e29"
+      Hint: Internal Domains
+      Value: |
+        www.myDomain.com
+        myDomain.com
+    - ID: "5dd74568-4d4b-44c1-b513-0af5f4cda34f"
+      Hint: __Created by
+      Value: |
+        sitecore\Admin

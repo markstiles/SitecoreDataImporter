@@ -1,0 +1,24 @@
+﻿---
+ID: "82d6bbee-97fe-4a70-b2d3-a23cfdbef101"
+Parent: "1e02ffc5-2cda-4d74-86f6-5a23dcf9d9c5"
+Template: "1e02ffc5-2cda-4d74-86f6-5a23dcf9d9c5"
+Path: /sitecore/templates/Modules/Data Import/Mappings/Templates/Processors/Cleanup/__Standard Values
+DB: master
+Languages:
+- Language: en
+  Versions:
+  - Version: 1
+    Fields:
+    - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
+      Hint: __Created
+      Value: 20171228T191123Z
+    - ID: "3b52c445-25db-402f-9221-67d80442d2ab"
+      Hint: Type
+      Value: Sitecore.SharedSource.DataImporter.Processors.Cleanup, Sitecore.SharedSource.DataImporter
+    - ID: "5dd74568-4d4b-44c1-b513-0af5f4cda34f"
+      Hint: __Created by
+      Value: |
+        sitecore\Admin
+    - ID: "b05d3b7a-659e-440a-bcb7-c29fa0a68e79"
+      Hint: Method
+      Value: Run

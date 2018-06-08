@@ -1,0 +1,24 @@
+﻿---
+ID: "01b1cdbf-1c95-4e9c-9ade-11af96faf103"
+Parent: "fca96433-a17f-4240-92f9-0a2307320734"
+Template: "4cdc6570-140f-426b-85b7-5de0c67b31fa"
+Path: /sitecore/templates/Modules/Data Import/Branches/Html Scraper/$name/Post Processors Handler/Process
+DB: master
+Languages:
+- Language: en
+  Versions:
+  - Version: 1
+    Fields:
+    - ID: "0d829230-d545-4903-8d55-b214974c3ed2"
+      Hint: Processor Class
+      Value: Sitecore.SharedSource.DataImporter.Processors.PostProcessors
+    - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
+      Hint: __Created
+      Value: 20180608T145413Z
+    - ID: "4f72c4af-0785-4e2a-bdff-c3b1a791e603"
+      Hint: Processor Assembly
+      Value: Sitecore.SharedSource.DataImporter
+    - ID: "5dd74568-4d4b-44c1-b513-0af5f4cda34f"
+      Hint: __Created by
+      Value: |
+        sitecore\admin
