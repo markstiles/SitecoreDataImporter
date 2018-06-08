@@ -19,6 +19,8 @@ using Sitecore.SharedSource.DataImporter.Processors;
 using System.Reflection;
 using Sitecore.SharedSource.DataImporter.Reporting;
 using Sitecore.SharedSource.DataImporter.Logger;
+using Sitecore.SharedSource.DataImporter.Mappings.Fields;
+using Sitecore.SharedSource.DataImporter.Mappings.Processors;
 
 /// <summary>
 /// 
@@ -26,18 +28,17 @@ using Sitecore.SharedSource.DataImporter.Logger;
 
 namespace Sitecore.SharedSource.DataImporter.Providers
 {
-    public class HtmlScraper : BaseDataMap 
+    public class HtmlScraper : BaseDataMap
     {
-        public ImportConfig Config { get; set; }      
+        public ImportConfig Config { get; set; }
         private Item ImportItem = null;
         private string ItemNameColumn = "ItemName";
         private string PathColumn = "Path";
         private string ActionColumn = "ActionColumn";
         private string RequestedURL = "RequestedURL";
         private NameValueCollection mappings;
-        private List<Item> MappingFields;
 
-      
+
         public HtmlScraper(Database db, string ConnectionString, Item importItem, ILogger l)
             : base(db, ConnectionString, importItem, l)
         {
@@ -69,7 +70,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 
             if (ItemNameFields.FirstOrDefault() == "[URL]")
             {
-                //ItemNameFields = ItemNameColumn;
+                ItemNameFields[0] = ItemNameColumn;
             }
 
             //Adding columns to the table from field mapping
@@ -95,7 +96,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers
                 {
                     levels.RemoveAll(x => config.ExcludeDirectories.Contains(x.ToLower()));
                 }
-                
+
 
                 BuildData(config, levels, url, dt);
             }
@@ -104,18 +105,18 @@ namespace Sitecore.SharedSource.DataImporter.Providers
             return (dt.Rows).Cast<object>();
         }
 
-        private void RunProcessor(Item fieldMap, Item newItem)
+        private void RunProcessor(IBaseField fieldMap, Item newItem)
         {
             //Check for warnings
-            MultilistField WarningTags = fieldMap.Fields[DataImporter.HtmlScraper.Constants.FieldNames.WarningTriggerTags];
-            if(WarningTags.Count > 0)
+            MultilistField WarningTags = fieldMap.InnerItem.Fields[DataImporter.HtmlScraper.Constants.FieldNames.WarningTriggerTags];
+            if (WarningTags.Count > 0)
             {
-                WriteTagWarnings.Run(newItem, fieldMap);
+                WriteTagWarnings.Run(newItem, fieldMap.InnerItem);
             }
 
             //"To What Field"
             List<Item> processorList = new List<Item>();
-            MultilistField processors = fieldMap.Fields[DataImporter.HtmlScraper.Constants.FieldNames.FieldPostProcessors];
+            MultilistField processors = fieldMap.InnerItem.Fields[DataImporter.HtmlScraper.Constants.FieldNames.FieldPostProcessors];
 
             foreach (var targetId in processors.TargetIDs)
             {
@@ -123,7 +124,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 
                 if (processor == null) { continue; }
 
-               Processor.Execute(processor, newItem, fieldMap);
+                Processor.Execute(processor, newItem, fieldMap.InnerItem);
             }
         }
 
@@ -137,11 +138,11 @@ namespace Sitecore.SharedSource.DataImporter.Providers
         {
             DataRow dataRow = importRow as DataRow;
             string requestedURL = dataRow[RequestedURL].ToString();
-            ImportReporter.Write(newItem, Level.Info, "","", "Item Added/Updated", requestedURL);
+            ImportReporter.Write(newItem, Level.Info, "", "", "Item Added/Updated", requestedURL);
 
-       
 
-            foreach (var field in MappingFields)
+
+            foreach (var field in FieldDefinitions)
             {
                 RunProcessor(field, newItem);
             }
@@ -174,12 +175,13 @@ namespace Sitecore.SharedSource.DataImporter.Providers
             string itemName = dataRow[ItemNameColumn].ToString();
             int lastIndexOfPath = parentPath.LastIndexOf('/');
 
-            try {
+            try
+            {
                 parentPath = parentPath.Remove(lastIndexOfPath);
             }
             catch (Exception ex)
             {
-                
+
             }
 
 
@@ -206,7 +208,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers
         {
             string toFieldName = fieldName;
             if (fieldName != ItemNameColumn)
-            {                
+            {
                 toFieldName = mappings[fieldName];
             }
 
@@ -229,11 +231,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers
         /// <summary>
         /// Use this function to do any end of process custom reports 
         /// </summary>
-        //public override void ImportEndReport()
-        //{
-        //    RunPostProcessors();
-        //    ImportReporter.Print();
-        //}
+
 
         private NameValueCollection DirectoryBuilder(List<string> directories, ImportConfig selectedConfig)
         {
@@ -267,9 +265,9 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 
         private void BuildData(ImportConfig config, List<string> levels, string url, DataTable dataTable)
         {
-            
+
             Item location = config.ImportLocation;
-           
+
             bool ignoreroot = config.IgnoreRootDirectories;
             NameValueCollection directroies = Config.MaintainHierarchy ? DirectoryBuilder(levels, config) : null;
 
@@ -326,10 +324,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers
                 }
 
                 dr[PathColumn] = dirPath;
-                //if (ItemNameDataField == "[URL]" || ItemNameDataField == ItemNameColumn)
-                //{                  
-                    dr[ItemNameColumn] = name;
-                //}
+                dr[ItemNameColumn] = name;
 
                 string currentDirURL = string.Empty;
                 currentDirURL = url.Substring(0, url.IndexOf(urlVal));
@@ -359,14 +354,14 @@ namespace Sitecore.SharedSource.DataImporter.Providers
                         string value = FetchContent(doc, key, mappings, config);
                         dr[toFieldName] = value;
                         updatedFields.Add(toFieldName);
-                    }                    
-                }                   
+                    }
+                }
                 prevDir = dir;
                 root = false;
             }
         }
 
-       
+
         private void RunPreProcessors(ImportConfig config, HtmlDocument doc, DataRow dr, string currentDirURL)
         {
 
@@ -381,16 +376,6 @@ namespace Sitecore.SharedSource.DataImporter.Providers
             }
         }
 
-        private void RunPostProcessors()
-        {
-            ImportConfig config = new ImportConfig(ImportItem, ToDB, this.Query);
-            config.ImportLocation = ImportToWhere;
-
-            foreach (var processor in config.PostProcessors)
-            {
-                Processor.Execute(processor.ProcessItem, config);
-            }
-        }
 
         public string FetchContent(HtmlDocument doc, object key, NameValueCollection mappings, ImportConfig storedConfig)
         {
@@ -401,18 +386,19 @@ namespace Sitecore.SharedSource.DataImporter.Providers
             {
                 int index = mappings[key.ToString()].IndexOf('_');
                 string toWhatField = mappings[key.ToString()].Substring(0, index);
-                Item mappingItem = MappingFields.Where(f => f.Fields[DataImporter.HtmlScraper.Constants.FieldNames.FromWhatField].Value == key.ToString()
-                    && f.Fields[DataImporter.HtmlScraper.Constants.FieldNames.ToWhatField].Value == toWhatField).FirstOrDefault();
-                useXPath = mappingItem.Fields[DataImporter.HtmlScraper.Constants.FieldNames.UseXpath].Value == "1" ? true : false;
+                IBaseField mappingItem = FieldDefinitions.Where(f => f.InnerItem.Fields[DataImporter.HtmlScraper.Constants.FieldNames.FromWhatField].Value == key.ToString()
+                    && f.InnerItem.Fields[DataImporter.HtmlScraper.Constants.FieldNames.ToWhatField].Value == toWhatField).FirstOrDefault();
+
+                useXPath = mappingItem.InnerItem.Fields[DataImporter.HtmlScraper.Constants.FieldNames.UseXpath].Value == "1" ? true : false;
 
                 if (mappingItem != null)
                 {
-                    textOnly = mappingItem.Fields[DataImporter.HtmlScraper.Constants.FieldNames.ImportTextOnly].Value == "1" ? true : storedConfig.ImportTextOnly;
+                    textOnly = mappingItem.InnerItem.Fields[DataImporter.HtmlScraper.Constants.FieldNames.ImportTextOnly].Value == "1" ? true : storedConfig.ImportTextOnly;
                 }
             }
             catch { }
 
-            
+
             List<string> updatedIndexedFields = new List<string>();
             string htmlObj = string.Empty;
             bool isAttrValue = false;
@@ -436,7 +422,8 @@ namespace Sitecore.SharedSource.DataImporter.Providers
             {
                 node = Helper.HandleNodesLookup(htmlObj, doc, true);
             }
-            else {
+            else
+            {
                 node = Helper.HandleNodesLookup(htmlObj, doc);
             }
 
@@ -446,7 +433,8 @@ namespace Sitecore.SharedSource.DataImporter.Providers
                 {
                     rowValue = node.Attributes[attrName].Value;
                 }
-                else {
+                else
+                {
                     rowValue = textOnly ? node.InnerText : node.InnerHtml;
                 }
             }
@@ -455,30 +443,24 @@ namespace Sitecore.SharedSource.DataImporter.Providers
         }
 
 
+
+
         private NameValueCollection GetMappings()
         {
             NameValueCollection mappings = new NameValueCollection();
-            Item fieldDefinitions = GetItemByTemplate(ImportItem, FieldsFolderTemplateID);
-            ChildList fields = fieldDefinitions.GetChildren();
-            MappingFields = new List<Item>();
-            foreach (Item field in fields)
+            //Item fieldDefinitions = GetItemByTemplate(ImportItem, FieldsFolderTemplateID);
+            //ChildList fields = fieldDefinitions.GetChildren();
+            foreach (IBaseField field in FieldDefinitions)
             {
-                MappingFields.Add(field);
-                BaseMapping baseMap = new BaseMapping(field);
-                //string fromFieldName = baseMap.OldItemField;
-                string toFieldName = baseMap.NewItemField + "_" + Guid.NewGuid().ToString().Replace("-", ""); 
-                mappings.Add("fromFieldName", toFieldName);
+                BaseMapping baseMap = new BaseMapping(field.InnerItem);
+                string fromFieldName = baseMap.InnerItem.Fields[DataImporter.HtmlScraper.Constants.FieldNames.FromWhatField].Value;
+                string toFieldName = baseMap.NewItemField + "_" + Guid.NewGuid().ToString().Replace("-", "");
+                mappings.Add(fromFieldName, toFieldName);
             }
             return mappings;
         }
 
-        protected Item GetItemByTemplate(Item parent, string TemplateID)
-        {
-            IEnumerable<Item> x = from Item i in parent.GetChildren()
-                                  where i.Template.ID.Equals(TemplateID)
-                                  select i;
-            return (x.Any()) ? x.First() : null;
-        }
+
 
         private bool IsDataInList(List<string> dataList, string data)
         {
@@ -515,9 +497,6 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 
             return content;
         }
-
-
-
 
     }
 }

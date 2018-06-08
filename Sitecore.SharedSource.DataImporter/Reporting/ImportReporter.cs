@@ -21,7 +21,7 @@ namespace Sitecore.SharedSource.DataImporter.Reporting
             {
                 string timeStamp = DateTime.Now.ToString("yyyyMMdd.HHmmss", CultureInfo.InvariantCulture);
                 Dictionary<Level, string> logStreams = new Dictionary<Level, string>();
-                string tempPath = HttpContext.Current.Server.MapPath("~/temp/");
+                string tempPath = HttpRuntime.AppDomainAppPath + "\\temp\\";
                 string dataImportPathFolder = "DataImport";
 
 

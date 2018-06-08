@@ -35,6 +35,8 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
 
         Item ImportToWhere { get; set; }
 
+        Item ProviderItem { get; set; }
+
         CustomItemBase ImportToWhatTemplate { get; set; }
 
         string[] ItemNameFields { get; set; }

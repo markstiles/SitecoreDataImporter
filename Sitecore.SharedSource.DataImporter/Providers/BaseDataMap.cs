@@ -120,6 +120,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
         /// the template used to create the folder items
         /// </summary>
         public TemplateItem FolderTemplate { get; set; }
+        public Item ProviderItem { get; set; }
 
         #endregion IDataMap Fields
 
@@ -136,6 +137,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
             ToDB = db;
             DatabaseConnectionString = connectionString;
             ImportItem = importItem;
+            ProviderItem = importItem;
 
             //determine the item name max length
             ItemNameMaxLength = GetNameLength();

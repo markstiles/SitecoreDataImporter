@@ -8,6 +8,10 @@ namespace Sitecore.SharedSource.DataImporter.HtmlScraper
 {
     public class Constants
     {
+        public struct Templates {
+
+            public const string ProviderID = "{8C445567-92CB-4D7E-8EC1-C91667062211}";
+        }
         public struct FieldNames
         {
             public const string ImportTextOnly = "Import Text Only";
