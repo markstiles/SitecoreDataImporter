@@ -1,10 +1,10 @@
 ﻿using Sitecore.Data.Items;
-using Sitecore.SharedSource.DataImporter.HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using HtmlAgilityPack;
 using Sitecore.SharedSource.DataImporter.HtmlScraper;
 using Sitecore.SharedSource.DataImporter.Reporting;
 using Sitecore.SharedSource.DataImporter.Mappings;
@@ -20,29 +20,15 @@ namespace Sitecore.SharedSource.DataImporter.Processors
             ItemReport itemReport;
 
             if (!ImportReporter.ItemReports.ContainsKey(itemToProcess.Paths.Path))
-            {
                 ImportReporter.ItemReports.Add(itemToProcess.Paths.Path, new ItemReport());
-            }
-            if (!ImportReporter.ItemReports.TryGetValue(itemToProcess.Paths.Path,out itemReport))
-            {
-                //throw new NullReferenceException("Could not create the item report.");
-            }
 
-            if(string.IsNullOrEmpty(itemReport.ItemFetchPath))
-            {
-                //itemReport.ItemFetchPath;
-            }
-
+            ImportReporter.ItemReports.TryGetValue(itemToProcess.Paths.Path, out itemReport);
             if(string.IsNullOrEmpty(itemReport.ItemName))
-            {
                 itemReport.ItemName = itemToProcess.Name;
-            }
-
+            
             if (string.IsNullOrEmpty(itemReport.NewItemPath))
-            {
                 itemReport.NewItemPath = itemToProcess.Paths.Path;
-            }
-
+            
             BaseMapping baseMap = new BaseMapping(fieldMapping);
             List<string> tagsToCheck = new List<string>();
             HtmlDocument document = new HtmlDocument();
@@ -55,22 +41,19 @@ namespace Sitecore.SharedSource.DataImporter.Processors
             {
                 findPattern = itemToProcess.Database.GetItem(id).Fields["Identifier"].Value;
                 node = Helper.HandleNodesLookup(findPattern, document);
-                if (node != null)
-                {
-                    if (node.ChildNodes != null && node.ChildNodes.Count > 0)
-                    {
-                        tagsToCheck.Add(findPattern);
-                    }
-                }
+                if (node == null || node.ChildNodes == null || !node.ChildNodes.Any())
+                    continue;
+
+                tagsToCheck.Add(findPattern);
             }
 
-            if(tagsToCheck.Count > 0)
-            {
-                string fieldName = fieldMapping.Fields["To What Field"].Value;
-                string messageText = string.Join("/", tagsToCheck.ToArray()) + " warning tags were found and requires additional review";
+            if (!tagsToCheck.Any())
+                return;
+            
+            string fieldName = fieldMapping.Fields["To What Field"].Value;
+            string messageText = string.Join("/", tagsToCheck.ToArray()) + " warning tags were found and requires additional review";
 
-                ImportReporter.Write(itemToProcess, Level.Warning, messageText, fieldName, "Warning Trigger Tags");
-            }
+            ImportReporter.Write(itemToProcess, Level.Warning, messageText, fieldName, "Warning Trigger Tags");
         }
     }
 }

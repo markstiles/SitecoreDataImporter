@@ -1,11 +1,11 @@
 ﻿using Sitecore.Data.Items;
-using Sitecore.SharedSource.DataImporter.HtmlAgilityPack;
 using Sitecore.SharedSource.DataImporter.Reporting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using HtmlAgilityPack;
 
 namespace Sitecore.SharedSource.DataImporter.HtmlScraper
 {
@@ -23,10 +23,9 @@ namespace Sitecore.SharedSource.DataImporter.HtmlScraper
             List<HtmlNode> nodes = new List<HtmlNode>();
             bool isMultiNodesData = htmlObj.Contains("/*");
 
-            if (!useXPath) {
+            if (!useXPath) 
                 htmlObj = isMultiNodesData ? htmlObj.Replace("/*", "") : htmlObj;
-            }
-
+            
             try
             {
                
@@ -41,12 +40,7 @@ namespace Sitecore.SharedSource.DataImporter.HtmlScraper
 
                 if (isMultiNodesData)
                 {
-                    if (node == null)
-                        node = doc.CreateNode(HtmlNodeType.Element, 0);
-                    else
-                    {
-                        node.ChildNodes.Clear();
-                    }
+                    node = new HtmlNode(HtmlNodeType.Element, doc, 0);
                     foreach (HtmlNode n in nodes)
                     {
                         node.AppendChild(n);
@@ -72,14 +66,9 @@ namespace Sitecore.SharedSource.DataImporter.HtmlScraper
             string attrName = "";
             List<HtmlNode> nodes = new List<HtmlNode>();
             List<string> dataItems = selector.Split('/').ToList();
-            bool isTagName = true;
+            bool isTagName = !(selector.StartsWith(".") || selector.StartsWith("#"));
 
-            if (selector.StartsWith(".") || selector.StartsWith("#"))
-            {
-                isTagName = false;
-            }
-
-            if (dataItems != null && dataItems.Any() && selector.Contains("/"))
+            if (dataItems.Any() && selector.Contains("/"))
             {
                 foreach (var data in dataItems)
                 {
@@ -171,50 +160,27 @@ namespace Sitecore.SharedSource.DataImporter.HtmlScraper
 
             return formated;
         }
-
-
+        
         /// <summary>
-        /// 
         /// ie. [1]/p[3]
         /// </summary>
         /// <param name="data"></param>
         private static string HandleIndex(string data)
         {
-            //data = data.Replace("/*", "");
-            string[] splits = data.ToString().Split('/');
-            //string indexUpdates = string.Empty;
+            string[] splits = data.Split('/');
 
             foreach (var s in splits)
             {
                 int indexOut;
-                //If true, then it is numeric index
-                if (int.TryParse(s, out indexOut))
-                {
-
-                    //string lookUp = "/" + s + "/";
-                    string lookUp2 = "/" + s;
-                    string replace = "[" + s + "]";
-                    //indexUpdates += data.Replace(lookUp, replace);
-                    data = data.Replace(lookUp2, replace);
-                }
+                if (!int.TryParse(s, out indexOut))
+                    continue;
+                
+                string lookUp2 = "/" + s;
+                string replace = "[" + s + "]";
+                data = data.Replace(lookUp2, replace);
             }
-
-
+            
             return data;
-            //switch (splits)
-            //{
-            //    case "*":
-            //        break;
-            //    default:
-            //        int indexOut;
-            //        //If true, then it is numeric index
-            //        if (int.TryParse(splits, out indexOut))
-            //        {
-            //            data = data.Replace("/" + splits, "[" + splits + "]");
-            //        }
-            //        break;
-            //}
-
         }
 
         public static string RemoveInvalidChars(ImportConfig Config, string data, bool root, bool report = true)
@@ -231,15 +197,15 @@ namespace Sitecore.SharedSource.DataImporter.HtmlScraper
 
             foreach (var cleanup in Config.ItemNameCleanups)
             {
-                if (data.Contains(cleanup.Find))
-                {
-                    data = data.Replace(cleanup.Find, cleanup.Replace);
+                if (!data.Contains(cleanup.Find))
+                    continue;
+                
+                data = data.Replace(cleanup.Find, cleanup.Replace);
 
-                    if (report)
-                    {
-                        ImportReporter.Write(cleanup.CleanupItem, Level.Info, " To: " + data + "", "Name > From: " + originalName, "Name Change", "");
-                    }
-                }
+                if (!report)
+                    continue;
+                
+                ImportReporter.Write(cleanup.CleanupItem, Level.Info, " To: " + data + "", "Name > From: " + originalName, "Name Change", "");
             }
 
             return data;

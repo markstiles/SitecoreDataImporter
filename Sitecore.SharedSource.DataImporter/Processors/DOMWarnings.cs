@@ -1,6 +1,5 @@
 ﻿using Sitecore.Data.Fields;
 using Sitecore.Data.Items;
-using Sitecore.SharedSource.DataImporter.HtmlAgilityPack;
 using Sitecore.SharedSource.DataImporter.HtmlScraper;
 using Sitecore.SharedSource.DataImporter.Reporting;
 using System;
@@ -8,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using HtmlAgilityPack;
 
 namespace Sitecore.SharedSource.DataImporter.Processors
 {

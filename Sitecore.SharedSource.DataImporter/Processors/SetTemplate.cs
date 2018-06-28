@@ -1,6 +1,6 @@
 ﻿using Sitecore.Data.Items;
-using Sitecore.SharedSource.DataImporter.HtmlAgilityPack;
 using System;
+using HtmlAgilityPack;
 using Sitecore.SharedSource.DataImporter.Reporting;
 using Sitecore.SharedSource.DataImporter.HtmlScraper;
 

@@ -1,10 +1,10 @@
 ﻿using Sitecore.Data.Items;
-using Sitecore.SharedSource.DataImporter.HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using HtmlAgilityPack;
 using Sitecore.SharedSource.DataImporter.HtmlScraper;
 using Sitecore.SharedSource.DataImporter.Mappings;
 using Sitecore.SharedSource.DataImporter.Reporting;
