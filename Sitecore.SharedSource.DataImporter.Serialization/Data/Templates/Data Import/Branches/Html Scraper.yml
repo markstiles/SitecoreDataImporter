@@ -7,7 +7,7 @@ DB: master
 SharedFields:
 - ID: "06d5295c-ed2f-4a54-9bf2-26228d113318"
   Hint: __Icon
-  Value: office/32x32/brickwall.png
+  Value: business/32x32/data_down.png
 Languages:
 - Language: en
   Versions:
