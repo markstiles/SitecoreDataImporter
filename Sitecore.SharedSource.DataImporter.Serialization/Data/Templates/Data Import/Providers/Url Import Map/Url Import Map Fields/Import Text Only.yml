@@ -1,8 +1,8 @@
 ﻿---
-ID: "4ec9c0fe-15ac-4bfd-ae89-850167e3346f"
+ID: "0d6863b7-0a3d-4bbb-9bd9-7c1fa4a685bc"
 Parent: "fab41ffb-a371-44d5-babd-0d7afa6b642d"
 Template: "455a3e98-a627-4b40-8035-e683a0331ac7"
-Path: /sitecore/templates/Modules/Data Import/Providers/Url Import Map/Html Scraper Fields/Top x URLs
+Path: /sitecore/templates/Modules/Data Import/Providers/Url Import Map/Url Import Map Fields/Import Text Only
 DB: master
 SharedFields:
 - ID: "06d5295c-ed2f-4a54-9bf2-26228d113318"
@@ -10,10 +10,10 @@ SharedFields:
   Value: 
 - ID: "ab162cc0-dc80-4abf-8871-998ee5d7ba32"
   Hint: Type
-  Value: "Single-Line Text"
+  Value: Checkbox
 - ID: "ba3f86a2-4a1c-4d78-b63d-91c2779c1b5e"
   Hint: __Sortorder
-  Value: 500
+  Value: 300
 Languages:
 - Language: en
   Versions:
@@ -21,8 +21,4 @@ Languages:
     Fields:
     - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
       Hint: __Created
-      Value: 20171229T132443Z
-    - ID: "5dd74568-4d4b-44c1-b513-0af5f4cda34f"
-      Hint: __Created by
-      Value: |
-        sitecore\Admin
+      Value: 20160920T141348Z
