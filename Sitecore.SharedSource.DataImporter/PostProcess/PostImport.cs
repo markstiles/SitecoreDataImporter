@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using Sitecore.Jobs;
 using Sitecore.SharedSource.DataImporter.Logger;
+using Sitecore.SharedSource.DataImporter.Utility;
 
 namespace Sitecore.SharedSource.DataImporter.PostProcess
 {
@@ -20,32 +21,25 @@ namespace Sitecore.SharedSource.DataImporter.PostProcess
 
 		public void Process()
 		{
-			if (Sitecore.Context.Job != null)
-				Sitecore.Context.Job.Options.Priority = ThreadPriority.Highest;
+            JobUtil.SetJobPriority(ThreadPriority.Highest);
 
             //IEnumerable<Item> items;
 
             //int totalLines = items.Count();
-            //if (Sitecore.Context.Job != null)
-            //	  Sitecore.Context.Job.Status.Total = totalLines;
+            //JobUtil.SetJobTotal(totalLines);
 
             //int line = 1;
             //foreach (Item a in items)
-		    //{
-		    //    try { 
+            //{
+            //    try { 
             //    } catch (Exception ex) {
             //        Log.Log(a.Paths.FullPath, ex.ToString(), ProcessStatus.ReferenceError, string.Empty);
             //    }
-            //    if (Sitecore.Context.Job != null)
-            //	  {
-            //		  Sitecore.Context.Job.Status.Processed = line;
-            //		  Sitecore.Context.Job.Status.Messages.Add(string.Format("Processed item {0} of {1}", line, totalLines));
-            //	  }
+            //JobUtil.SetJobStatus(line);
             //	  line++;
             //}
 
-            if (Sitecore.Context.Job != null)
-				Sitecore.Context.Job.Status.State = JobState.Finished;
+            JobUtil.SetJobState(JobState.Finished);
 		}
 	}
 }

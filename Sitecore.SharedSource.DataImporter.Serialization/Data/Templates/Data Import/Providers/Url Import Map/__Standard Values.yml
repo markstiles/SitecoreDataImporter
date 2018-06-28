@@ -2,7 +2,7 @@
 ID: "73ace00e-4211-47ed-abf4-20b510294fa0"
 Parent: "8c445567-92cb-4d7e-8ec1-c91667062211"
 Template: "8c445567-92cb-4d7e-8ec1-c91667062211"
-Path: /sitecore/templates/Modules/Data Import/Providers/Html Scraper/__Standard Values
+Path: /sitecore/templates/Modules/Data Import/Providers/Url Import Map/__Standard Values
 DB: master
 SharedFields:
 - ID: "02bab16b-d351-4502-a579-f3d6e0edb4f8"
@@ -13,10 +13,10 @@ SharedFields:
   Value: Sitecore.SharedSource.DataImporter
 - ID: "06d5295c-ed2f-4a54-9bf2-26228d113318"
   Hint: __Icon
-  Value: office/32x32/brickwall.png
+  Value: 
 - ID: "0790a745-13e8-44f1-aa17-469e8fc7d20e"
   Hint: Handler Class
-  Value: Sitecore.SharedSource.DataImporter.Providers.HtmlScraper
+  Value: Sitecore.SharedSource.DataImporter.Providers.UrlImportMap
 - ID: "1172f251-dad4-4efb-a329-0c63500e4f1e"
   Hint: __Masters
   Type: TreelistEx

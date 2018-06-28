@@ -2,12 +2,12 @@
 ID: "fab41ffb-a371-44d5-babd-0d7afa6b642d"
 Parent: "8c445567-92cb-4d7e-8ec1-c91667062211"
 Template: "e269fbb5-3750-427a-9149-7aa950b49301"
-Path: /sitecore/templates/Modules/Data Import/Providers/Html Scraper/Html Scraper Fields
+Path: /sitecore/templates/Modules/Data Import/Providers/Url Import Map/Html Scraper Fields
 DB: master
 SharedFields:
 - ID: "06d5295c-ed2f-4a54-9bf2-26228d113318"
   Hint: __Icon
-  Value: office/32x32/brickwall.png
+  Value: business/32x32/data_down.png
 Languages:
 - Language: en
   Versions:

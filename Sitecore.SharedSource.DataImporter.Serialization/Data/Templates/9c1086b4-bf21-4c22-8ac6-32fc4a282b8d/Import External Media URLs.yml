@@ -1,16 +1,16 @@
 ﻿---
-ID: "94cb4f3f-5b03-4415-bc6e-225a711c44df"
-Parent: "fab41ffb-a371-44d5-babd-0d7afa6b642d"
+ID: "6cdc7b45-f934-4b1b-8a08-603a490cdd0f"
+Parent: "9c1086b4-bf21-4c22-8ac6-32fc4a282b8d"
 Template: "455a3e98-a627-4b40-8035-e683a0331ac7"
-Path: /sitecore/templates/Modules/Data Import/Providers/Html Scraper/Html Scraper Fields/Base URL
+Path: /sitecore/templates/Modules/Data Import/Mappings/Templates/Processors/ImportMedia/Settings/Import External Media URLs
 DB: master
 SharedFields:
 - ID: "ab162cc0-dc80-4abf-8871-998ee5d7ba32"
   Hint: Type
-  Value: "Single-Line Text"
+  Value: Checkbox
 - ID: "ba3f86a2-4a1c-4d78-b63d-91c2779c1b5e"
   Hint: __Sortorder
-  Value: 700
+  Value: 500
 Languages:
 - Language: en
   Versions:
@@ -18,8 +18,14 @@ Languages:
     Fields:
     - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
       Hint: __Created
-      Value: 20180116T201545Z
+      Value: 20180308T160848Z
+    - ID: "4c346442-e859-4efd-89b2-44aedf467d21"
+      Hint: __Valid to
+      Value: 
     - ID: "5dd74568-4d4b-44c1-b513-0af5f4cda34f"
       Hint: __Created by
       Value: |
         sitecore\Admin
+    - ID: "c8f93afe-bfd4-4e8f-9c61-152559854661"
+      Hint: __Valid from
+      Value: 

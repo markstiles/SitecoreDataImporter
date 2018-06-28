@@ -10,6 +10,7 @@ using System.Threading;
 using Sitecore.Data;
 using Sitecore.Jobs;
 using Sitecore.SharedSource.DataImporter.Mappings.Processors;
+using Sitecore.SharedSource.DataImporter.Utility;
 
 namespace Sitecore.SharedSource.DataImporter
 {
@@ -37,9 +38,8 @@ namespace Sitecore.SharedSource.DataImporter
 		public void Process()
 		{
 			Logger.Log("N/A", string.Format("Import Started at: {0}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")));
-
-			if (Sitecore.Context.Job != null)
-				Sitecore.Context.Job.Options.Priority = ThreadPriority.Highest;
+            
+            JobUtil.SetJobPriority(ThreadPriority.Highest);
 
 			IEnumerable<object> importItems;
 			try
@@ -51,15 +51,13 @@ namespace Sitecore.SharedSource.DataImporter
 				Logger.Log("N/A", string.Format("GetImportData Failed: {0}", ex.Message), ProcessStatus.Error);
 				Logger.Log("N/A", string.Format("Import Finished at: {0}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")));
 
-				if (Sitecore.Context.Job != null)
-					Sitecore.Context.Job.Status.State = JobState.Finished;
+                JobUtil.SetJobState(JobState.Finished);
 
 				return;
 			}
 
 			int totalLines = importItems.Count();
-			if (Sitecore.Context.Job != null)
-				Sitecore.Context.Job.Status.Total = totalLines;
+            JobUtil.SetJobTotal(totalLines);
 
 			long line = 0;
 
@@ -98,23 +96,16 @@ namespace Sitecore.SharedSource.DataImporter
 					}
 					sw.Stop();
 					Logger.Log("Performance Statistic", $"Used {sw.Elapsed.TotalSeconds} to process this item.");
-					if (Sitecore.Context.Job != null)
-					{
-						Sitecore.Context.Job.Status.Processed = line;
-						Sitecore.Context.Job.Status.Messages.Add(string.Format("Processed item {0} of {1}", line, totalLines));
-					}
+
+                    JobUtil.SetJobStatus(line);
 				}
 
 			    var currentPostProcessor = 1;
-                var postProcessorCount = DataMap.PostProcessors.Count;
+                JobUtil.SetJobTotal(DataMap.PostProcessors.Count);
                 foreach (IPostProcessor p in DataMap.PostProcessors)
 			    {
-			        if (Sitecore.Context.Job != null)
-			        {
-			            Sitecore.Context.Job.Status.Processed = currentPostProcessor;
-			            Sitecore.Context.Job.Status.Messages.Add(string.Format("Processing post processor {0} of {1}", currentPostProcessor, postProcessorCount));
-			        }
-
+                    JobUtil.SetJobStatus(currentPostProcessor);
+                    
                     try
 			        {
                         p.Process(DataMap);
@@ -135,8 +126,7 @@ namespace Sitecore.SharedSource.DataImporter
 			Logger.Log("N/A", string.Format("Total Items Processed: {0}", totalLines));
 			Logger.Log("N/A", string.Format("Import Finished at: {0}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")));
 
-			if (Sitecore.Context.Job != null)
-				Sitecore.Context.Job.Status.State = JobState.Finished;
+            JobUtil.SetJobState(JobState.Finished);
 		}
 	}
 }

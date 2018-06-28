@@ -146,11 +146,12 @@
     <Content Include="App_Config\Include\Unicorn\Unicorn.DataProvider.config" />
     <Content Include="App_Config\Include\Unicorn\Unicorn.config" />
     <Content Include="App_Config\Include\Unicorn\Unicorn.AutoPublish.config" />
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\PublishProfiles\deploy.pubxml.template" />
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\PublishProfiles\deploy.pubxml" />
@@ -259,7 +260,7 @@
     <Compile Include="Processors\UpdateLinks.cs" />
     <Compile Include="Processors\WriteTagWarnings.cs" />
     <Compile Include="Providers\BaseDataMap.cs" />
-    <Compile Include="Providers\HtmlScraper.cs" />
+    <Compile Include="Providers\UrlImportMap.cs" />
     <Compile Include="Providers\IDataMap.cs" />
     <Compile Include="Providers\MySqlDataMap.cs" />
     <Compile Include="Providers\SitecoreDataMap.cs" />
@@ -272,6 +273,7 @@
     <Compile Include="sitecore modules\Shell\Data Importer\Default.aspx.designer.cs">
       <DependentUpon>Default.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Utility\JobUtil.cs" />
     <Compile Include="Utility\DateTimeUtil.cs" />
     <Compile Include="Utility\StringUtility.cs" />
   </ItemGroup>

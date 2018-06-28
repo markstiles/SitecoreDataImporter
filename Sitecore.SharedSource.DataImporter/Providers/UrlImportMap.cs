@@ -4,31 +4,21 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 using Sitecore.Data;
 using Sitecore.Data.Items;
 using Sitecore.SharedSource.DataImporter.HtmlAgilityPack;
 using Sitecore.SharedSource.DataImporter.HtmlScraper;
 using System.Data;
-using Sitecore.Collections;
 using Sitecore.SharedSource.DataImporter.Mappings;
 using Sitecore.Data.Fields;
 using Sitecore.SharedSource.DataImporter.Processors;
-using System.Reflection;
 using Sitecore.SharedSource.DataImporter.Reporting;
 using Sitecore.SharedSource.DataImporter.Logger;
 using Sitecore.SharedSource.DataImporter.Mappings.Fields;
-using Sitecore.SharedSource.DataImporter.Mappings.Processors;
-
-/// <summary>
-/// 
-/// </summary>
 
 namespace Sitecore.SharedSource.DataImporter.Providers
 {
-    public class HtmlScraper : BaseDataMap
+    public class UrlImportMap : BaseDataMap
     {
         public ImportConfig Config { get; set; }
         private Item ImportItem = null;
@@ -37,13 +27,11 @@ namespace Sitecore.SharedSource.DataImporter.Providers
         private string ActionColumn = "ActionColumn";
         private string RequestedURL = "RequestedURL";
         private NameValueCollection mappings;
-
-
-        public HtmlScraper(Database db, string ConnectionString, Item importItem, ILogger l)
+        
+        public UrlImportMap(Database db, string ConnectionString, Item importItem, ILogger l)
             : base(db, ConnectionString, importItem, l)
         {
             ImportItem = importItem;
-
         }
 
         #region Override Methods
@@ -64,15 +52,10 @@ namespace Sitecore.SharedSource.DataImporter.Providers
             ImportConfig config = new ImportConfig(ImportItem, ToDB, this.Query);
             config.ImportLocation = ImportToWhere;
             Config = config;
-
-            //ImportContent(config);
-            //List<string> lines = new List<string>();
-
+            
             if (ItemNameFields.FirstOrDefault() == "[URL]")
-            {
                 ItemNameFields[0] = ItemNameColumn;
-            }
-
+            
             //Adding columns to the table from field mapping
             foreach (var key in mappings)
             {
@@ -84,24 +67,19 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 
             foreach (var url in urls)
             {
-                bool ignoreroots = config.IgnoreRootDirectories ? true : false;
-
                 string relativeURL = url.Replace("http://", "").Replace("https://", "");
-                Char[] splitChars = new Char[] { '/' };
+                Char[] splitChars = { '/' };
+
                 //parts are the directory list in array format, ie. second array is the child of first etc..
-                List<string> levels = ignoreroots ? relativeURL.Split(splitChars, StringSplitOptions.RemoveEmptyEntries).Skip(1).ToList() :
+                List<string> levels = config.IgnoreRootDirectories ? relativeURL.Split(splitChars, StringSplitOptions.RemoveEmptyEntries).Skip(1).ToList() :
                 relativeURL.Split(splitChars, StringSplitOptions.RemoveEmptyEntries).ToList();
 
                 if (config.ExcludeDirectories != null && config.ExcludeDirectories.Any())
-                {
                     levels.RemoveAll(x => config.ExcludeDirectories.Contains(x.ToLower()));
-                }
-
-
+                
                 BuildData(config, levels, url, dt);
             }
-
-
+            
             return (dt.Rows).Cast<object>();
         }
 
@@ -110,25 +88,20 @@ namespace Sitecore.SharedSource.DataImporter.Providers
             //Check for warnings
             MultilistField WarningTags = fieldMap.InnerItem.Fields[DataImporter.HtmlScraper.Constants.FieldNames.WarningTriggerTags];
             if (WarningTags.Count > 0)
-            {
                 WriteTagWarnings.Run(newItem, fieldMap.InnerItem);
-            }
-
+            
             //"To What Field"
-            List<Item> processorList = new List<Item>();
             MultilistField processors = fieldMap.InnerItem.Fields[DataImporter.HtmlScraper.Constants.FieldNames.FieldPostProcessors];
 
             foreach (var targetId in processors.TargetIDs)
             {
                 Item processor = ToDB.GetItem(targetId);
-
                 if (processor == null) { continue; }
 
                 Processor.Execute(processor, newItem, fieldMap.InnerItem);
             }
         }
-
-
+        
         /// <summary>
         /// There is no custom data for this type
         /// </summary>
@@ -139,32 +112,21 @@ namespace Sitecore.SharedSource.DataImporter.Providers
             DataRow dataRow = importRow as DataRow;
             string requestedURL = dataRow[RequestedURL].ToString();
             ImportReporter.Write(newItem, Level.Info, "", "", "Item Added/Updated", requestedURL);
-
-
-
+            
             foreach (var field in FieldDefinitions)
-            {
                 RunProcessor(field, newItem);
-            }
         }
 
         public override CustomItemBase GetNewItemTemplate(object importRow)
         {
             DataRow dataRow = importRow as DataRow;
             string templateID = dataRow[ActionColumn].ToString();
-
-            if (!string.IsNullOrEmpty(templateID))
-            {
-
-                BranchItem templateItem = ToDB.GetItem(templateID);
-
-                return (CustomItemBase)templateItem;
-            }
-            else
-            {
+            if (string.IsNullOrEmpty(templateID))
                 return ImportToWhatTemplate;
 
-            }
+            BranchItem templateItem = ToDB.GetItem(templateID);
+
+            return templateItem;
         }
 
         public override Item GetParentNode(object importRow, string newItemName)
@@ -172,7 +134,6 @@ namespace Sitecore.SharedSource.DataImporter.Providers
             Item parentItem = null;
             DataRow dataRow = importRow as DataRow;
             string parentPath = dataRow[PathColumn].ToString();
-            string itemName = dataRow[ItemNameColumn].ToString();
             int lastIndexOfPath = parentPath.LastIndexOf('/');
 
             try
@@ -181,20 +142,16 @@ namespace Sitecore.SharedSource.DataImporter.Providers
             }
             catch (Exception ex)
             {
-
+                Logger.Log(ex.ToString(), parentPath, ProcessStatus.NewItemError, PathColumn, parentPath);
             }
 
 
             if (Config.MaintainHierarchy)
-            {
                 parentItem = ToDB.GetItem(parentPath);
-            }
-
+            
             if (parentItem == null)
-            {
                 parentItem = base.GetParentNode(importRow, newItemName);
-            }
-
+            
             return parentItem;
         }
 
@@ -208,31 +165,19 @@ namespace Sitecore.SharedSource.DataImporter.Providers
         {
             string toFieldName = fieldName;
             if (fieldName != ItemNameColumn)
-            {
                 toFieldName = mappings[fieldName];
-            }
-
-            //if (toFieldName.Contains("_"))
-            //{
-            //    int removeIndex = toFieldName.IndexOf("_");
-            //    toFieldName = toFieldName.Substring(0, removeIndex);
-            //}
-
-
+            
             DataRow item = importRow as DataRow;
             object f = item[toFieldName];
-            return (f != null) ? f.ToString() : string.Empty;
+
+            return f != null ? f.ToString() : string.Empty;
         }
 
         #endregion Override Methods
-
-
-
+        
         /// <summary>
         /// Use this function to do any end of process custom reports 
         /// </summary>
-
-
         private NameValueCollection DirectoryBuilder(List<string> directories, ImportConfig selectedConfig)
         {
             NameValueCollection dirs = new NameValueCollection();
@@ -261,17 +206,13 @@ namespace Sitecore.SharedSource.DataImporter.Providers
             }
             return dirs;
         }
-
-
+        
         private void BuildData(ImportConfig config, List<string> levels, string url, DataTable dataTable)
         {
-
             Item location = config.ImportLocation;
-
             bool ignoreroot = config.IgnoreRootDirectories;
             NameValueCollection directroies = Config.MaintainHierarchy ? DirectoryBuilder(levels, config) : null;
-
-
+            
             //if MaintainHierarchy false then build it again with single 
             if (directroies == null)
             {
@@ -281,24 +222,19 @@ namespace Sitecore.SharedSource.DataImporter.Providers
                     directroies.Add(l, "");
                 }
             }
-
-
+            
             //This is to be sure there are no duplicates in dataTable
             foreach (DataRow dr in dataTable.Rows)
             {
                 string key = dr[PathColumn].ToString();
                 var checkKey = directroies[key];
-
-                if (checkKey != null)
-                {
-                    directroies.Remove(key);
-                }
+                if (checkKey == null)
+                    continue;
+                
+                directroies.Remove(key);
             }
 
-
-
             string dirPath = string.Empty;
-            string prevDir = string.Empty;
             bool root = true;
 
             foreach (string dir in directroies)
@@ -309,7 +245,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers
                 dataTable.Rows.Add(dr);
 
                 string name = string.Empty;
-                string urlVal = directroies[dir].ToString();
+                string urlVal = directroies[dir];
 
                 if (Config.MaintainHierarchy)
                 {
@@ -329,8 +265,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers
                 string currentDirURL = string.Empty;
                 currentDirURL = url.Substring(0, url.IndexOf(urlVal));
                 currentDirURL = currentDirURL.EndsWith("/") ? (currentDirURL + urlVal) : (currentDirURL + "/" + urlVal);
-
-
+                
                 HtmlNode.ElementsFlags.Remove("form");
                 HtmlDocument doc = new HtmlDocument();
                 dr[RequestedURL] = currentDirURL;
@@ -338,8 +273,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers
                 doc.LoadHtml(contentHtml);
 
                 RunPreProcessors(config, doc, dr, currentDirURL);
-
-
+                
                 foreach (var key in mappings)
                 {
                     string toFieldName = mappings[key.ToString()];
@@ -348,35 +282,31 @@ namespace Sitecore.SharedSource.DataImporter.Providers
                     //This is for if 2 mapping target the same field so the next one to not override the first update, 
                     //becuase each could apply for different URL  
                     wasupdated = IsDataInList(updatedFields, toFieldName);
-                    if (!wasupdated || isOverride)
-                    {
-                        //toFieldName = toFieldName.Replace("!", "");
-                        string value = FetchContent(doc, key, mappings, config);
-                        dr[toFieldName] = value;
-                        updatedFields.Add(toFieldName);
-                    }
+                    if (wasupdated && !isOverride)
+                        continue;
+                    
+                    //toFieldName = toFieldName.Replace("!", "");
+                    string value = FetchContent(doc, key, mappings, config);
+                    dr[toFieldName] = value;
+                    updatedFields.Add(toFieldName);
                 }
-                prevDir = dir;
                 root = false;
             }
         }
 
-
         private void RunPreProcessors(ImportConfig config, HtmlDocument doc, DataRow dr, string currentDirURL)
         {
-
             foreach (var processor in config.PreProcessors)
             {
                 string returnValue = Processor.Execute(processor.ProcessItem, doc, currentDirURL, ImportToWhatTemplate.ID.ToString());
 
-                if (!string.IsNullOrEmpty(returnValue))
-                {
-                    dr[ActionColumn] = returnValue;
-                }
+                if (string.IsNullOrEmpty(returnValue))
+                    continue;
+                
+                dr[ActionColumn] = returnValue;
             }
         }
-
-
+        
         public string FetchContent(HtmlDocument doc, object key, NameValueCollection mappings, ImportConfig storedConfig)
         {
             string rowValue = string.Empty;
@@ -386,70 +316,53 @@ namespace Sitecore.SharedSource.DataImporter.Providers
             {
                 int index = mappings[key.ToString()].IndexOf('_');
                 string toWhatField = mappings[key.ToString()].Substring(0, index);
-                IBaseField mappingItem = FieldDefinitions.Where(f => f.InnerItem.Fields[DataImporter.HtmlScraper.Constants.FieldNames.FromWhatField].Value == key.ToString()
-                    && f.InnerItem.Fields[DataImporter.HtmlScraper.Constants.FieldNames.ToWhatField].Value == toWhatField).FirstOrDefault();
+                IBaseField mappingItem = FieldDefinitions.FirstOrDefault(f => 
+                        f.InnerItem.Fields[HtmlScraper.Constants.FieldNames.FromWhatField].Value == key.ToString()
+                        && f.InnerItem.Fields[HtmlScraper.Constants.FieldNames.ToWhatField].Value == toWhatField);
 
-                useXPath = mappingItem.InnerItem.Fields[DataImporter.HtmlScraper.Constants.FieldNames.UseXpath].Value == "1" ? true : false;
+                useXPath = mappingItem.InnerItem.Fields[HtmlScraper.Constants.FieldNames.UseXpath].Value == "1";
 
-                if (mappingItem != null)
-                {
-                    textOnly = mappingItem.InnerItem.Fields[DataImporter.HtmlScraper.Constants.FieldNames.ImportTextOnly].Value == "1" ? true : storedConfig.ImportTextOnly;
-                }
+                textOnly = mappingItem.InnerItem.Fields[HtmlScraper.Constants.FieldNames.ImportTextOnly].Value == "1" 
+                           || storedConfig.ImportTextOnly;
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Logger.Log(ex.ToString(), rowValue, ProcessStatus.GetImportDataError, key.ToString(), rowValue);
+            }
 
-
-            List<string> updatedIndexedFields = new List<string>();
             string htmlObj = string.Empty;
             bool isAttrValue = false;
             string attrName = string.Empty;
-            string fieldname = string.Empty;
             HtmlNode node = null;
 
             htmlObj = key.ToString();
-            fieldname = mappings[key.ToString()];
 
             if (htmlObj.Contains("/@"))
             {
                 isAttrValue = true;
                 List<string> attrItems = htmlObj.Split('/').Where(a => a.StartsWith("@")).ToList();
-                attrName = attrItems.Where(a => !a.Contains("=")).FirstOrDefault();
+                attrName = attrItems.FirstOrDefault(a => !a.Contains("="));
                 htmlObj = htmlObj.Replace("/" + attrName, "");
                 attrName = attrName.Replace("@", "");
             }
 
-            if (useXPath)
-            {
-                node = Helper.HandleNodesLookup(htmlObj, doc, true);
-            }
-            else
-            {
-                node = Helper.HandleNodesLookup(htmlObj, doc);
-            }
+            node = useXPath 
+                ? Helper.HandleNodesLookup(htmlObj, doc, true) 
+                : Helper.HandleNodesLookup(htmlObj, doc);
 
-            if (node != null)
-            {
-                if (isAttrValue && node.Attributes[attrName] != null)
-                {
-                    rowValue = node.Attributes[attrName].Value;
-                }
-                else
-                {
-                    rowValue = textOnly ? node.InnerText : node.InnerHtml;
-                }
-            }
+            if (node == null)
+                return rowValue;
+
+            rowValue = isAttrValue && node.Attributes[attrName] != null
+                ? node.Attributes[attrName].Value
+                : (textOnly ? node.InnerText : node.InnerHtml);
 
             return rowValue;
         }
-
-
-
-
+        
         private NameValueCollection GetMappings()
         {
             NameValueCollection mappings = new NameValueCollection();
-            //Item fieldDefinitions = GetItemByTemplate(ImportItem, FieldsFolderTemplateID);
-            //ChildList fields = fieldDefinitions.GetChildren();
             foreach (IBaseField field in FieldDefinitions)
             {
                 BaseMapping baseMap = new BaseMapping(field.InnerItem);
@@ -457,46 +370,46 @@ namespace Sitecore.SharedSource.DataImporter.Providers
                 string toFieldName = baseMap.NewItemField + "_" + Guid.NewGuid().ToString().Replace("-", "");
                 mappings.Add(fromFieldName, toFieldName);
             }
+
             return mappings;
         }
-
-
 
         private bool IsDataInList(List<string> dataList, string data)
         {
             return dataList.Any(f => data.ToLower() == f.ToLower());
         }
 
-
         private string WebContentRequest(string url)
         {
             string content = string.Empty;
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            request.Method = "GET";
+            HttpWebResponse response = null;
+            StreamReader reader = null;
+
             try
             {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-                request.Method = "GET";
+                response = (HttpWebResponse) request.GetResponse();
+                if (response.StatusCode != HttpStatusCode.OK)
+                    return content;
 
-
-                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-                {
-                    switch (response.StatusCode)
-                    {
-                        case HttpStatusCode.OK:
-                            using (StreamReader reader = new StreamReader(response.GetResponseStream()))
-                            {
-                                content = reader.ReadToEnd();
-                            }
-                            break;
-                    }
-                }
+                reader = new StreamReader(response.GetResponseStream());
+                content = reader.ReadToEnd();
             }
-            catch (Exception x)
+            catch (Exception ex)
             {
-                //TODO: Add tracking log error under the config
+                Logger.Log(ex.ToString(), url, ProcessStatus.NewItemError, "", url);
+            }
+            finally
+            {
+                if(response != null)
+                    response.Close();
+
+                if(reader != null)
+                    reader.Close();
             }
 
             return content;
         }
-
     }
 }
