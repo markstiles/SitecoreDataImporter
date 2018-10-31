@@ -2,7 +2,7 @@
 ID: "3479f70d-17b2-434a-bd9b-a7a28368d9e0"
 Parent: "62a4dc04-b2b2-4d59-af8c-b82af9d66586"
 Template: "455a3e98-a627-4b40-8035-e683a0331ac7"
-Path: /sitecore/templates/Modules/Data Import/Mappings/Base Mapping/Base Fields/Warning Trigger Tags
+Path: /sitecore/templates/Data Import/Mappings/Base Mapping/Base Fields/Warning Trigger Tags
 DB: master
 SharedFields:
 - ID: "1eb8ae32-e190-44a6-968d-ed904c794ebf"
@@ -22,13 +22,7 @@ Languages:
     - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
       Hint: __Created
       Value: 20180103T171940Z
-    - ID: "4c346442-e859-4efd-89b2-44aedf467d21"
-      Hint: __Valid to
-      Value: 
     - ID: "5dd74568-4d4b-44c1-b513-0af5f4cda34f"
       Hint: __Created by
       Value: |
         sitecore\Admin
-    - ID: "c8f93afe-bfd4-4e8f-9c61-152559854661"
-      Hint: __Valid from
-      Value: 

@@ -2,7 +2,7 @@
 ID: "eb8786ba-4c20-4f67-a638-1b92575195de"
 Parent: "0ad85d6f-a216-4385-9b16-2f101bb65a95"
 Template: "e269fbb5-3750-427a-9149-7aa950b49301"
-Path: /sitecore/templates/Modules/Data Import/Mappings/Fields/ToRichText/Formatting Options
+Path: /sitecore/templates/Data Import/Mappings/Fields/ToRichText/Formatting Options
 DB: master
 SharedFields:
 - ID: "ba3f86a2-4a1c-4d78-b63d-91c2779c1b5e"

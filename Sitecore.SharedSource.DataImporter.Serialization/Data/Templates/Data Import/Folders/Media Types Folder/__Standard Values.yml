@@ -2,7 +2,7 @@
 ID: "700ca303-3e6b-4b94-9201-8fd9b7393cb3"
 Parent: "41637a0c-556a-4b86-9805-828a13dd8cd3"
 Template: "41637a0c-556a-4b86-9805-828a13dd8cd3"
-Path: /sitecore/templates/Modules/Data Import/Folders/Media Types Folder/__Standard Values
+Path: /sitecore/templates/Data Import/Folders/Media Types Folder/__Standard Values
 DB: master
 SharedFields:
 - ID: "1172f251-dad4-4efb-a329-0c63500e4f1e"

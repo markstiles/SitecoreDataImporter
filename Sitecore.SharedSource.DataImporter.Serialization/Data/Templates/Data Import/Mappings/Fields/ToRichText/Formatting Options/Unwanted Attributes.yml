@@ -2,7 +2,7 @@
 ID: "aa19a6fa-f7d1-4d3d-8dd2-f5cb0540457c"
 Parent: "eb8786ba-4c20-4f67-a638-1b92575195de"
 Template: "455a3e98-a627-4b40-8035-e683a0331ac7"
-Path: /sitecore/templates/Modules/Data Import/Mappings/Fields/ToRichText/Formatting Options/Unwanted Attributes
+Path: /sitecore/templates/Data Import/Mappings/Fields/ToRichText/Formatting Options/Unwanted Attributes
 DB: master
 SharedFields:
 - ID: "ab162cc0-dc80-4abf-8871-998ee5d7ba32"

@@ -2,7 +2,7 @@
 ID: "ddce5fef-99d5-470c-aec6-d5d72676e70b"
 Parent: "74e19d56-fa3f-45e9-8338-b0d93c35c31a"
 Template: "455a3e98-a627-4b40-8035-e683a0331ac7"
-Path: /sitecore/templates/Modules/Data Import/Providers/Base Import Map/Logging/Logger Class
+Path: /sitecore/templates/Data Import/Providers/Base Import Map/Logging/Logger Class
 DB: master
 SharedFields:
 - ID: "ab162cc0-dc80-4abf-8871-998ee5d7ba32"

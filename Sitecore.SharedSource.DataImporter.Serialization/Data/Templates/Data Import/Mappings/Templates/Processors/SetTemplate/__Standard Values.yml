@@ -2,7 +2,7 @@
 ID: "1b22a526-1dae-45cd-b239-bf0385924e11"
 Parent: "de84e379-0505-43f9-9250-2206ed977122"
 Template: "de84e379-0505-43f9-9250-2206ed977122"
-Path: /sitecore/templates/Modules/Data Import/Mappings/Templates/Processors/SetTemplate/__Standard Values
+Path: /sitecore/templates/Data Import/Mappings/Templates/Processors/SetTemplate/__Standard Values
 DB: master
 Languages:
 - Language: en

@@ -2,7 +2,7 @@
 ID: "aad68212-f529-48d7-81bd-96987a83e232"
 Parent: "7ba9fca6-f473-42fe-bf20-72c16e07c27b"
 Template: "e269fbb5-3750-427a-9149-7aa950b49301"
-Path: /sitecore/templates/Modules/Data Import/Mappings/Templates/Processors/Update Links/Data Fields
+Path: /sitecore/templates/Data Import/Mappings/Templates/Processors/Update Links/Data Fields
 DB: master
 Languages:
 - Language: en
@@ -12,9 +12,3 @@ Languages:
     - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
       Hint: __Created
       Value: 20180430T152035Z
-    - ID: "4c346442-e859-4efd-89b2-44aedf467d21"
-      Hint: __Valid to
-      Value: 
-    - ID: "c8f93afe-bfd4-4e8f-9c61-152559854661"
-      Hint: __Valid from
-      Value: 

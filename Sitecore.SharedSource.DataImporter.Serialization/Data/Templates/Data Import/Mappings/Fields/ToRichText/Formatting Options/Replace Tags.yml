@@ -2,7 +2,7 @@
 ID: "9b06dd42-14ef-47de-986c-0d22d53d1f08"
 Parent: "eb8786ba-4c20-4f67-a638-1b92575195de"
 Template: "455a3e98-a627-4b40-8035-e683a0331ac7"
-Path: /sitecore/templates/Modules/Data Import/Mappings/Fields/ToRichText/Formatting Options/Replace Tags
+Path: /sitecore/templates/Data Import/Mappings/Fields/ToRichText/Formatting Options/Replace Tags
 DB: master
 SharedFields:
 - ID: "ab162cc0-dc80-4abf-8871-998ee5d7ba32"

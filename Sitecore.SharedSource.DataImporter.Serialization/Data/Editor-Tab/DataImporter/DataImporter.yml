@@ -2,7 +2,7 @@
 ID: "6abc057d-f83f-470b-b0c6-01eb9cb1b03e"
 Parent: "65306e24-53af-461b-b9d9-95062715485a"
 Template: "a5aaca0d-77c0-4741-ab77-211cfbdd9e5c"
-Path: /sitecore/content/Applications/Content Editor/Editors/Modules/DataImporter/DataImporter
+Path: /sitecore/content/Applications/Content Editor/Editors/DataImporter/DataImporter
 DB: core
 SharedFields:
 - ID: "06d5295c-ed2f-4a54-9bf2-26228d113318"

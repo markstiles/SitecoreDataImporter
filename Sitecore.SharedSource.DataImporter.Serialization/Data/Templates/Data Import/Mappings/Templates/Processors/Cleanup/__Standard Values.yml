@@ -2,7 +2,7 @@
 ID: "82d6bbee-97fe-4a70-b2d3-a23cfdbef101"
 Parent: "1e02ffc5-2cda-4d74-86f6-5a23dcf9d9c5"
 Template: "1e02ffc5-2cda-4d74-86f6-5a23dcf9d9c5"
-Path: /sitecore/templates/Modules/Data Import/Mappings/Templates/Processors/Cleanup/__Standard Values
+Path: /sitecore/templates/Data Import/Mappings/Templates/Processors/Cleanup/__Standard Values
 DB: master
 Languages:
 - Language: en

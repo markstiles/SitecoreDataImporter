@@ -2,7 +2,7 @@
 ID: "4f107fa8-9799-483d-98ba-9a7cc58bad58"
 Parent: "0ad85d6f-a216-4385-9b16-2f101bb65a95"
 Template: "0ad85d6f-a216-4385-9b16-2f101bb65a95"
-Path: /sitecore/templates/Modules/Data Import/Mappings/Fields/ToRichText/__Standard Values
+Path: /sitecore/templates/Data Import/Mappings/Fields/ToRichText/__Standard Values
 DB: master
 SharedFields:
 - ID: "fa7b99b1-6bb9-469c-b786-f8a9d52d2f0a"

@@ -2,7 +2,7 @@
 ID: "e0e3b493-707a-4d36-844e-f616a7bb36f1"
 Parent: "7ba9fca6-f473-42fe-bf20-72c16e07c27b"
 Template: "7ba9fca6-f473-42fe-bf20-72c16e07c27b"
-Path: /sitecore/templates/Modules/Data Import/Mappings/Templates/Processors/Update Links/__Standard Values
+Path: /sitecore/templates/Data Import/Mappings/Templates/Processors/Update Links/__Standard Values
 DB: master
 Languages:
 - Language: en

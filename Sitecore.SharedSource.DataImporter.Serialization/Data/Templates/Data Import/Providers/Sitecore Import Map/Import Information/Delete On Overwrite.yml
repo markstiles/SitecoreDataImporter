@@ -2,7 +2,7 @@
 ID: "28670543-1582-4944-a533-d9ecea1fb0ee"
 Parent: "da3e49b1-25de-4396-aa46-091f15a5ae38"
 Template: "455a3e98-a627-4b40-8035-e683a0331ac7"
-Path: /sitecore/templates/Modules/Data Import/Providers/Sitecore Import Map/Import Information/Delete On Overwrite
+Path: /sitecore/templates/Data Import/Providers/Sitecore Import Map/Import Information/Delete On Overwrite
 DB: master
 SharedFields:
 - ID: "ab162cc0-dc80-4abf-8871-998ee5d7ba32"

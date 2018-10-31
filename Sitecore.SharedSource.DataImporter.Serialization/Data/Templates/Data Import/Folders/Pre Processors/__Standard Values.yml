@@ -2,7 +2,7 @@
 ID: "b1352e0b-4a09-408a-bf43-62809b98bdcf"
 Parent: "261895c1-65ca-4fbf-8222-3c72ed390664"
 Template: "261895c1-65ca-4fbf-8222-3c72ed390664"
-Path: /sitecore/templates/Modules/Data Import/Folders/Pre Processors/__Standard Values
+Path: /sitecore/templates/Data Import/Folders/Pre Processors/__Standard Values
 DB: master
 SharedFields:
 - ID: "1172f251-dad4-4efb-a329-0c63500e4f1e"

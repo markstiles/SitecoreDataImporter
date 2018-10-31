@@ -2,7 +2,7 @@
 ID: "04008e2d-8f21-4cbd-9976-a927f4230aae"
 Parent: "4cdc6570-140f-426b-85b7-5de0c67b31fa"
 Template: "e269fbb5-3750-427a-9149-7aa950b49301"
-Path: /sitecore/templates/Modules/Data Import/Mappings/Processors/Post Processor/Post Processor
+Path: /sitecore/templates/Data Import/Mappings/Processors/Post Processor/Post Processor
 DB: master
 Languages:
 - Language: en

@@ -2,7 +2,7 @@
 ID: "690ae01b-8b70-4597-bdcd-6134c4f810b4"
 Parent: "f37df260-906a-4f0a-9b64-f2bb8ba9dc65"
 Template: "455a3e98-a627-4b40-8035-e683a0331ac7"
-Path: /sitecore/templates/Modules/Data Import/Providers/Sitecore Import Map/Sitecore Import Map/Recursively Fetch Children
+Path: /sitecore/templates/Data Import/Providers/Sitecore Import Map/Sitecore Import Map/Recursively Fetch Children
 DB: master
 SharedFields:
 - ID: "ab162cc0-dc80-4abf-8871-998ee5d7ba32"

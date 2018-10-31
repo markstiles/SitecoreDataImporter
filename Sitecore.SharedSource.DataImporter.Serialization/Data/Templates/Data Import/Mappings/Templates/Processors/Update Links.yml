@@ -2,7 +2,7 @@
 ID: "7ba9fca6-f473-42fe-bf20-72c16e07c27b"
 Parent: "96651355-92cc-4ee0-b0c9-d12110e13b35"
 Template: "ab86861a-6030-46c5-b394-e8f99e8b87db"
-Path: /sitecore/templates/Modules/Data Import/Mappings/Templates/Processors/Update Links
+Path: /sitecore/templates/Data Import/Mappings/Templates/Processors/Update Links
 DB: master
 SharedFields:
 - ID: "06d5295c-ed2f-4a54-9bf2-26228d113318"

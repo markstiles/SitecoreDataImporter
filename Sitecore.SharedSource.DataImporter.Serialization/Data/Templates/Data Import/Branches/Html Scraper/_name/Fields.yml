@@ -2,7 +2,7 @@
 ID: "012cd02b-779a-4699-9e88-e1ccfd58f226"
 Parent: "87e3fb10-6330-4d39-b855-707d5b2c392f"
 Template: "98ef4356-8bfe-4f6a-a697-adfd0aad0b65"
-Path: /sitecore/templates/Modules/Data Import/Branches/Html Scraper/$name/Fields
+Path: /sitecore/templates/Data Import/Branches/Html Scraper/$name/Fields
 DB: master
 Languages:
 - Language: en

@@ -2,7 +2,7 @@
 ID: "f80a6889-cca5-4946-beb5-764e32baaa0a"
 Parent: "e5ac18c6-cfde-4e63-8ae6-aed5f10eaeb2"
 Template: "e5ac18c6-cfde-4e63-8ae6-aed5f10eaeb2"
-Path: /sitecore/templates/Modules/Data Import/Mappings/Fields/ToDate/__Standard Values
+Path: /sitecore/templates/Data Import/Mappings/Fields/ToDate/__Standard Values
 DB: master
 SharedFields:
 - ID: "fa7b99b1-6bb9-469c-b786-f8a9d52d2f0a"

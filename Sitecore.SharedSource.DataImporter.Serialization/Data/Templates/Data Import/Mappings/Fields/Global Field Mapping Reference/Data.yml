@@ -2,7 +2,7 @@
 ID: "994e9afd-6d25-454f-a34e-22366fdcd374"
 Parent: "f9fdb469-fc36-4a48-ab45-1b4832aa350e"
 Template: "e269fbb5-3750-427a-9149-7aa950b49301"
-Path: /sitecore/templates/Modules/Data Import/Mappings/Fields/Global Field Mapping Reference/Data
+Path: /sitecore/templates/Data Import/Mappings/Fields/Global Field Mapping Reference/Data
 DB: master
 Languages:
 - Language: en

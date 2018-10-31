@@ -2,7 +2,7 @@
 ID: "d0ab4d16-9118-4ed1-9d0a-49fc0921496d"
 Parent: "96aac80c-ce36-43c5-93eb-eda101794aac"
 Template: "e269fbb5-3750-427a-9149-7aa950b49301"
-Path: /sitecore/templates/Modules/Data Import/Providers/Sitecore Import Map/Item Foldering
+Path: /sitecore/templates/Data Import/Providers/Sitecore Import Map/Item Foldering
 DB: master
 SharedFields:
 - ID: "ba3f86a2-4a1c-4d78-b63d-91c2779c1b5e"

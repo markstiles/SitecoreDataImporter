@@ -2,7 +2,7 @@
 ID: "d87bc2ef-df95-423e-b86f-ea495a3a21ee"
 Parent: "96651355-92cc-4ee0-b0c9-d12110e13b35"
 Template: "ab86861a-6030-46c5-b394-e8f99e8b87db"
-Path: /sitecore/templates/Modules/Data Import/Mappings/Templates/Processors/DOM Warnings
+Path: /sitecore/templates/Data Import/Mappings/Templates/Processors/DOM Warnings
 DB: master
 SharedFields:
 - ID: "06d5295c-ed2f-4a54-9bf2-26228d113318"

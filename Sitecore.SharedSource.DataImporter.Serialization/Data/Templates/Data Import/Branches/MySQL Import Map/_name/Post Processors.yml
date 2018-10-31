@@ -2,7 +2,7 @@
 ID: "a320fa70-fede-4fa0-b4fa-889f6a0136af"
 Parent: "8de76477-71d7-4f68-9bd2-e189b438a8c1"
 Template: "be3a36a8-9589-401a-8549-d0e06fdb4f13"
-Path: /sitecore/templates/Modules/Data Import/Branches/MySQL Import Map/$name/Post Processors
+Path: /sitecore/templates/Data Import/Branches/MySQL Import Map/$name/Post Processors
 DB: master
 Languages:
 - Language: en

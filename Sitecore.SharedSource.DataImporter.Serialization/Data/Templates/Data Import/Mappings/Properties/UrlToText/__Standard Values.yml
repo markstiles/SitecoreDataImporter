@@ -2,7 +2,7 @@
 ID: "ba95e19f-bff5-4dc9-a250-7653722584ea"
 Parent: "0348e554-4e39-4cde-a1b7-5a7e6e80e712"
 Template: "0348e554-4e39-4cde-a1b7-5a7e6e80e712"
-Path: /sitecore/templates/Modules/Data Import/Mappings/Properties/UrlToText/__Standard Values
+Path: /sitecore/templates/Data Import/Mappings/Properties/UrlToText/__Standard Values
 DB: master
 SharedFields:
 - ID: "fa7b99b1-6bb9-469c-b786-f8a9d52d2f0a"

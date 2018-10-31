@@ -2,7 +2,7 @@
 ID: "b05d3b7a-659e-440a-bcb7-c29fa0a68e79"
 Parent: "c44ab211-3b9e-4cda-a54d-c3afdb03bb92"
 Template: "455a3e98-a627-4b40-8035-e683a0331ac7"
-Path: /sitecore/templates/Modules/Data Import/Mappings/Templates/Processors/Process/Handler/Method
+Path: /sitecore/templates/Data Import/Mappings/Templates/Processors/Process/Handler/Method
 DB: master
 SharedFields:
 - ID: "ab162cc0-dc80-4abf-8871-998ee5d7ba32"
@@ -19,9 +19,3 @@ Languages:
     - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
       Hint: __Created
       Value: 20170222T134840Z
-    - ID: "4c346442-e859-4efd-89b2-44aedf467d21"
-      Hint: __Valid to
-      Value: 
-    - ID: "c8f93afe-bfd4-4e8f-9c61-152559854661"
-      Hint: __Valid from
-      Value: 
