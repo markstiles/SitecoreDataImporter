@@ -12,6 +12,7 @@ using Sitecore.SharedSource.DataImporter.Mappings.Fields;
 using System.IO;
 using System.Reflection;
 using System.Runtime.Remoting;
+using Sitecore.Resources.Media;
 using Sitecore.Web.UI.WebControls;
 using Sitecore.SharedSource.DataImporter.Extensions;
 using Sitecore.SharedSource.DataImporter.Logger;
@@ -46,26 +47,20 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
 		/// <returns></returns>
         public override IEnumerable<object> GetImportData() {
 
-			if (!File.Exists(this.Query)) {
-				Logger.Log("N/A", string.Format("the file: '{0}' could not be found. Try moving the file under the webroot.", this.Query), ProcessStatus.Error);
-				return Enumerable.Empty<object>();
-			}
+            var isSitecorePath = Query.StartsWith("/sitecore/");
 
-			Encoding et = Encoding.GetEncoding("utf-8");
-			int ei = -1;
-			if(!EncodingType.Equals("")) {
-				et = (int.TryParse(EncodingType, out ei)) 
-                    ? Encoding.GetEncoding(ei) 
-                    : Encoding.GetEncoding(EncodingType);
-			}
+            if (!isSitecorePath && !File.Exists(this.Query))
+            {
+                Logger.Log("N/A", string.Format("the file: '{0}' could not be found. Try moving the file under the webroot.", this.Query), ProcessStatus.Error);
+                return Enumerable.Empty<object>();
+            }
 
-			byte[] bytes = GetFileBytes(this.Query);
-			string data = et.GetString(bytes);
+            string data = (isSitecorePath) ? GetContentString(Query) : GetFileString(Query);
 
-			//split urls by breaklines
-			List<string> lines = SplitString(data, "\n");
-			
-			return lines;
+            //split urls by breaklines
+            List<string> lines = SplitString(data, "\n");
+
+            return lines;
         }
 		
 		/// <summary>
@@ -103,20 +98,45 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
 			return str.Split(new string[] { splitter }, StringSplitOptions.None).ToList();
 		}
 
-		protected byte[] GetFileBytes(string filePath) {
-			//open the file selected
-			FileInfo f = new FileInfo(filePath);
-			FileStream s = f.OpenRead();
-			byte[] bytes = new byte[s.Length];
-			s.Position = 0;
-			int currentBytesRead = 0;
-			int totalBytesRead = 0;
-			while (s.Read(bytes, 0, int.Parse(s.Length.ToString())) > 0){
-				totalBytesRead += currentBytesRead;
-			}
-			
-			return bytes;
-		}
+        protected string GetContentString(string contentPath)
+        {
+            var fileItem = (MediaItem)ToDB.GetItem(Query);
+            if (fileItem == null)
+                return string.Empty;
+
+            using (var reader = new StreamReader(MediaManager.GetMedia(fileItem).GetStream().Stream))
+            {
+                string text = reader.ReadToEnd();
+
+                return text;
+            }
+        }
+
+        protected string GetFileString(string filePath)
+        {
+            //open the file selected
+            FileInfo f = new FileInfo(filePath);
+            FileStream s = f.OpenRead();
+            byte[] bytes = new byte[s.Length];
+            s.Position = 0;
+            int currentBytesRead = 0;
+            int totalBytesRead = 0;
+            while (s.Read(bytes, 0, int.Parse(s.Length.ToString())) > 0)
+            {
+                totalBytesRead += currentBytesRead;
+            }
+
+            Encoding et = Encoding.GetEncoding("utf-8");
+            int ei = -1;
+            if (!EncodingType.Equals(""))
+            {
+                et = (int.TryParse(EncodingType, out ei))
+                    ? Encoding.GetEncoding(ei)
+                    : Encoding.GetEncoding(EncodingType);
+            }
+
+            return et.GetString(bytes);
+        }
 
         private void ProcessFields(object importRow, Item newItem)
         {
