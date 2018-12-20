@@ -12,6 +12,7 @@ using Sitecore.SharedSource.DataImporter.Mappings.Fields;
 using System.IO;
 using System.Reflection;
 using System.Runtime.Remoting;
+using Microsoft.VisualBasic.FileIO;
 using Sitecore.Resources.Media;
 using Sitecore.Web.UI.WebControls;
 using Sitecore.SharedSource.DataImporter.Extensions;
@@ -79,7 +80,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
         public override string GetFieldValue(object importRow, string fieldName) {
 			
 			string item = importRow as string;
-			List<string> cols = SplitString(item, FieldDelimiter);
+			List<string> cols = SplitColumns(item, FieldDelimiter);
 			
 			int pos = -1;
 			string s = string.Empty;
@@ -97,6 +98,22 @@ namespace Sitecore.SharedSource.DataImporter.Providers {
             // useful for importing large csv files, so you don't have to check the content
 			return str.Split(new string[] { splitter }, StringSplitOptions.None).ToList();
 		}
+
+        protected List<string> SplitColumns(string str, string splitter)
+        {
+            TextFieldParser parser = new TextFieldParser(new StringReader(str))
+            {
+                HasFieldsEnclosedInQuotes = true,
+                Delimiters = new[] { splitter }
+            };
+
+            var fields = parser.ReadFields();
+            parser.Close();
+
+            // string split options set to none so that empty columns are allowed
+            // useful for importing large csv files, so you don't have to check the content
+            return fields?.ToList() ?? new List<string>();
+        }
 
         protected string GetContentString(string contentPath)
         {
