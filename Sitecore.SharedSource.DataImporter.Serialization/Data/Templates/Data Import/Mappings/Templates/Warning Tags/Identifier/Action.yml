@@ -2,7 +2,7 @@
 ID: "b294f1f2-98d1-4607-9cbc-4f278294a7b8"
 Parent: "f878f8a0-fde6-4e8b-8735-a43bbfa09708"
 Template: "455a3e98-a627-4b40-8035-e683a0331ac7"
-Path: /sitecore/templates/Data Import/Mappings/Templates/Warning Tags/Identifier/Action
+Path: /sitecore/templates/Modules/Data Import/Mappings/Templates/Warning Tags/Identifier/Action
 DB: master
 SharedFields:
 - ID: "ab162cc0-dc80-4abf-8871-998ee5d7ba32"

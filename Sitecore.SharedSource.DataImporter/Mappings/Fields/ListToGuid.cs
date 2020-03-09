@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Sitecore.Data;
 using Sitecore.Data.Fields;
 using Sitecore.Data.Items;
-using Sitecore.SharedSource.DataImporter.Providers;
-using Sitecore.SharedSource.DataImporter.Utility;
 using Sitecore.SharedSource.DataImporter.Logger;
+using Sitecore.SharedSource.DataImporter.Providers;
+using Sitecore.SharedSource.DataImporter.Services;
 namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
 
     /// <summary>
@@ -20,14 +21,16 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
         /// </summary>
         public string SourceList { get; set; }
 
+        public StringService StringService { get; set; }
+
         #endregion Properties
 
         #region Constructor
 
-        public ListToGuid(Item i, ILogger l) : base(i, l)
-		{
+        public ListToGuid(Item i, ILogger l) : base(i, l) {
             //stores the source list value
             SourceList = GetItemField(i, "Source List");
+            StringService = new StringService();
         }
 
         #endregion Constructor
@@ -40,9 +43,8 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
         /// <param name="map">provides settings for the import</param>
         /// <param name="newItem">newly created item</param>
         /// <param name="importValue">imported value to match</param>
-        public override void FillField(IDataMap map, ref Item newItem, string importValue)
+        public override void FillField(IDataMap map, ref Item newItem, object importRow, string importValue)
         {
-
             if (string.IsNullOrEmpty(importValue))
                 return;
 
@@ -51,11 +53,17 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
             if (i == null)
                 return;
 
-            //loop through children and look for anything that matches by name
-            string cleanName = StringUtility.GetValidItemName(importValue, map.ItemNameMaxLength);
-            List<Item> t = i.GetChildren()
-                .Where(c => c.DisplayName.Equals(cleanName))
-                .ToList();
+            var importItem = importRow is Item ? (Item)importRow : null;
+            if (importItem == null)
+                return;
+
+            string cleanName = ID.IsID(importValue)
+                ? importItem.Database.GetItem(new ID(importValue))?.DisplayName
+                : StringService.GetValidItemName(importValue, map.ItemNameMaxLength);
+            if (string.IsNullOrWhiteSpace(cleanName))
+                return;
+
+            IEnumerable<Item> t = i.Axes.GetDescendants().Where(c => c.DisplayName.Equals(cleanName));
 
             //if you find one then store the id
             if (!t.Any())

@@ -1,0 +1,51 @@
+﻿* { font: bold 8pt tahoma; color: #555555; }
+.clear { clear:both; }
+
+body { background:#F0F1F2; margin:0px; padding:0px; }
+    .TextBox { width:400px; margin:0 0 5px 0; }
+    .MainWrapper { }
+	    .Section { width:100%; clear:both; float:left; background: none repeat scroll 0 0 #F0F1F2; font: 8pt tahoma; }
+	        .Controls {  padding:10px;  }
+		    .SectionTitle { margin:0 0 10px; font-size:18px; color:#003366; }
+		    h2 { border-left: 5px solid #DC291E; margin:0px; background-color: #474747; white-space: nowrap; line-height: 35px; color: #fff; font-weight: 600; cursor: pointer; border-bottom: 1px solid #474747; padding: 0 0 0 10px; }
+		    .rowTitle { font-weight:bold; }
+		    .noButtons { margin:5px 0; }
+		    .rowSpacer { height:15px; }
+		    .formRow { margin:0 0 5px 0; border-left: 4px solid #CCCCCC; padding-left:8px;}
+		        select,
+		        option { color: black; font: 14px verdana; line-height:22px;}
+		        select { margin-right:10px; float:left; }
+		        
+		        .btnBox { display:inline-block; height:20px; margin:5px 0; }
+		        .btnMessage { float:left; padding:9px 0px 15px 5px; margin:1px; }
+		        .btn { float:left; padding: 3px 4px 3px 9px; margin:1px; }
+		        .btn:hover { background: url("/sitecore/shell/themes/standard/images/Ribbon/SmallButtonActive.png") repeat-x scroll 0 0 #fffbd3; 
+                    border-style:solid; border-width:1px; border-color:#ddcf9b #d2c08e #ccc2a3; margin:0px;             
+                }
+		            .btn img { float:left; }
+		            .btn input,
+		            .btn a { color:#303030; font-family: tahoma; font-size: 8pt; border:none; background:none; 
+		                            float:left; height:14px; padding:0 0 3px 20px; 
+                    }
+                        .btn input.refreshBtn {  background: url('/temp/IconCache/Applications/16x16/refresh.png') no-repeat 0 0; }
+		                .btn input.runBtn { background: url('/temp/IconCache/Applications/16x16/recycle.png') no-repeat 0 0; }
+		        .ImportForm { margin:0 0 10px; padding:0 0 10px; border-bottom:1px solid #cccccc; }
+			        .ImportForm label { width:150px; display:block; float:left; margin:0 5px 0 0; }
+            table.jobListing { width:100% }
+                thead { background-color:#eaeaea }
+                tr { background-color:#fff; }
+                    thead td { background-color:#ccc; color:#333; }
+                td { font: bold 8pt tahoma; color: #555555; padding: 4px 6px; border: 2px solid #eee; }
+            button { background-color:#474747; color:#fff; border:0; height:30px; }
+	        .Message { width:96% }
+	            .Message textarea { width:100%; height:120px; }
+            .formRow.form-buttons { margin-top:20px; }
+            .import-section { min-height:100px; }
+            .result-failure { display:none; }
+            .importError { display:none; color:#333; font-size: 15px; font-family: arial; font-weight: bold; border-left-color: #DC291E; }
+            .importStatus { display:none; margin-bottom: 15px; }
+                .status-number { display:block; font-size: 24px; }
+                .status-bar { height: 20px; width: 500px; border: 2px solid #ccc; margin-top: 20px; }
+                    .status-bar-color { background-color: #ff0000; height: 100%; width: 0%; }
+
+.progress-indicator { display: none; margin: 0 auto; position: absolute; width: 45px; top: 69px; right: 0; left: 0; }

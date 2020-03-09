@@ -1,0 +1,18 @@
+﻿---
+ID: "d1082b74-6efe-42c7-ac66-70484a204d7a"
+Parent: "e70adef9-b551-4648-9fca-3efb17b491b1"
+Template: "e269fbb5-3750-427a-9149-7aa950b49301"
+Path: /sitecore/templates/Modules/Data Import/Providers/CSV Import Map/Settings
+DB: master
+SharedFields:
+- ID: "ba3f86a2-4a1c-4d78-b63d-91c2779c1b5e"
+  Hint: __Sortorder
+  Value: 200
+Languages:
+- Language: en
+  Versions:
+  - Version: 1
+    Fields:
+    - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
+      Hint: __Created
+      Value: 20200213T031853Z

@@ -32,51 +32,6 @@ namespace Sitecore.SharedSource.DataImporter.Tests.Mappings.Fields
             _sut = new ToDate(defItem, _log);
             _dataMap = Substitute.For<IDataMap>();
         }
-
-        [Test]
-        public void FillField_ValidValue_PopulatesField()
-        {
-            var newItem = _database.GetItem(TestingConstants.ToDate.NewItemId);
-
-            var dt = DateTime.UtcNow;
-            var dateValue = dt.ToString("F");
-            var dateFieldValue = dt.ToString("yyyyMMddTHHmmss");
-
-            using (new EditContext(newItem))
-            {
-                _sut.FillField(_dataMap, ref newItem, dateValue);
-            }
-
-            var field = newItem.Fields[TestingConstants.ToDate.ToFieldName];
-            Assert.AreEqual(dateFieldValue, field.Value);
-        }
-
-        [Test]
-        public void FillField_InvalidValue_LeavesEmptyField()
-        {
-            var newItem = _database.GetItem(TestingConstants.ToDate.NewItemId);
-
-            using (new EditContext(newItem))
-            {
-                _sut.FillField(_dataMap, ref newItem, "not a date value");
-            }
-
-            var field = newItem.Fields[TestingConstants.ToDate.ToFieldName];
-            Assert.AreEqual("", field.Value);
-        }
-
-        [Test]
-        public void FillField_EmptyValue_LeavesEmptyField()
-        {
-            var newItem = _database.GetItem(TestingConstants.ToDate.NewItemId);
-
-            using (new EditContext(newItem))
-            {
-                _sut.FillField(_dataMap, ref newItem, "");
-            }
-
-            var field = newItem.Fields[TestingConstants.ToDate.ToFieldName];
-            Assert.AreEqual("", field.Value);
-        }
+        
     }
 }

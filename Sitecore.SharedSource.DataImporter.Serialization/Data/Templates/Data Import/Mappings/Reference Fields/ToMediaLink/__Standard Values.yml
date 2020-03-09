@@ -1,0 +1,22 @@
+﻿---
+ID: "6844831c-2709-4feb-8ab9-83e32b5fdf3c"
+Parent: "a95a11c2-9a59-457f-b984-c25aa1b39505"
+Template: "a95a11c2-9a59-457f-b984-c25aa1b39505"
+Path: /sitecore/templates/Modules/Data Import/Mappings/Reference Fields/ToMediaLink/__Standard Values
+DB: master
+SharedFields:
+- ID: "fa7b99b1-6bb9-469c-b786-f8a9d52d2f0a"
+  Hint: Handler Class
+  Value: Sitecore.SharedSource.DataImporter.Mappings.ReferenceFields.ToMediaLink
+Languages:
+- Language: en
+  Versions:
+  - Version: 1
+    Fields:
+    - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
+      Hint: __Created
+      Value: 20200205T003236Z
+    - ID: "5dd74568-4d4b-44c1-b513-0af5f4cda34f"
+      Hint: __Created by
+      Value: |
+        sitecore\Admin

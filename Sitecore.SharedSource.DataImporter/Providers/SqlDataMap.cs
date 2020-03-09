@@ -12,64 +12,62 @@ using Sitecore.SharedSource.DataImporter.Mappings.Fields;
 using Sitecore.SharedSource.DataImporter.Extensions;
 using System.Collections;
 using Sitecore.SharedSource.DataImporter.Logger;
+using Sitecore.SharedSource.DataImporter.Mappings.Properties;
 
-namespace Sitecore.SharedSource.DataImporter.Providers {
-    public class SqlDataMap : BaseDataMap {
+namespace Sitecore.SharedSource.DataImporter.Providers
+{
+	public class SqlDataMap : BaseDataMap
+	{
 
-        #region Properties
+		#region Properties
 
-        #endregion Properties
+		#endregion Properties
 
-        #region Constructor
+		#region Constructor
 
-        public SqlDataMap(Database db, string connectionString, Item importItem, ILogger l) : base(db, connectionString, importItem, l) { }
+		public SqlDataMap(Database db, string connectionString, Item importItem, ILogger l) : base(db, connectionString, importItem, l) { }
 
-        #endregion Constructor
+		#endregion Constructor
 
-        #region IDataMap Methods
+		#region IDataMap Methods
 
-        /// <summary>
-        /// uses a SqlConnection to get data
-        /// </summary>
-        /// <returns></returns>
-        public override IEnumerable<object> GetImportData() {
-            DataSet ds = new DataSet();
-            SqlConnection dbCon = new SqlConnection(this.DatabaseConnectionString);
-            dbCon.Open();
+		/// <summary>
+		/// uses a SqlConnection to get data
+		/// </summary>
+		/// <returns></returns>
+		public override IEnumerable<object> GetImportData()
+		{
+			DataSet ds = new DataSet();
+			SqlConnection dbCon = new SqlConnection(this.DatabaseConnectionString);
+			dbCon.Open();
 
-            SqlDataAdapter adapter = new SqlDataAdapter(this.Query, dbCon);
-            adapter.Fill(ds);
-            dbCon.Close();
+			SqlDataAdapter adapter = new SqlDataAdapter(this.Query, dbCon);
+			adapter.Fill(ds);
+			dbCon.Close();
 
-            DataTable dt = ds.Tables[0].Copy();
+			DataTable dt = ds.Tables[0].Copy();
 
-            return (from DataRow dr in dt.Rows
-                    select dr).Cast<object>();
-        }
+			return (from DataRow dr in dt.Rows
+							select dr).Cast<object>();
+		}
+        
+		/// <summary>
+		/// gets custom data from a DataRow
+		/// </summary>
+		/// <param name="importRow"></param>
+		/// <param name="fieldName"></param>
+		/// <returns></returns>
+		public override string GetFieldValue(object importRow, string fieldName)
+		{
+			DataRow item = importRow as DataRow;
+			object f = item[fieldName];
+			return (f != null) ? f.ToString() : string.Empty;
+		}
 
-        /// <summary>
-        /// doesn't handle any custom data
-        /// </summary>
-        /// <param name="newItem"></param>
-        /// <param name="importRow"></param>
-        public override void ProcessCustomData(ref Item newItem, object importRow) { }
+		#endregion IDataMap Methods
 
-        /// <summary>
-        /// gets custom data from a DataRow
-        /// </summary>
-        /// <param name="importRow"></param>
-        /// <param name="fieldName"></param>
-        /// <returns></returns>
-        public override string GetFieldValue(object importRow, string fieldName) {
-            DataRow item = importRow as DataRow;
-            object f = item[fieldName];
-            return (f != null) ? f.ToString() : string.Empty;
-        }
+		#region Methods
 
-        #endregion IDataMap Methods
-
-        #region Methods
-
-        #endregion Methods
-    }
+		#endregion Methods
+	}
 }

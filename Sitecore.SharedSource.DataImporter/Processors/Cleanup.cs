@@ -8,14 +8,15 @@ using HtmlAgilityPack;
 using Sitecore.SharedSource.DataImporter.HtmlScraper;
 using Sitecore.SharedSource.DataImporter.Mappings;
 using Sitecore.SharedSource.DataImporter.Reporting;
+using Sitecore.SharedSource.DataImporter.Logger;
 
 namespace Sitecore.SharedSource.DataImporter.Processors
 {
     public class Cleanup
     {
-        public void Run(Item processor, Item itemToProcess, Item fieldMapping)
+        public void Run(Item processor, Item itemToProcess, Item fieldMapping, ILogger l)
         {
-            BaseMapping baseMap = new BaseMapping(fieldMapping);
+            BaseMapping baseMap = new BaseMapping(fieldMapping, l);
             string findPattern = processor.Fields["Find"].Value;
             string replacePattern = processor.Fields["Replace"].Value;
             string replaceReportingText = string.IsNullOrEmpty(replacePattern) ? "*remove*" : replacePattern;
@@ -30,7 +31,7 @@ namespace Sitecore.SharedSource.DataImporter.Processors
 
                 HtmlNode node = Helper.HandleNodesLookup(findPattern, document);
 
-                using (new SecurityModel.SecurityDisabler())
+                using (new Sitecore.SecurityModel.SecurityDisabler())
                 {
                     itemToProcess.Editing.BeginEdit();
                     if (node != null)
@@ -59,7 +60,7 @@ namespace Sitecore.SharedSource.DataImporter.Processors
                         }
                     }
 
-                    itemToProcess.Editing.EndEdit();
+                    itemToProcess.Editing.EndEdit(false, false);
                 }
             }
             catch(Exception ex)

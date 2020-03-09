@@ -27,7 +27,7 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
         /// <param name="map">provides settings related to the import</param>
         /// <param name="newItem">the newly created item</param>
         /// <param name="importValue">the imported value</param>
-        void FillField(IDataMap map, ref Item newItem, string importValue);
+        void FillField(IDataMap map, ref Item newItem, object importRow, string importValue);
 
         /// <summary>
         /// returns a list of the field names from the import row that you want to import into this field 

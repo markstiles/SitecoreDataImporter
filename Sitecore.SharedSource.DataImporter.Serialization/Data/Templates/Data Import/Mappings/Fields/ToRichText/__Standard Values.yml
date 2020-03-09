@@ -1,10 +1,13 @@
 ﻿---
-ID: "4f107fa8-9799-483d-98ba-9a7cc58bad58"
-Parent: "0ad85d6f-a216-4385-9b16-2f101bb65a95"
-Template: "0ad85d6f-a216-4385-9b16-2f101bb65a95"
-Path: /sitecore/templates/Data Import/Mappings/Fields/ToRichText/__Standard Values
+ID: "a1ccddd6-1206-4110-ade0-8bc4eb3ed7cf"
+Parent: "82e5148c-b778-45bf-89dd-a6d0265b5218"
+Template: "82e5148c-b778-45bf-89dd-a6d0265b5218"
+Path: /sitecore/templates/Modules/Data Import/Mappings/Fields/ToRichText/__Standard Values
 DB: master
 SharedFields:
+- ID: "ba3f86a2-4a1c-4d78-b63d-91c2779c1b5e"
+  Hint: __Sortorder
+  Value: 250
 - ID: "fa7b99b1-6bb9-469c-b786-f8a9d52d2f0a"
   Hint: Handler Class
   Value: Sitecore.SharedSource.DataImporter.Mappings.Fields.ToRichText
@@ -15,8 +18,7 @@ Languages:
     Fields:
     - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
       Hint: __Created
-      Value: 20180111T152001Z
-    - ID: "5dd74568-4d4b-44c1-b513-0af5f4cda34f"
-      Hint: __Created by
-      Value: |
-        sitecore\admin
+      Value: 20110704T143557Z
+    - ID: "2cfe94ca-3788-492e-8a67-89f2e89460b5"
+      Hint: Unwanted Attributes
+      Value: style

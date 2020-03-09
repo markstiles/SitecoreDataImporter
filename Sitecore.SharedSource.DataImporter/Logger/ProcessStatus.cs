@@ -13,15 +13,17 @@ namespace Sitecore.SharedSource.DataImporter.Providers
         DateParseError,
         NotFoundError,
         ImportDefinitionError,
-        PostProcessorError,
-        GetImportDataError
+        GetImportDataError,
+        VideoInfo,
+        ListToComponentLog,
+        PresentationServiceLog,
+        FieldToComponentLog
     }
 
     public class ImportRow
     {
-        //Should have properties which correspond to the Column Names in the file   
+        public virtual string ErrorMessage { get; set; }
         public virtual string AffectedItem { get; set; }
-        public virtual string ErrorMessage { get; set; }  
         public virtual string FieldName { get; set; }
         public virtual string FieldValue { get; set; }
     }

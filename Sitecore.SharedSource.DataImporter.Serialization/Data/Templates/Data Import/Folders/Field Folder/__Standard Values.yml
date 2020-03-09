@@ -2,18 +2,29 @@
 ID: "0d36ae5a-e2ba-4de5-b930-cd1bef43c7f8"
 Parent: "98ef4356-8bfe-4f6a-a697-adfd0aad0b65"
 Template: "98ef4356-8bfe-4f6a-a697-adfd0aad0b65"
-Path: /sitecore/templates/Data Import/Folders/Field Folder/__Standard Values
+Path: /sitecore/templates/Modules/Data Import/Folders/Field Folder/__Standard Values
 DB: master
 SharedFields:
 - ID: "1172f251-dad4-4efb-a329-0c63500e4f1e"
   Hint: __Masters
   Type: TreelistEx
   Value: |
+    {99AFDE7E-B95A-4A81-8613-7ED5F55BBA52}
+    {0899BF32-1F5C-4018-9818-E21316088CFA}
+    {3CCA1C34-B636-4437-81D4-B9FEF820C4A1}
     {EC4E9590-F027-4C6F-AC08-DCABD8877F1B}
+    {5C73C4E4-D157-4099-92A4-321B45165C53}
+    {FB9C4EA6-D2E2-4F73-B1BE-E4AA68DE00C4}
     {E5AC18C6-CFDE-4E63-8AE6-AED5F10EAEB2}
+    {21511783-2562-48A6-B373-E97D9224B46F}
+    {5E6B5453-DA31-49B3-B044-D8C5FA4DBAF2}
+    {C70391AC-4501-4983-9176-97B9674DB862}
+    {82E5148C-B778-45BF-89DD-A6D0265B5218}
+    {8931483F-A410-4CE3-976F-4A7B68B28D90}
     {BD069A3B-1C64-4644-9D1A-F1F12CC00186}
-    {E929A1D8-DE99-44CA-A5FB-A87DB718A316}
     {C1017482-5549-4245-91F6-D960DE3B00E2}
+    {E929A1D8-DE99-44CA-A5FB-A87DB718A316}
+    {0F528C70-E771-4F2F-8D80-103A57104519}
 Languages:
 - Language: en
   Versions:
@@ -21,7 +32,7 @@ Languages:
     Fields:
     - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
       Hint: __Created
-      Value: 20110704T113142
+      Value: 20110704T153142Z
     - ID: "5dd74568-4d4b-44c1-b513-0af5f4cda34f"
       Hint: __Created by
       Value: |

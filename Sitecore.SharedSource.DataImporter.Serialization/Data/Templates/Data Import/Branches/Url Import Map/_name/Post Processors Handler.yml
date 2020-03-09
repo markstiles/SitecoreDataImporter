@@ -1,0 +1,10 @@
+﻿---
+ID: "fca96433-a17f-4240-92f9-0a2307320734"
+Parent: "87e3fb10-6330-4d39-b855-707d5b2c392f"
+Template: "be3a36a8-9589-401a-8549-d0e06fdb4f13"
+Path: /sitecore/templates/Modules/Data Import/Branches/Url Import Map/$name/Post Processors Handler
+DB: master
+Languages:
+- Language: en
+  Versions:
+  - Version: 1

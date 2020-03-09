@@ -2,7 +2,7 @@
 ID: "aa7a2463-461d-4709-a604-113b99d3cd63"
 Parent: "8d3bc5bd-3f77-4eff-98ab-31b5de84f31e"
 Template: "8d3bc5bd-3f77-4eff-98ab-31b5de84f31e"
-Path: /sitecore/templates/Data Import/Folders/Import Map Folder/__Standard Values
+Path: /sitecore/templates/Modules/Data Import/Folders/Import Map Folder/__Standard Values
 DB: master
 SharedFields:
 - ID: "1172f251-dad4-4efb-a329-0c63500e4f1e"
@@ -14,6 +14,7 @@ SharedFields:
     {641E3E7A-FA92-486E-B764-FF6482B0DC1D}
     {F1199728-0560-43DB-80AA-46EC0B5D0ECE}
     {8280F7C8-30DD-497D-A1B6-DEBF745F2D8D}
+    {B45F3A2F-1FF7-496E-A34D-1D4F89E04292}
 Languages:
 - Language: en
   Versions:

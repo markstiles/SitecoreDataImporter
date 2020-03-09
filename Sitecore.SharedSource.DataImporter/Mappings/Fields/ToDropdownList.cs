@@ -20,13 +20,13 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
         #endregion properties
 
         public ToDropdownList(Item i, ILogger l) : base(i, l)
-		{
+        {
             SelectionRootItem = GetItemField(i, "SelectionRootItem");
         }
 
         #region private methods
 
-        public override void FillField(IDataMap map, ref Item newItem, string importValue)
+        public override void FillField(IDataMap map, ref Item newItem, object importRow, string importValue)
         {
 			Assert.IsNotNull(newItem, "newItem");
             string selectedValue = string.Empty;

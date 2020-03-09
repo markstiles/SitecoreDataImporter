@@ -28,8 +28,7 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
         #region Constructor
 
         //constructor
-        public UrlToReference(Item i, ILogger l) : base(i, l)
-		{
+        public UrlToReference(Item i, ILogger l) : base(i, l) {
             SiteHomeItemID = GetItemField(i, SiteHomeItemFieldName);
         }
 
@@ -37,7 +36,7 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
 
         #region IBaseField
 
-        public override void FillField(IDataMap map, ref Item newItem, string importValue) {
+        public override void FillField(IDataMap map, ref Item newItem, object importRow, string importValue) {
 
 			Assert.IsNotNull(map, "map");
 			Assert.IsNotNull(newItem, "newItem");

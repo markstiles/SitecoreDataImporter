@@ -2,7 +2,7 @@
 ID: "091bca6c-a946-40e0-9b79-8cee92c71b1b"
 Parent: "f0e080df-8bfd-4cb8-b4a0-f950da61559c"
 Template: "0437fee2-44c9-46a6-abe9-28858d9fee8c"
-Path: /sitecore/templates/Data Import/Mappings
+Path: /sitecore/templates/Modules/Data Import/Mappings
 DB: master
 Languages:
 - Language: en

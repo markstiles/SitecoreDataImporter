@@ -2,7 +2,7 @@
 ID: "5a2b2eeb-e944-413c-a994-ddacd0ad4b88"
 Parent: "5782de89-958b-4990-b060-41cfe115ff17"
 Template: "98ef4356-8bfe-4f6a-a697-adfd0aad0b65"
-Path: /sitecore/templates/Data Import/Branches/SQL Import Map/$name/Fields
+Path: /sitecore/templates/Modules/Data Import/Branches/SQL Import Map/$name/Fields
 DB: master
 Languages:
 - Language: en

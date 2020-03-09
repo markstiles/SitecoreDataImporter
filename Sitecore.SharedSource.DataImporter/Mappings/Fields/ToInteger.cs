@@ -10,10 +10,10 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
     public class ToInteger : ToText
     {
         public ToInteger(Item i, ILogger l) : base(i, l)
-		{
+        {
         }
 
-        public override void FillField(IDataMap map, ref Item newItem, string importValue) {
+        public override void FillField(IDataMap map, ref Item newItem, object importRow, string importValue) {
 
             if (string.IsNullOrEmpty(importValue))
                 return;
@@ -21,7 +21,7 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
             int value = 0;
             if (!int.TryParse(importValue.Trim(), out value))
             {
-                map.Logger.Log("ToInteger.FillField", string.Format("Couldn't parse the integer value {0} on item {1}", importValue, newItem.Paths.FullPath));
+                map.Logger.Log("Couldn't parse the integer value", newItem.Paths.FullPath, ProcessStatus.FieldError, ItemName(), importValue);
                 return;
             }
             

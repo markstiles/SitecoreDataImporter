@@ -15,6 +15,7 @@ using Sitecore.SharedSource.DataImporter.Processors;
 using Sitecore.SharedSource.DataImporter.Reporting;
 using Sitecore.SharedSource.DataImporter.Logger;
 using Sitecore.SharedSource.DataImporter.Mappings.Fields;
+using Sitecore.SharedSource.DataImporter.Mappings.Properties;
 
 namespace Sitecore.SharedSource.DataImporter.Providers
 {
@@ -88,7 +89,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers
             //Check for warnings
             MultilistField WarningTags = fieldMap.InnerItem.Fields[DataImporter.HtmlScraper.Constants.FieldNames.WarningTriggerTags];
             if (WarningTags.Count > 0)
-                WriteTagWarnings.Run(newItem, fieldMap.InnerItem);
+                WriteTagWarnings.Run(newItem, fieldMap.InnerItem, Logger);
             
             //"To What Field"
             MultilistField processors = fieldMap.InnerItem.Fields[DataImporter.HtmlScraper.Constants.FieldNames.FieldPostProcessors];
@@ -107,7 +108,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers
         /// </summary>
         /// <param name="newItem"></param>
         /// <param name="importRow"></param>
-        public override void ProcessCustomData(ref Item newItem, object importRow)
+        public override void ProcessCustomData(ref Item newItem, object importRow, List<IBaseProperty> propDefinitions = null)
         {
             DataRow dataRow = importRow as DataRow;
             string requestedURL = dataRow[RequestedURL].ToString();
@@ -116,7 +117,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers
             foreach (var field in FieldDefinitions)
                 RunProcessor(field, newItem);
         }
-
+        
         public override CustomItemBase GetNewItemTemplate(object importRow)
         {
             DataRow dataRow = importRow as DataRow;
@@ -365,7 +366,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers
             NameValueCollection mappings = new NameValueCollection();
             foreach (IBaseField field in FieldDefinitions)
             {
-                BaseMapping baseMap = new BaseMapping(field.InnerItem);
+                BaseMapping baseMap = new BaseMapping(field.InnerItem, Logger);
                 string fromFieldName = baseMap.InnerItem.Fields[DataImporter.HtmlScraper.Constants.FieldNames.FromWhatField].Value;
                 string toFieldName = baseMap.NewItemField + "_" + Guid.NewGuid().ToString().Replace("-", "");
                 mappings.Add(fromFieldName, toFieldName);

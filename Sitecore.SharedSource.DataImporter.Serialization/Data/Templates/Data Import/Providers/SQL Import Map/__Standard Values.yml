@@ -2,7 +2,7 @@
 ID: "da4c9cc2-b726-48f5-a222-9e7130cfd4f6"
 Parent: "2bba4065-aa42-4509-a750-4ac2879d06ea"
 Template: "2bba4065-aa42-4509-a750-4ac2879d06ea"
-Path: /sitecore/templates/Data Import/Providers/SQL Import Map/__Standard Values
+Path: /sitecore/templates/Modules/Data Import/Providers/SQL Import Map/__Standard Values
 DB: master
 SharedFields:
 - ID: "0639f8e7-44ab-41ce-ae67-9987baf47e96"
@@ -14,9 +14,7 @@ SharedFields:
 - ID: "1172f251-dad4-4efb-a329-0c63500e4f1e"
   Hint: __Masters
   Type: TreelistEx
-  Value: |
-    {98EF4356-8BFE-4F6A-A697-ADFD0AAD0B65}
-    {BE3A36A8-9589-401A-8549-D0E06FDB4F13}
+  Value: 
 - ID: "a0cb3965-8884-4c7a-8815-b6b2e5ced162"
   Hint: __Editors
   Type: TreelistEx

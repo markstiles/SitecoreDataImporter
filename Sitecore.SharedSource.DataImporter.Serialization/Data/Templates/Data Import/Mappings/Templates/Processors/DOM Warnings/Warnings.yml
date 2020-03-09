@@ -2,7 +2,7 @@
 ID: "6ec9a142-39c6-4f97-9631-bffd71266869"
 Parent: "d87bc2ef-df95-423e-b86f-ea495a3a21ee"
 Template: "e269fbb5-3750-427a-9149-7aa950b49301"
-Path: /sitecore/templates/Data Import/Mappings/Templates/Processors/DOM Warnings/Warnings
+Path: /sitecore/templates/Modules/Data Import/Mappings/Templates/Processors/DOM Warnings/Warnings
 DB: master
 Languages:
 - Language: en

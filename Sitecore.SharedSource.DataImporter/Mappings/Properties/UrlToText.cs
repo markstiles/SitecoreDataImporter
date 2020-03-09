@@ -19,8 +19,8 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Properties {
         #region Constructor
 
         //constructor
-        public UrlToText(Item i, ILogger l) : base(i)
-		{
+        public UrlToText(Item i, ILogger l)
+            : base(i, l) {
         }
 
         #endregion Constructor

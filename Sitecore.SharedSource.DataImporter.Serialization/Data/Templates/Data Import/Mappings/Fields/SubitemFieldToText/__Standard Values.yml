@@ -1,0 +1,18 @@
+﻿---
+ID: "b941195f-f233-4df3-836a-f5d6289be188"
+Parent: "5c73c4e4-d157-4099-92a4-321b45165c53"
+Template: "5c73c4e4-d157-4099-92a4-321b45165c53"
+Path: /sitecore/templates/Modules/Data Import/Mappings/Fields/SubitemFieldToText/__Standard Values
+DB: master
+SharedFields:
+- ID: "fa7b99b1-6bb9-469c-b786-f8a9d52d2f0a"
+  Hint: Handler Class
+  Value: Sitecore.SharedSource.DataImporter.Mappings.Fields.SubitemFieldToText
+Languages:
+- Language: en
+  Versions:
+  - Version: 1
+    Fields:
+    - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
+      Hint: __Created
+      Value: 20110704T103147

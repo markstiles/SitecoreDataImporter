@@ -2,7 +2,7 @@
 ID: "ce57bdf6-dbb7-4e2a-9727-ae540113f71e"
 Parent: "84fbb783-2320-481b-876a-256e58c43fad"
 Template: "84fbb783-2320-481b-876a-256e58c43fad"
-Path: /sitecore/templates/Data Import/Providers/MySQL Import Map/__Standard Values
+Path: /sitecore/templates/Modules/Data Import/Providers/MySQL Import Map/__Standard Values
 DB: master
 SharedFields:
 - ID: "0639f8e7-44ab-41ce-ae67-9987baf47e96"
@@ -11,12 +11,6 @@ SharedFields:
 - ID: "0790a745-13e8-44f1-aa17-469e8fc7d20e"
   Hint: Handler Class
   Value: Sitecore.SharedSource.DataImporter.Providers.MySqlDataMap
-- ID: "1172f251-dad4-4efb-a329-0c63500e4f1e"
-  Hint: __Masters
-  Type: TreelistEx
-  Value: |
-    {98EF4356-8BFE-4F6A-A697-ADFD0AAD0B65}
-    {BE3A36A8-9589-401A-8549-D0E06FDB4F13}
 - ID: "a0cb3965-8884-4c7a-8815-b6b2e5ced162"
   Hint: __Editors
   Type: TreelistEx

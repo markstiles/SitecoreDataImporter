@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using Sitecore;
 
 namespace Sitecore.SharedSource.DataImporter.Reporting
 {
@@ -110,7 +111,7 @@ namespace Sitecore.SharedSource.DataImporter.Reporting
             }
             catch (Exception ex)
             {
-               Diagnostics.Log.Error("DIM-Report: Unable to creat report files for DataImport module.", typeof(ImportReporter));
+               Sitecore.Diagnostics.Log.Error("DIM-Report: Unable to creat report files for DataImport module.", typeof(ImportReporter));
             }
             
         }

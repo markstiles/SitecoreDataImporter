@@ -1,6 +1,5 @@
 ﻿using Sitecore.Data.Items;
 using Sitecore.SharedSource.DataImporter.HtmlScraper;
-using Sitecore.SharedSource.DataImporter.Mappings.Processors;
 using Sitecore.SharedSource.DataImporter.Providers;
 using Sitecore.SharedSource.DataImporter.Reporting;
 using System;
@@ -25,7 +24,7 @@ namespace Sitecore.SharedSource.DataImporter.Processors
 
         private void RunPostProcessors(IDataMap map)
         {
-            ImportConfig config = new ImportConfig(map.ProviderItem, map.ToDB, map.Query);
+            ImportConfig config = new ImportConfig(map.ImportItem, map.ToDB, map.Query);
             config.ImportLocation = map.ImportToWhere;
 
             foreach (var processor in config.PostProcessors)
@@ -33,6 +32,5 @@ namespace Sitecore.SharedSource.DataImporter.Processors
                 Processor.Execute(processor.ProcessItem, config);
             }
         }
-
     }
 }

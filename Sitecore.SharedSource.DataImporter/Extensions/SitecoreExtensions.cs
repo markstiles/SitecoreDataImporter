@@ -1,63 +1,67 @@
-﻿using Sitecore.Data.Fields;
+﻿using System;
+using Sitecore.Data.Fields;
 using Sitecore.Data.Items;
-using System;
+using Sitecore.SharedSource.DataImporter.Logger;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Sitecore.SharedSource.DataImporter.Providers;
-using log4net;
-using Sitecore.SharedSource.DataImporter.Logger;
 
-namespace Sitecore.SharedSource.DataImporter.Extensions {
-    public static class SitecoreExtensions {
+namespace Sitecore.SharedSource.DataImporter.Extensions
+{
+	public static class SitecoreExtensions
+	{
 
-        /// <summary>
-        /// searches under the parent for an item whose template matches the id provided
-        /// </summary>
-        /// <param name="parent"></param>
-        /// <param name="TemplateID"></param>
-        /// <returns></returns>
-        public static Item GetChildByTemplate(this Item parent, string TemplateID) {
-			if (parent == null)
+		/// <summary>
+		/// searches under the parent for an item whose template matches the id provided
+		/// </summary>
+		/// <param name="parent"></param>
+		/// <param name="TemplateID"></param>
+		/// <returns></returns>
+		public static Item GetChildByTemplate(this Item parent, string TemplateID)
+		{
+			IEnumerable<Item> x = from Item i in parent.GetChildren()
+														where i.Template.IsID(TemplateID)
+														select i;
+			return x.FirstOrDefault();
+		}
+
+		public static bool GetItemBool(this Item i, string fieldName)
+		{
+			CheckboxField cb = (CheckboxField)i.Fields[fieldName];
+			return cb?.Checked ?? false;
+		}
+
+		public static string GetItemField(this Item i, string fieldName, ILogger logger)
+		{
+			//check item
+			if (i == null)
 			{
-				return null;
-			}
-            IEnumerable<Item> x = from Item i in parent.GetChildren()
-                                  where i.Template.IsID(TemplateID)
-                                  select i;
-            return (x.Any()) ? x.First() : null;
-        }
-
-        public static bool GetItemBool(this Item i, string fieldName) {
-            CheckboxField cb = (CheckboxField)i?.Fields[fieldName];
-            return (cb == null) ? false : cb.Checked;
-        }
-
-        public static string GetItemField(this Item i, string fieldName, ILogger logger) {
-			try
-			{
-
-				//check field
-				Field f = i.Fields[fieldName];
-				if (f == null)
-				{
-					logger?.Log("GetItemField", string.Format("the field {0} is null on item {1}", fieldName,i.Paths.FullPath));
-					return string.Empty;
-				}
-
-				//check value
-				string s = f.Value;
-				if (string.IsNullOrEmpty(s))
-					logger.Log("GetItemField", string.Format("the field {0} was empty on item {1}",  fieldName, i.Paths.FullPath));
-
-				return s;
-			}
-			catch (Exception ex)
-			{
-				logger.Log("GetItemField", string.Format("Error getting field {0}", fieldName));
+				logger.Log("the item is null", "N/A", ProcessStatus.ImportDefinitionError, fieldName);
 				return string.Empty;
 			}
+
+			//check field
+			Field f = i.Fields[fieldName];
+			if (f == null)
+			{
+				logger.Log("the field is null", i.Paths.FullPath, ProcessStatus.ImportDefinitionError, fieldName);
+				return string.Empty;
+			}
+
+			//check value
+			string s = f.Value;
+			if (string.IsNullOrEmpty(s))
+				logger.Log("the field was empty", i.Paths.FullPath, ProcessStatus.ImportDefinitionError, fieldName);
+
+			return s;
 		}
-    }
+
+
+		public static DateTime GetItemDate(this Item i, string fieldName)
+		{
+			DateField dateField = i.Fields[fieldName];
+
+			return dateField?.DateTime ?? DateTime.MinValue;
+		}
+	}
 }

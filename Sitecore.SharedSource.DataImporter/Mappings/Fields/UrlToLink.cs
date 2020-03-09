@@ -17,8 +17,7 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
         #region Constructor
 
         //constructor
-        public UrlToLink(Item i, ILogger l) : base(i, l)
-		{
+        public UrlToLink(Item i, ILogger l) : base(i, l) {
 
         }
 
@@ -26,7 +25,7 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
 
         #region IBaseField
 
-        public override void FillField(IDataMap map, ref Item newItem, string importValue) {
+        public override void FillField(IDataMap map, ref Item newItem, object importRow, string importValue) {
 
             if (string.IsNullOrEmpty(importValue))
                 return;

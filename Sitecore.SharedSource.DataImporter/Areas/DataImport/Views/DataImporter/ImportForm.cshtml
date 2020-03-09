@@ -1,0 +1,46 @@
+﻿@{
+    ViewBag.Title = "Data Importer";
+    Layout = "~/Areas/DataImport/Views/DataImporter/Common/ImportLayout.cshtml";
+}
+
+<div class="MainWrapper">
+    <form class="form import-form" method="post" 
+          import-action="/DataImport/DataImporter/RunImport"
+          status-action="/DataImport/DataImporter/GetJobStatus"
+          job-action="/DataImport/DataImporter/GetJobs">
+        <div class="context-fields">
+            @Html.Partial("_ContextFields")
+        </div>
+        <h2>Import</h2>
+        <div class="Section import-section">
+            <div class="Controls">
+                <div class="formRow form-buttons">
+                    <button class="import-submit scButton scButtonPrimary" rel="Data">Run Import</button>
+                </div>
+                <div class="rowSpacer"></div>
+                <div class="formRow importError"></div>
+                <div class="formRow importStatus">
+                    <div class="status-number"></div>
+                    <div class="status-bar">
+                        <div class="status-bar-color"></div>
+                    </div>
+                </div>
+                <div class="clear"></div>
+            </div>
+        </div>
+        <div class="clear"></div>
+        <h2>Jobs</h2>
+        <div class="Section">
+            <div class="Controls">
+                <div class="formRow result-failure">
+                    There was a problem getting the jobs list
+                </div>
+                <div class="formRow">
+                    <table class="jobListing"></table>
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </form>
+    @Html.Partial("_ProgressIndicator")
+</div>

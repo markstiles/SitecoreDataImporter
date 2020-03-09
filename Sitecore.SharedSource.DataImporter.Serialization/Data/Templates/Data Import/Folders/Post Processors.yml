@@ -2,7 +2,7 @@
 ID: "f57f5349-d9b1-404f-b842-170d0ac4a708"
 Parent: "36d08db6-263a-439a-9be7-2f23ac188ac1"
 Template: "ab86861a-6030-46c5-b394-e8f99e8b87db"
-Path: /sitecore/templates/Data Import/Folders/Post Processors
+Path: /sitecore/templates/Modules/Data Import/Folders/Post Processors
 DB: master
 SharedFields:
 - ID: "06d5295c-ed2f-4a54-9bf2-26228d113318"

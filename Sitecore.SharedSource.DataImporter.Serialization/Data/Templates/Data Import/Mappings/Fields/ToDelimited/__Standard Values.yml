@@ -1,0 +1,22 @@
+﻿---
+ID: "8d7329f0-89b0-46af-a46f-bc794d3e0d11"
+Parent: "21511783-2562-48a6-b373-e97d9224b46f"
+Template: "21511783-2562-48a6-b373-e97d9224b46f"
+Path: /sitecore/templates/Modules/Data Import/Mappings/Fields/ToDelimited/__Standard Values
+DB: master
+SharedFields:
+- ID: "fa7b99b1-6bb9-469c-b786-f8a9d52d2f0a"
+  Hint: Handler Class
+  Value: Sitecore.SharedSource.DataImporter.Mappings.Fields.ToDelimited
+Languages:
+- Language: en
+  Versions:
+  - Version: 1
+    Fields:
+    - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
+      Hint: __Created
+      Value: 20200205T001740Z
+    - ID: "5dd74568-4d4b-44c1-b513-0af5f4cda34f"
+      Hint: __Created by
+      Value: |
+        sitecore\Admin

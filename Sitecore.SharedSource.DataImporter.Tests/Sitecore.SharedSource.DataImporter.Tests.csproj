@@ -93,7 +93,6 @@
   <ItemGroup>
     <Compile Include="BaseFakeDBTestFixture.cs" />
     <Compile Include="Extensions\ExtensionTests.cs" />
-    <Compile Include="Mappings\Fields\FromChildValueToTextTests.cs" />
     <Compile Include="Mappings\Fields\ChildrenToTextTests.cs" />
     <Compile Include="Mappings\Fields\DateToTextTests.cs" />
     <Compile Include="Mappings\Fields\ListToGuidTests.cs" />

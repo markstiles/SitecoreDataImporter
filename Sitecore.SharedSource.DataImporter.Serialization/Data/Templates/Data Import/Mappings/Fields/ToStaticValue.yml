@@ -2,12 +2,12 @@
 ID: "bd069a3b-1c64-4644-9d1a-f1f12cc00186"
 Parent: "d95c4e80-484b-4057-bf4f-b358a580b311"
 Template: "ab86861a-6030-46c5-b394-e8f99e8b87db"
-Path: /sitecore/templates/Data Import/Mappings/Fields/ToStaticValue
+Path: /sitecore/templates/Modules/Data Import/Mappings/Fields/ToStaticValue
 DB: master
 SharedFields:
 - ID: "06d5295c-ed2f-4a54-9bf2-26228d113318"
   Hint: __Icon
-  Value: software/32x32/element_into_input.png
+  Value: Software/32x32/element_edit.png
 - ID: "12c33f3f-86c5-43a5-aeb4-5598cec45116"
   Hint: __Base template
   Type: tree list

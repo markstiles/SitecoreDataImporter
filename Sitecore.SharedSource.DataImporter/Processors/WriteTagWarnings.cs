@@ -9,12 +9,13 @@ using Sitecore.SharedSource.DataImporter.HtmlScraper;
 using Sitecore.SharedSource.DataImporter.Reporting;
 using Sitecore.SharedSource.DataImporter.Mappings;
 using Sitecore.Data.Fields;
+using Sitecore.SharedSource.DataImporter.Logger;
 
 namespace Sitecore.SharedSource.DataImporter.Processors
 {
     public class WriteTagWarnings
     {
-        public static void Run(Item itemToProcess, Item fieldMapping)
+        public static void Run(Item itemToProcess, Item fieldMapping, ILogger l)
         {
             MultilistField WarningTags = fieldMapping.Fields["Warning Trigger Tags"];
             ItemReport itemReport;
@@ -29,7 +30,7 @@ namespace Sitecore.SharedSource.DataImporter.Processors
             if (string.IsNullOrEmpty(itemReport.NewItemPath))
                 itemReport.NewItemPath = itemToProcess.Paths.Path;
             
-            BaseMapping baseMap = new BaseMapping(fieldMapping);
+            BaseMapping baseMap = new BaseMapping(fieldMapping, l);
             List<string> tagsToCheck = new List<string>();
             HtmlDocument document = new HtmlDocument();
             string content = itemToProcess.Fields[baseMap.NewItemField].Value;

@@ -1,8 +1,8 @@
 ﻿---
 ID: "65306e24-53af-461b-b9d9-95062715485a"
-Parent: "4c37cc67-c51e-4c70-8949-e294768a4fa4"
+Parent: "42852319-efe6-4725-9679-df06f2012e4c"
 Template: "a87a00b1-e6db-45ab-8b54-636fec3b5523"
-Path: /sitecore/content/Applications/Content Editor/Editors/DataImporter
+Path: /sitecore/content/Applications/Content Editor/Editors/Modules/DataImporter
 DB: core
 Languages:
 - Language: en

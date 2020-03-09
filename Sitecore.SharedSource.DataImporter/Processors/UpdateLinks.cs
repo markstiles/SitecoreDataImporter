@@ -21,11 +21,10 @@ namespace Sitecore.SharedSource.DataImporter.Processors
             List<string> internalDomains = domains.Split(new[] { '\n' }).ToList();
             UpdateFields(config.ImportLocation, config, fieldName, internalDomains, processor);
         }
-
-
+        
         private void UpdateFields(Item importLocation, ImportConfig config, string fieldName, List<string> internalDomains, Item processor)
         {
-            using (new SecurityModel.SecurityDisabler())
+            using (new Sitecore.SecurityModel.SecurityDisabler())
             {
                 Item[] items = config.MaintainHierarchy ? importLocation.Axes.GetDescendants() : importLocation.Children.ToArray();
                 Item linkItem = null;

@@ -1,0 +1,27 @@
+﻿---
+ID: "a95a11c2-9a59-457f-b984-c25aa1b39505"
+Parent: "fd297263-64a3-4cd5-a70c-31ff93f4262c"
+Template: "ab86861a-6030-46c5-b394-e8f99e8b87db"
+Path: /sitecore/templates/Modules/Data Import/Mappings/Reference Fields/ToMediaLink
+DB: master
+SharedFields:
+- ID: "06d5295c-ed2f-4a54-9bf2-26228d113318"
+  Hint: __Icon
+  Value: Network/32x32/link_new.png
+- ID: "12c33f3f-86c5-43a5-aeb4-5598cec45116"
+  Hint: __Base template
+  Type: tree list
+  Value: |
+    {1930BBEB-7805-471A-A3BE-4858AC7CF696}
+    {91D02640-32D5-45FF-A3D2-A5B3402A36E4}
+- ID: "f7d48a55-2158-4f02-9356-756654404f73"
+  Hint: __Standard values
+  Value: "{6844831C-2709-4FEB-8AB9-83E32B5FDF3C}"
+Languages:
+- Language: en
+  Versions:
+  - Version: 1
+    Fields:
+    - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
+      Hint: __Created
+      Value: 20200205T003231Z

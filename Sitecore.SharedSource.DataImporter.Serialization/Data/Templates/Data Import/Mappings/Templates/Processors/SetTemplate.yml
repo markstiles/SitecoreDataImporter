@@ -2,7 +2,7 @@
 ID: "de84e379-0505-43f9-9250-2206ed977122"
 Parent: "96651355-92cc-4ee0-b0c9-d12110e13b35"
 Template: "ab86861a-6030-46c5-b394-e8f99e8b87db"
-Path: /sitecore/templates/Data Import/Mappings/Templates/Processors/SetTemplate
+Path: /sitecore/templates/Modules/Data Import/Mappings/Templates/Processors/SetTemplate
 DB: master
 SharedFields:
 - ID: "06d5295c-ed2f-4a54-9bf2-26228d113318"
@@ -14,9 +14,6 @@ SharedFields:
   Value: |
     {16921A7D-8C7E-4EC6-9380-5DC10EBB6F32}
     {B56580D6-461A-447D-AEFE-35696959366B}
-- ID: "f7d48a55-2158-4f02-9356-756654404f73"
-  Hint: __Standard values
-  Value: "{1B22A526-1DAE-45CD-B239-BF0385924E11}"
 Languages:
 - Language: en
   Versions:

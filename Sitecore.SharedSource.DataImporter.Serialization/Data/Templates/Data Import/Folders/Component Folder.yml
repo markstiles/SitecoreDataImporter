@@ -2,12 +2,12 @@
 ID: "4e8e2f3d-2327-4bba-a14f-c586391892ca"
 Parent: "36d08db6-263a-439a-9be7-2f23ac188ac1"
 Template: "ab86861a-6030-46c5-b394-e8f99e8b87db"
-Path: /sitecore/templates/Data Import/Folders/Component Folder
+Path: /sitecore/templates/Modules/Data Import/Folders/Component Folder
 DB: master
 SharedFields:
 - ID: "06d5295c-ed2f-4a54-9bf2-26228d113318"
   Hint: __Icon
-  Value: Applications/32x32/folder.png
+  Value: Applications/32x32/folder_cubes.png
 - ID: "12c33f3f-86c5-43a5-aeb4-5598cec45116"
   Hint: __Base template
   Type: tree list

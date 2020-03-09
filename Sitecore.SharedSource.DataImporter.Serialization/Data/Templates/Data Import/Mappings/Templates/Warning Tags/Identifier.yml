@@ -2,7 +2,7 @@
 ID: "f878f8a0-fde6-4e8b-8735-a43bbfa09708"
 Parent: "b56580d6-461a-447d-aefe-35696959366b"
 Template: "e269fbb5-3750-427a-9149-7aa950b49301"
-Path: /sitecore/templates/Data Import/Mappings/Templates/Warning Tags/Identifier
+Path: /sitecore/templates/Modules/Data Import/Mappings/Templates/Warning Tags/Identifier
 DB: master
 Languages:
 - Language: en

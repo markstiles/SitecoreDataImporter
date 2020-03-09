@@ -6,62 +6,67 @@ using Sitecore.SharedSource.DataImporter.Providers;
 using Sitecore.Diagnostics;
 using Sitecore.SharedSource.DataImporter.Logger;
 
-namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
+namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
+{
 
-    /// <summary>
-    /// this is used to set a field to a specific predetermined value when importing data.
-    /// </summary>
-    public class ToStaticValue : BaseMapping, IBaseField {
+	/// <summary>
+	/// this is used to set a field to a specific predetermined value when importing data.
+	/// </summary>
+	public class ToStaticValue : BaseMapping, IBaseField
+	{
 
-        #region Properties
+		#region Properties
 
 		///<summary>
 		/// Value
 		/// </summary>
-        /// <value>
-        /// value to import
-        /// </value>
-        public string Value { get; set; }
+		/// <value>
+		/// value to import
+		/// </value>
+		public string Value { get; set; }
 
-        #endregion Properties
+		#endregion Properties
 
-        #region Constructor
+		#region Constructor
 
-        public ToStaticValue(Item i, ILogger l) : base(i)
+		public ToStaticValue(Item i, ILogger l) : base(i, l)
 		{
-            Value = GetItemField(i, "Value");
-        }
+			Value = GetItemField(i, "Value");
+		}
 
-        #endregion Constructor
+		#endregion Constructor
 
-        #region IBaseField
+		#region IBaseField
 
-        public string Name { get; set; }
+		public string Name { get; set; }
 
-        public void FillField(IDataMap map, ref Item newItem, string importValue) {
+		public void FillField(IDataMap map, ref Item newItem, object importRow, string importValue)
+		{
 			Assert.IsNotNull(newItem, "newItem");
-            //ignore import value and store value provided
-            Field f = newItem.Fields[NewItemField];
-            if (f != null)
-                f.Value = Value;
-        }
+			//ignore import value and store value provided
+			Field f = newItem.Fields[NewItemField];
+			if (f != null)
+				f.Value = Value;
+		}
 
-        /// <summary>
-        /// doesn't provide any existing fields
-        /// </summary>
-        /// <returns></returns>
-        public IEnumerable<string> GetExistingFieldNames() {
-            return Enumerable.Empty<string>();
-        }
+		/// <summary>
+		/// doesn't provide any existing fields
+		/// </summary>
+		/// <returns></returns>
+		public IEnumerable<string> GetExistingFieldNames()
+		{
+			return Enumerable.Empty<string>();
+		}
 
-        /// <summary>
-        /// doesn't need any delimiter
-        /// </summary>
-        /// <returns></returns>
-        public string GetFieldValueDelimiter() {
-            return string.Empty;
-        }
+		/// <summary>
+		/// doesn't need any delimiter
+		/// </summary>
+		/// <returns></returns>
+		public string GetFieldValueDelimiter()
+		{
+			return string.Empty;
+		}
 
-        #endregion IBaseField
-    }
+		#endregion IBaseField
+	}
 }

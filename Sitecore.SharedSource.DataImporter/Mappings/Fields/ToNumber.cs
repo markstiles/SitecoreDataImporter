@@ -12,15 +12,14 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
         public CultureInfo TargetCulture { get; set; }
         public CultureInfo ImportCulture { get; set; }
 
-        public ToNumber(Item i, ILogger l) : base(i, l)
-		{
+        public ToNumber(Item i, ILogger l) : base(i, l) {
             string tCulture = GetItemField(i, "TargetCulture");
             TargetCulture = (string.IsNullOrEmpty(tCulture)) ? CultureInfo.CurrentCulture : new CultureInfo(tCulture);
             string iCulture = GetItemField(i, "ImportCulture");
             ImportCulture = (string.IsNullOrEmpty(iCulture)) ? CultureInfo.CurrentCulture : new CultureInfo(iCulture);
         }
 
-        public override void FillField(IDataMap map, ref Item newItem, string importValue) {
+        public override void FillField(IDataMap map, ref Item newItem, object importRow, string importValue) {
 
             if (string.IsNullOrEmpty(importValue))
                 return;

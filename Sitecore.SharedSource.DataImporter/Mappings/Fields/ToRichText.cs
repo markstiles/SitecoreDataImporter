@@ -1,100 +1,67 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using HtmlAgilityPack;
+using Sitecore.Configuration;
 using Sitecore.Data;
 using Sitecore.Data.Fields;
 using Sitecore.Data.Items;
-using Sitecore.Data.Managers;
-using Sitecore.Resources.Media;
 using Sitecore.SharedSource.DataImporter.Providers;
-using Sitecore.SharedSource.DataImporter.Utility;
 using Sitecore.Diagnostics;
-using Sitecore.Links;
 using Sitecore.SharedSource.DataImporter.Logger;
+using Sitecore.SharedSource.DataImporter.Services;
 
-namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
-
-	public class ToRichText : MediaFileMapping, IBaseFieldWithReference
+namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
+{
+	public class ToRichText : ToText
 	{
-
 		#region Properties
 
 		public IEnumerable<string> UnwantedTags { get; set; }
 
 		public IEnumerable<string> UnwantedAttributes { get; set; }
-		public Dictionary<string, string> ReplaceTags { get; set; }
-	    public Dictionary<string, string> ReplaceStrings { get; set; }
 
-        protected readonly char[] comSplitr = { ',' };
-		protected readonly char[] pipeSplitr = { '|' };
-		public string Name { get; set; }
+		public Item MediaParentItem { get; set; }
 
-		#endregion Properties
+		public Database FromDB { get; set; }
 
+        protected HtmlService HtmlService { get; set; }
 
-		public string GetExistingFieldName()
-		{
-			return GetItemField(InnerItem, "From What Fields");
-		}
+        protected MediaService MediaService { get; set; }
 
-		#region Constructor
+        #endregion Properties
 
-		public ToRichText(Item i, ILogger logger)
-			: base(i, logger)
+        #region Constructor
+
+        public ToRichText(Item i, ILogger l) : base(i, l)
 		{
 			Assert.IsNotNull(i, "i");
 			//store fields
 			UnwantedTags = GetItemField(i, "Unwanted Tags").Split(comSplitr, StringSplitOptions.RemoveEmptyEntries);
 			UnwantedAttributes = GetItemField(i, "Unwanted Attributes")
 				.Split(comSplitr, StringSplitOptions.RemoveEmptyEntries);
-
-			ReplaceTags = new Dictionary<string, string>();
-		    AddReplacements(i, "Replace Tags", ReplaceTags);
-            ReplaceStrings = new Dictionary<string, string>();
-		    AddReplacements(i, "Replace Strings", ReplaceStrings);
+			MediaParentItem = i.Database.GetItem(GetItemField(i, "Media Parent Item"));
+			FromDB = Factory.GetDatabase("master");
+            HtmlService = new HtmlService();
+            MediaService = new MediaService(l);
         }
 
-	    private void AddReplacements(Item i,string fieldName, Dictionary<string, string> dictionary)
-	    {
-	        foreach (string pair in GetItemField(i, fieldName).Split(pipeSplitr, StringSplitOptions.RemoveEmptyEntries))
-	        {
-	            var tags = pair.Split(comSplitr, StringSplitOptions.RemoveEmptyEntries);
-	            if (tags?.Length != 2 || string.IsNullOrWhiteSpace(tags[0]) || string.IsNullOrWhiteSpace(tags[1]))
-	                continue;
-	            dictionary.Add(tags[0], tags[1]);
-	        }
-	    }
-
-	    #endregion Constructor
+		#endregion Constructor
 
 		#region IBaseField
 
-		public void FillField(IDataMap map, ref Item newItem, Item importRow, string fieldName)
+		public override void FillField(IDataMap map, ref Item newItem, object importRow, string importValue)
 		{
 			Assert.IsNotNull(newItem, "item");
-			importRow.Fields.ReadAll();
-			if (importRow.Fields[fieldName] == null)
-			{
-				return;
-			}
-			string importValue = importRow.Fields[fieldName].Value;
 			Field f = newItem.Fields[NewItemField];
-		    if (f != null)
-		    {
-		        f.Value = CleanHtml(map, newItem.Paths.FullPath, importValue, importRow);
-		        f.Value = DoStringReplacements(f.Value);
-		    }
-				
+			if (f != null)
+				f.Value = CleanHtml(map, newItem.Paths.FullPath, importValue);
 		}
 
 		#endregion IBaseField
 
-		public string CleanHtml(IDataMap map, string itemPath, string html, Item importRow)
+		public string CleanHtml(IDataMap map, string itemPath, string html)
 		{
 			if (String.IsNullOrEmpty(html))
 				return html;
@@ -111,19 +78,22 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
 			
 			while (nodes.Any())
 			{
-				HandleNextNode(nodes, map, itemPath, importRow);
+				HandleNextNode(nodes, map, itemPath);
 			}
 
-			return document.DocumentNode.InnerHtml;
+			var cleanedHtml = document.DocumentNode.InnerHtml;
+
+			bool modified = false;
+			string fixedHtml = HtmlService.FixOrphanedText(cleanedHtml, out modified);
+			if (modified)
+			{
+				map.Logger.Log("Fixed Orphaned Text in Rich Text.", itemPath);
+			}
+
+			return fixedHtml;
 		}
 
-	    private string DoStringReplacements(string baseString)
-	    {
-            //replace all strings in the base with the values
-	        return !ReplaceStrings.Any() ? baseString : ReplaceStrings.Aggregate(baseString, (current, replaceString) => current.Replace(replaceString.Key, replaceString.Value));
-	    }
-
-		private void HandleNextNode(Queue<HtmlNode> nodes, IDataMap map, string itemPath, Item importRow)
+		private void HandleNextNode(Queue<HtmlNode> nodes, IDataMap map, string itemPath)
 		{
 			var node = nodes.Dequeue();
 			var nodeName = node.Name.ToLower();
@@ -155,33 +125,72 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
 					node.Attributes.Remove(s);
 
 				//replace images
-				if (nodeName.Equals("img"))
+				if (nodeName.Equals("img") || nodeName.Equals("script"))
 				{
 					// see if it exists
-					string imgSrc = node.Attributes["src"].Value;
-					DynamicLink dynamicLink;
-					if (!DynamicLink.TryParse(imgSrc, out dynamicLink))
-						return;
-					MediaItem mediaItem = importRow.Database.GetItem(dynamicLink.ItemId, dynamicLink.Language ?? map.ImportToLanguage);
-					var mediaParentItem = BuildMediaPath(map.ToDB, mediaItem.InnerItem.Paths.ParentPath);
-					MediaItem newImg = HandleMediaItem(map, mediaParentItem, itemPath, mediaItem);
-					if (newImg != null)
+					string imgSrc = node.Attributes.Contains("src") ? node.Attributes["src"].Value : string.Empty;
+					if (!string.IsNullOrEmpty(imgSrc))
 					{
-						string newSrc = string.Format("-/media/{0}.ashx", newImg.ID.ToShortID().ToString());
-						// replace the node with sitecore tag
-						node.SetAttributeValue("src", newSrc);
+						MediaItem newImg = HandleMedia(map, itemPath, imgSrc);
+						if (newImg != null)
+						{
+							string newSrc = string.Format("-/media/{0}.ashx", newImg.ID.ToShortID());
+							// replace the node with sitecore tag
+							node.SetAttributeValue("src", newSrc);
+						}
 					}
 				}
-			}
-			else if (ReplaceTags.ContainsKey(nodeName))
-			{
-				// Replace tag
-				node.Name = ReplaceTags[nodeName];
+				else if (nodeName.Equals("a") || nodeName.Equals("link"))
+				{
+					if (nodeName.Equals("a") && node.Attributes.Contains("target"))
+					{
+						string target = node.Attributes.Contains("target") ? node.Attributes["target"].Value : string.Empty;
+						if (target.Equals("_blank", StringComparison.InvariantCultureIgnoreCase))
+						{
+							node.SetAttributeValue("rel", "noopener noreferrer");
+						}
+					}
+
+					// see if it exists
+					string linkHref = node.Attributes.Contains("href") ? node.Attributes["href"].Value : string.Empty;
+					if (!string.IsNullOrEmpty(linkHref))
+					{
+						MediaItem newImg = HandleMedia(map, itemPath, linkHref);
+						if (newImg != null)
+						{
+							string newHref = string.Format("-/media/{0}.ashx", newImg.ID.ToShortID());
+							// replace the node with sitecore tag
+							node.SetAttributeValue("href", newHref);
+						}
+					}
+				}
 			}
 			else
 			{
 				//Keep node as is
 			}
+		}
+
+		public MediaItem HandleMedia(IDataMap map, string itemPath, string url)
+		{
+			Assert.IsNotNull(map, "map");
+			Assert.IsNotNull(itemPath, "itemPath");
+			Assert.IsNotNull(url, "url");
+
+			//get file info
+			if (!url.StartsWith("~/media/") && !url.StartsWith("/~/media/") && !url.StartsWith("~/link.aspx?_id="))
+			{
+				return null;
+			}
+
+			var id = url.Replace("/~/media/", string.Empty).Replace("~/media/", string.Empty).Replace("~/link.aspx?_id=", string.Empty).Split(new[] { '.', '&'}).FirstOrDefault();
+
+            var guid = Guid.Empty;
+			var originalItem = FromDB.GetItem(Guid.TryParse(id, out guid) ? new ID(guid).ToString() : $"/sitecore/media library/{id.Replace("-", " ")}");
+
+			if (originalItem == null || !originalItem.Paths.IsMediaItem) return null;
+
+			return MediaService.FindOrCreateMediaItem(map, originalItem);
 		}
 	}
 }

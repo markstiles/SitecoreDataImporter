@@ -8,23 +8,24 @@ using System.IO;
 using HtmlAgilityPack;
 using Sitecore.SharedSource.DataImporter.Processors.Helpers;
 using Sitecore.SharedSource.DataImporter.Reporting;
+using Sitecore.SharedSource.DataImporter.Logger;
 
 namespace Sitecore.SharedSource.DataImporter.Processors
 {
     public class MediaImporter
     {
         
-        public void Run(Item processor, Item itemToProcess, Item fieldMapping)
+        public void Run(Item processor, Item itemToProcess, Item fieldMapping, ILogger l)
         {
             ImportConfig config = new ImportConfig(fieldMapping.Parent.Parent, fieldMapping.Database, "");
             Uri baseUri = new Uri(config.BaseUrl);
-            BaseMapping baseMap = new BaseMapping(fieldMapping);
+            BaseMapping baseMap = new BaseMapping(fieldMapping, l);
             MediaProcessor mediaProcessor = new MediaProcessor(processor);
             HtmlDocument document = new HtmlDocument();
             string content = itemToProcess.Fields[baseMap.NewItemField].Value;
             document.LoadHtml(content);
 
-            using (new SecurityModel.SecurityDisabler())
+            using (new Sitecore.SecurityModel.SecurityDisabler())
             {
                 foreach (var mediaType in mediaProcessor.MediaTypes)
                 {

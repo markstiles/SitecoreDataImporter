@@ -32,33 +32,6 @@ namespace Sitecore.SharedSource.DataImporter.Tests.Mappings.Fields
             _sut = new ToStaticValue(defItem, _log);
             _dataMap = Substitute.For<IDataMap>();
         }
-
-        [Test]
-        public void FillField_ValidValue_PopulatesField()
-        {
-            var newItem = _database.GetItem(TestingConstants.ToStaticValue.NewItemId);
-
-            using (new EditContext(newItem))
-            {
-                _sut.FillField(_dataMap, ref newItem, "Some Valid Value");
-            }
-
-            var field = newItem.Fields[TestingConstants.ToStaticValue.ToFieldName];
-            Assert.AreEqual(TestingConstants.ToStaticValue.ValueFieldValue, field.Value);
-        }
-
-        [Test]
-        public void FillField_EmptyValue_LeavesEmptyField()
-        {
-            var newItem = _database.GetItem(TestingConstants.ToStaticValue.NewItemId);
-
-            using (new EditContext(newItem))
-            {
-                _sut.FillField(_dataMap, ref newItem, "");
-            }
-
-            var field = newItem.Fields[TestingConstants.ToStaticValue.ToFieldName];
-            Assert.AreEqual(TestingConstants.ToStaticValue.ValueFieldValue, field.Value);
-        }
+        
     }
 }

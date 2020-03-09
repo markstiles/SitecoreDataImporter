@@ -12,5 +12,6 @@ namespace Sitecore.SharedSource.DataImporter.Logger {
         void Log(string message, string affectedItem, ProcessStatus pResult = ProcessStatus.Info, string fieldName = "", string fieldValue = "");
         string GetLog();
         void Clear();
+        Dictionary<string, List<ImportRow>> GetLogRecords();
     }
 }

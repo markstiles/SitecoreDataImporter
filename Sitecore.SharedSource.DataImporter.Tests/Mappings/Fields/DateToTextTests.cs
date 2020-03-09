@@ -9,6 +9,7 @@ using Sitecore.Data.Items;
 using Sitecore.FakeDb;
 using Sitecore.SharedSource.DataImporter.Logger;
 using Sitecore.SharedSource.DataImporter.Mappings.Fields;
+using Sitecore.SharedSource.DataImporter.Mappings.ReferenceFields;
 using Sitecore.SharedSource.DataImporter.Providers;
 
 namespace Sitecore.SharedSource.DataImporter.Tests.Mappings.Fields

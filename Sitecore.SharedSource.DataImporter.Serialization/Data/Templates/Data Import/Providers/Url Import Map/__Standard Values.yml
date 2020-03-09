@@ -2,7 +2,7 @@
 ID: "73ace00e-4211-47ed-abf4-20b510294fa0"
 Parent: "8c445567-92cb-4d7e-8ec1-c91667062211"
 Template: "8c445567-92cb-4d7e-8ec1-c91667062211"
-Path: /sitecore/templates/Data Import/Providers/Url Import Map/__Standard Values
+Path: /sitecore/templates/Modules/Data Import/Providers/Url Import Map/__Standard Values
 DB: master
 SharedFields:
 - ID: "02bab16b-d351-4502-a579-f3d6e0edb4f8"
@@ -17,10 +17,6 @@ SharedFields:
 - ID: "0790a745-13e8-44f1-aa17-469e8fc7d20e"
   Hint: Handler Class
   Value: Sitecore.SharedSource.DataImporter.Providers.UrlImportMap
-- ID: "1172f251-dad4-4efb-a329-0c63500e4f1e"
-  Hint: __Masters
-  Type: TreelistEx
-  Value: "{BE3A36A8-9589-401A-8549-D0E06FDB4F13}"
 - ID: "56c326ef-f5da-4818-ae74-e85130b60b84"
   Hint: Import To Language
   Value: "{AF584191-45C9-4201-8740-5409F4CF8BDD}"

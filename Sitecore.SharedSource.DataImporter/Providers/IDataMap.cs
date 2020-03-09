@@ -8,106 +8,106 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Sitecore.SharedSource.DataImporter.Mappings.Processors;
+using Sitecore.SharedSource.DataImporter.Mappings.Properties;
 
-namespace Sitecore.SharedSource.DataImporter.Providers {
-    public interface IDataMap {
+namespace Sitecore.SharedSource.DataImporter.Providers
+{
+	public interface IDataMap
+	{
 
         #region Properties 
 
+        Item ImportItem { get; set; }
+
         ILogger Logger { get; set; }
 
-        Database ToDB { get; set; }
+		Database ToDB { get; set; }
 
-        int ItemNameMaxLength { get; set; }
+		int ItemNameMaxLength { get; set; }
 
-        List<IBaseField> FieldDefinitions { get; set; }
+		List<IBaseField> FieldDefinitions { get; set; }
 
-        List<IPostProcessor> PostProcessors { get; set; }
+		string DatabaseConnectionString { get; set; }
 
-        string DatabaseConnectionString { get; set; }
+		#endregion Properties
 
-        #endregion Properties
+		#region Fields
 
-        #region Fields
+		string Query { get; set; }
 
-        string Query { get; set; }
+		Item ImportToWhere { get; set; }
 
-        Item ImportToWhere { get; set; }
+		CustomItemBase ImportToWhatTemplate { get; set; }
 
-        Item ProviderItem { get; set; }
+		string[] ItemNameFields { get; set; }
 
-        CustomItemBase ImportToWhatTemplate { get; set; }
+		Language ImportToLanguage { get; set; }
 
-        string[] ItemNameFields { get; set; }
+		bool FolderByDate { get; set; }
 
-        Language ImportToLanguage { get; set; }
+		bool FolderByName { get; set; }
 
-        bool FolderByDate { get; set; }
+		string DateField { get; set; }
 
-        bool FolderByName { get; set; }
+		TemplateItem FolderTemplate { get; set; }
 
-        string DateField { get; set; }
+		#endregion Fields
 
-        TemplateItem FolderTemplate { get; set; }
+		#region Methods
 
-        #endregion Fields
+		/// <summary>
+		/// gets the data to be imported
+		/// </summary>
+		/// <returns></returns>
+		IEnumerable<object> GetImportData();
+        
+		/// <summary>
+		/// this is used to process custom fields or properties
+		/// </summary>
+		void ProcessCustomData(ref Item newItem, object importRow, List<IBaseProperty> propDefinitions = null);
 
-        #region Methods
+        void PostProcess(List<Item> newItems);
 
-        /// <summary>
-        /// gets the data to be imported
-        /// </summary>
-        /// <returns></returns>
-        IEnumerable<object> GetImportData();
+		/// <summary>
+		/// Defines how the subclass will retrieve a field value
+		/// </summary>
+		string GetFieldValue(object importRow, string fieldName);
 
-        /// <summary>
-        /// this is used to process custom fields or properties
-        /// </summary>
-        void ProcessCustomData(ref Item newItem, object importRow);
+		/// <summary>
+		/// Gets the template type for the new item that will house the importRow data
+		/// </summary>
+		/// <param name="importRow"></param>
+		/// <returns></returns>
+		CustomItemBase GetNewItemTemplate(object importRow);
 
-        /// <summary>
-        /// Defines how the subclass will retrieve a field value
-        /// </summary>
-        string GetFieldValue(object importRow, string fieldName);
+		/// <summary>
+		/// Gets the field definitions for any given row of imported data
+		/// </summary>
+		/// <param name="importRow"></param>
+		/// <returns></returns>
+		List<IBaseField> GetFieldDefinitionsByRow(object importRow);
 
-        /// <summary>
-        /// Gets the template type for the new item that will house the importRow data
-        /// </summary>
-        /// <param name="importRow"></param>
-        /// <returns></returns>
-        CustomItemBase GetNewItemTemplate(object importRow);
+		/// <summary>
+		/// creates an item name based on the name field values in the data map pulled from the 
+		/// </summary>
+		string BuildNewItemName(object importRow);
 
-        /// <summary>
-        /// Gets the field definitions for any given row of imported data
-        /// </summary>
-        /// <param name="importRow"></param>
-        /// <returns></returns>
-        List<IBaseField> GetFieldDefinitionsByRow(object importRow);
+		/// <summary>
+		/// Creates new items for the import row based on the language, name, folder etc. settings
+		/// </summary>
+		/// <param name="parent"></param>
+		/// <param name="importRow"></param>
+		/// <param name="newItemName"></param>
+		Item CreateNewItem(Item parent, object importRow, string newItemName);
 
-        /// <summary>
-        /// creates an item name based on the name field values in the data map pulled from the 
-        /// </summary>
-        string BuildNewItemName(object importRow);
+		/// <summary>
+		/// Determines what the new parent item should be for the current import row based on foldering settings.
+		/// </summary>
+		/// <param name="importRow"></param>
+		/// <param name="newItemName"></param>
+		/// <returns></returns>
+		Item GetParentNode(object importRow, string newItemName);
 
-        /// <summary>
-        /// Creates new items for the import row based on the language, name, folder etc. settings
-        /// </summary>
-        /// <param name="parent"></param>
-        /// <param name="importRow"></param>
-        /// <param name="newItemName"></param>
-        Item CreateNewItem(Item parent, object importRow, string newItemName);
-
-        /// <summary>
-        /// Determines what the new parent item should be for the current import row based on foldering settings.
-        /// </summary>
-        /// <param name="importRow"></param>
-        /// <param name="newItemName"></param>
-        /// <returns></returns>
-        Item GetParentNode(object importRow, string newItemName);
-
-        T GenerateType<T>(Item child, string handlerClass, string handlerAssembly, object[] instantiationParameters);
-
-        #endregion Methods
-    }
+		#endregion Methods
+	}
 }
