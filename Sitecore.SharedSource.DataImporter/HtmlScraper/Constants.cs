@@ -26,9 +26,9 @@ namespace Sitecore.SharedSource.DataImporter.HtmlScraper
             public const string BaseUrl = "Base URL";
             public const string DomCheckStrings = "Warning Tags";
             public const string ItemNameCleanups = "Item Name Cleanups";
-            public const string PreProcessors = "Global Pre Processors";
-            public const string PostProcessors = "Global Post Processors";
-            public const string FieldPostProcessors = "Post Processors";
+            public const string PreProcessors = "Pre Processors";
+            public const string PostProcessors = "Post Processors";
+            public const string FieldPostProcessors = "Field Post Processors";
             public const string WarningTriggerTags = "Warning Trigger Tags";
 
 

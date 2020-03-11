@@ -83,26 +83,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers
             
             return (dt.Rows).Cast<object>();
         }
-
-        private void RunProcessor(IBaseField fieldMap, Item newItem)
-        {
-            //Check for warnings
-            MultilistField WarningTags = fieldMap.InnerItem.Fields[DataImporter.HtmlScraper.Constants.FieldNames.WarningTriggerTags];
-            if (WarningTags.Count > 0)
-                WriteTagWarnings.Run(newItem, fieldMap.InnerItem, Logger);
-            
-            //"To What Field"
-            MultilistField processors = fieldMap.InnerItem.Fields[DataImporter.HtmlScraper.Constants.FieldNames.FieldPostProcessors];
-
-            foreach (var targetId in processors.TargetIDs)
-            {
-                Item processor = ToDB.GetItem(targetId);
-                if (processor == null) { continue; }
-
-                Processor.Execute(processor, newItem, fieldMap.InnerItem);
-            }
-        }
-        
+                
         /// <summary>
         /// There is no custom data for this type
         /// </summary>
@@ -115,7 +96,23 @@ namespace Sitecore.SharedSource.DataImporter.Providers
             ImportReporter.Write(newItem, Level.Info, "", "", "Item Added/Updated", requestedURL);
             
             foreach (var field in FieldDefinitions)
-                RunProcessor(field, newItem);
+            {
+                //Check for warnings
+                MultilistField WarningTags = field.InnerItem.Fields[DataImporter.HtmlScraper.Constants.FieldNames.WarningTriggerTags];
+                if (WarningTags.Count > 0)
+                    WriteTagWarnings.Run(newItem, field.InnerItem, Logger);
+
+                //"To What Field"
+                MultilistField processors = field.InnerItem.Fields[DataImporter.HtmlScraper.Constants.FieldNames.FieldPostProcessors];
+
+                foreach (var targetId in processors.TargetIDs)
+                {
+                    Item processor = ToDB.GetItem(targetId);
+                    if (processor == null) { continue; }
+
+                    Processor.Execute(processor, newItem, field.InnerItem);
+                }
+            }
         }
         
         public override CustomItemBase GetNewItemTemplate(object importRow)
@@ -176,10 +173,24 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 
         #endregion Override Methods
         
+        protected NameValueCollection GetMappings()
+        {
+            NameValueCollection mappings = new NameValueCollection();
+            foreach (IBaseField field in FieldDefinitions)
+            {
+                BaseMapping baseMap = new BaseMapping(field.InnerItem, Logger);
+                string fromFieldName = baseMap.InnerItem.Fields[DataImporter.HtmlScraper.Constants.FieldNames.FromWhatField].Value;
+                string toFieldName = baseMap.NewItemField + "_" + Guid.NewGuid().ToString().Replace("-", "");
+                mappings.Add(fromFieldName, toFieldName);
+            }
+
+            return mappings;
+        }
+
         /// <summary>
         /// Use this function to do any end of process custom reports 
         /// </summary>
-        private NameValueCollection DirectoryBuilder(List<string> directories, ImportConfig selectedConfig)
+        public virtual NameValueCollection DirectoryBuilder(List<string> directories, ImportConfig selectedConfig)
         {
             NameValueCollection dirs = new NameValueCollection();
             string prevDir = string.Empty;
@@ -207,8 +218,8 @@ namespace Sitecore.SharedSource.DataImporter.Providers
             }
             return dirs;
         }
-        
-        private void BuildData(ImportConfig config, List<string> levels, string url, DataTable dataTable)
+
+        public virtual void BuildData(ImportConfig config, List<string> levels, string url, DataTable dataTable)
         {
             Item location = config.ImportLocation;
             bool ignoreroot = config.IgnoreRootDirectories;
@@ -282,7 +293,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 
                     //This is for if 2 mapping target the same field so the next one to not override the first update, 
                     //becuase each could apply for different URL  
-                    wasupdated = IsDataInList(updatedFields, toFieldName);
+                    wasupdated = updatedFields.Any(f => toFieldName.ToLower() == f.ToLower());
                     if (wasupdated && !isOverride)
                         continue;
                     
@@ -295,7 +306,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers
             }
         }
 
-        private void RunPreProcessors(ImportConfig config, HtmlDocument doc, DataRow dr, string currentDirURL)
+        public virtual void RunPreProcessors(ImportConfig config, HtmlDocument doc, DataRow dr, string currentDirURL)
         {
             foreach (var processor in config.PreProcessors)
             {
@@ -307,8 +318,8 @@ namespace Sitecore.SharedSource.DataImporter.Providers
                 dr[ActionColumn] = returnValue;
             }
         }
-        
-        public string FetchContent(HtmlDocument doc, object key, NameValueCollection mappings, ImportConfig storedConfig)
+
+        public virtual string FetchContent(HtmlDocument doc, object key, NameValueCollection mappings, ImportConfig storedConfig)
         {
             string rowValue = string.Empty;
             bool textOnly = false;
@@ -361,26 +372,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers
             return rowValue;
         }
         
-        private NameValueCollection GetMappings()
-        {
-            NameValueCollection mappings = new NameValueCollection();
-            foreach (IBaseField field in FieldDefinitions)
-            {
-                BaseMapping baseMap = new BaseMapping(field.InnerItem, Logger);
-                string fromFieldName = baseMap.InnerItem.Fields[DataImporter.HtmlScraper.Constants.FieldNames.FromWhatField].Value;
-                string toFieldName = baseMap.NewItemField + "_" + Guid.NewGuid().ToString().Replace("-", "");
-                mappings.Add(fromFieldName, toFieldName);
-            }
-
-            return mappings;
-        }
-
-        private bool IsDataInList(List<string> dataList, string data)
-        {
-            return dataList.Any(f => data.ToLower() == f.ToLower());
-        }
-
-        private string WebContentRequest(string url)
+        public virtual string WebContentRequest(string url)
         {
             string content = string.Empty;
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);

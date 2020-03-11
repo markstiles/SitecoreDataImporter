@@ -71,7 +71,7 @@ jQuery(document).ready(function () {
                 {
                     id: idValue,
                     db: dbValue,
-                    importType: importTypeValue 
+                    importType: importTypeValue
                 })
                 .done(function (r) {
                     if (r.Failed) {
@@ -92,20 +92,28 @@ jQuery(document).ready(function () {
                             .done(function (jobResult) {
                                 if (jobResult.Total < 0)
                                     return;
-                                
+
                                 jQuery(".progress-indicator").hide();
                                 jQuery(".importStatus").show();
                                 jQuery(".status-number").text(numberWithCommas(jobResult.Current) + " of " + numberWithCommas(jobResult.Total));
                                 var percent = jobResult.Current / jobResult.Total * 100;
                                 jQuery(".status-bar-color").attr("style", "width:" + percent + "%;");
 
-                                if (jobResult.Completed)
-                                {
+                                if (jobResult.Completed) {
                                     jQuery(".form-buttons").show();
                                     clearInterval(timer);
                                 }
                             });
                     }, 500);
+                })
+                .fail(function () {
+                    jQuery(".importError").show();
+                    jQuery(".importError").text(r.Error);
+                    jQuery(".importStatus").hide();
+                    jQuery(".form-buttons").show();
+                    jQuery(".progress-indicator").hide();
+
+                    return;
                 });
         });
 

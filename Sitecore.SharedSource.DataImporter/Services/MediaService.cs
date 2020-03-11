@@ -156,6 +156,9 @@ namespace Sitecore.SharedSource.DataImporter.Services
         
         public string TransferImages(SitecoreDataMap map, string fieldValue)
         {
+            if (map == null)
+                return fieldValue;
+
             var matchList = StringService.FindIDsInText(fieldValue);
             var newFieldValue = string.Copy(fieldValue);
 

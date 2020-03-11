@@ -76,7 +76,6 @@ namespace Sitecore.SharedSource.DataImporter
 					line++;
 					try
 					{
-                        Item item = (Item)importRow;
                         string newItemName = DataMap.BuildNewItemName(importRow);
                         
 						if (string.IsNullOrEmpty(newItemName))

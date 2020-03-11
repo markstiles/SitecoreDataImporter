@@ -48,24 +48,20 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
             if (string.IsNullOrEmpty(importValue))
                 return;
 
-            //get parent item of list to search
             Item i = InnerItem.Database.GetItem(SourceList);
             if (i == null)
                 return;
 
             var importItem = importRow is Item ? (Item)importRow : null;
-            if (importItem == null)
-                return;
-
+            
             string cleanName = ID.IsID(importValue)
-                ? importItem.Database.GetItem(new ID(importValue))?.DisplayName
+                ? importItem?.Database?.GetItem(new ID(importValue))?.DisplayName
                 : StringService.GetValidItemName(importValue, map.ItemNameMaxLength);
+
             if (string.IsNullOrWhiteSpace(cleanName))
                 return;
 
             IEnumerable<Item> t = i.Axes.GetDescendants().Where(c => c.DisplayName.Equals(cleanName));
-
-            //if you find one then store the id
             if (!t.Any())
                 return;
 

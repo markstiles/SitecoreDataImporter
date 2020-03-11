@@ -84,10 +84,10 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
         
         public virtual void FillField(IDataMap map, ref Item newItem, object importRow, string importValue)
         {
-            var importItem = (Item)importRow;
             if (string.IsNullOrEmpty(importValue))
             {
-                Logger.Log($"There was no import value", importItem.Paths.FullPath, ProcessStatus.ListToComponentLog);
+                var path = importRow is Item ? ((Item)importRow).Paths.FullPath : "N/A";
+                Logger.Log($"There was no import value", path, ProcessStatus.ListToComponentLog);
                 return;
             }                
             

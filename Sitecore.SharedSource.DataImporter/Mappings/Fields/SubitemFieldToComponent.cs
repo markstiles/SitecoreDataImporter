@@ -27,8 +27,8 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
         
         public override bool SetField(IDataMap map, Item datasource, object importRow, string importValue)
         {
-            var importItem = (Item)importRow;
-            var childItem = importItem.Axes.GetChild("Features and Benefits");
+            var importItem = importRow is Item ? (Item)importRow : null;
+            var childItem = importItem?.Axes.GetChild("Features and Benefits");
             if (childItem == null)
             {
                 Logger.Log($"The Features and Benefits child item wasn't found", importItem.Paths.FullPath, ProcessStatus.FieldToComponentLog);

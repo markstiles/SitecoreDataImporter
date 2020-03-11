@@ -25,8 +25,6 @@ namespace Sitecore.SharedSource.DataImporter.HtmlScraper
         public List<PostProcessors> PostProcessors { get; set; }
         public List<string> ExcludeDirectories { get; set; }
         public string URLCount { get; set; }
-        //public List<ImportMappings> ImportMappings { get; set; }
-
         public Item SelectedMapping { get; set; }
         public List<string> StoredURLs { get; set; }
 
@@ -35,78 +33,73 @@ namespace Sitecore.SharedSource.DataImporter.HtmlScraper
 
         }
 
-        protected bool IsSiteMapURL(string url)
+        public ImportConfig(Item config, Database db, string query)
+        {
+            if (config == null)
+                return;
+            
+            AllowedExtensions = new List<string>();
+            ExcludeDirectories = new List<string>();
+            Name = config.Name;
+            int count = 0;
+            StoredURLs = new List<string>();
+            IgnoreRootDirectories = config.Fields[Constants.FieldNames.IgnoreRootDirectories].Value == "1" ? true : false;
+            MaintainHierarchy = config.Fields[Constants.FieldNames.MaintainHierarchy].Value == "1" ? true : false;
+            ImportTextOnly = config.Fields[Constants.FieldNames.ImportTextOnly].Value == "1" ? true : false;
+            AllowedExtensions = config.Fields[Constants.FieldNames.AllowedExtensions].Value.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+            ItemNameCleanups = GetItemNameCleanups(config, db);
+            PreProcessors = GetPreProcessors(config, db);
+            PostProcessors = GetPostProcessors(config, db);
+            BaseUrl = config.Fields[Constants.FieldNames.BaseUrl].Value;
+
+            URLCount = config.Fields[Constants.FieldNames.URLCount].Value;
+            ExcludeDirectories = config.Fields[Constants.FieldNames.ExcludeDirectories].Value.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+            SelectedMapping = config;
+            string storedValues = !string.IsNullOrEmpty(query) ? query : config.Fields["Query"].Value;
+            storedValues.Split(new[] { '\r' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+            List<string> urls = storedValues.Split(new[] {'\n'}).ToList();
+            urls = urls.Where(u => !u.StartsWith("//")).ToList();
+            List<string> sitemapURLs = urls.Where(u => IsSiteMapURL(u.Trim())).ToList();
+            List<string> pageURLs = urls.Where(u => !IsSiteMapURL(u.Trim())).ToList();
+
+            if (sitemapURLs.Any())
+            {
+                ImportFromSitemap(sitemapURLs, StoredURLs);
+            }
+
+            if (pageURLs.Any())
+            {
+                StoredURLs.AddRange(pageURLs);
+            }
+
+            StoredURLs = StoredURLs.Select(u => u.TrimEnd('\r', '\n').ToLower()).ToList();
+
+            if (AllowedExtensions != null && AllowedExtensions.Any())
+            {
+                StoredURLs = StoredURLs.Where(x => AllowedExtensions.Any(e => x.EndsWith(("." + e.Trim())))).ToList();
+
+                if (pageURLs.Any(p => p.Contains("?")))
+                {
+                    var queryPages = pageURLs;
+                    queryPages = queryPages.Select(u => u.TrimEnd('\r', '\n').ToLower()).ToList();
+                    queryPages = queryPages.Where(x => AllowedExtensions.Any(e => x.Contains(("." + e.Trim() + "?")))).ToList();
+                    StoredURLs.AddRange(queryPages);
+                }
+
+            }
+
+            if (int.TryParse(URLCount, out count))
+            {
+                StoredURLs = StoredURLs.Take(count).ToList();
+            }
+        }
+
+        public virtual bool IsSiteMapURL(string url)
         {
             return url.EndsWith(".xml");
         }
 
-        public ImportConfig(Item config, Database db, string query)
-        {
-
-            if (config != null)
-            {
-
-                AllowedExtensions = new List<string>();
-                ExcludeDirectories = new List<string>();
-                Name = config.Name;
-                int count = 0;
-                StoredURLs = new List<string>();
-                IgnoreRootDirectories = config.Fields[Constants.FieldNames.IgnoreRootDirectories].Value == "1" ? true : false;
-                MaintainHierarchy = config.Fields[Constants.FieldNames.MaintainHierarchy].Value == "1" ? true : false;
-                ImportTextOnly = config.Fields[Constants.FieldNames.ImportTextOnly].Value == "1" ? true : false;
-                AllowedExtensions = config.Fields[Constants.FieldNames.AllowedExtensions].Value.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
-                ItemNameCleanups = GetItemNameCleanups(config, db);
-                PreProcessors = GetPreProcessors(config, db);
-                PostProcessors = GetPostProcessors(config, db);
-                BaseUrl = config.Fields[Constants.FieldNames.BaseUrl].Value;
-
-                URLCount = config.Fields[Constants.FieldNames.URLCount].Value;
-                ExcludeDirectories = config.Fields[Constants.FieldNames.ExcludeDirectories].Value.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
-                SelectedMapping = config;
-                string storedValues = !string.IsNullOrEmpty(query) ? query : config.Fields["Query"].Value;
-                storedValues.Split(new[] { '\r' }, StringSplitOptions.RemoveEmptyEntries).ToList();
-                List<string> urls = storedValues.Split(new[] {'\n'}).ToList();
-                urls = urls.Where(u => !u.StartsWith("//")).ToList();
-                List<string> sitemapURLs = urls.Where(u => IsSiteMapURL(u.Trim())).ToList();
-                List<string> pageURLs = urls.Where(u => !IsSiteMapURL(u.Trim())).ToList();
-
-                if (sitemapURLs.Any())
-                {
-                    ImportFromSitemap(sitemapURLs, StoredURLs);
-                }
-
-                if (pageURLs.Any())
-                {
-                    StoredURLs.AddRange(pageURLs);
-                }
-
-                StoredURLs = StoredURLs.Select(u => u.TrimEnd('\r', '\n').ToLower()).ToList();
-
-                if (AllowedExtensions != null && AllowedExtensions.Any())
-                {
-                    StoredURLs = StoredURLs.Where(x => AllowedExtensions.Any(e => x.EndsWith(("." + e.Trim())))).ToList();
-
-                    if (pageURLs.Any(p => p.Contains("?")))
-                    {
-                        var queryPages = pageURLs;
-                        queryPages = queryPages.Select(u => u.TrimEnd('\r', '\n').ToLower()).ToList();
-                        queryPages = queryPages.Where(x => AllowedExtensions.Any(e => x.Contains(("." + e.Trim() + "?")))).ToList();
-                        StoredURLs.AddRange(queryPages);
-                    }
-
-                }
-
-
-                
-
-                if (int.TryParse(URLCount, out count))
-                {
-                    StoredURLs = StoredURLs.Take(count).ToList();
-                }
-            }
-        }
-
-        private List<PostProcessors> GetPostProcessors(Item config, Database db)
+        public virtual List<PostProcessors> GetPostProcessors(Item config, Database db)
         {
             List<PostProcessors> processors = new List<PostProcessors>();
             MultilistField processorItems = config.Fields[Constants.FieldNames.PostProcessors];
@@ -124,7 +117,7 @@ namespace Sitecore.SharedSource.DataImporter.HtmlScraper
             return processors;
         }
 
-        private void ImportFromSitemap(List<string> sitemapURLs, List<string> storedList) 
+        public virtual void ImportFromSitemap(List<string> sitemapURLs, List<string> storedList) 
         {
            
             foreach (var s in sitemapURLs)
@@ -139,9 +132,8 @@ namespace Sitecore.SharedSource.DataImporter.HtmlScraper
                 storedList.AddRange(urls);
             }
         }
-
-      
-        private List<ItemNameCleanup> GetItemNameCleanups(Item config, Database db)
+              
+        public virtual List<ItemNameCleanup> GetItemNameCleanups(Item config, Database db)
         {
             List<ItemNameCleanup> cleanups = new List<ItemNameCleanup>();
             MultilistField cleanupItems = config.Fields[Constants.FieldNames.ItemNameCleanups];
@@ -157,7 +149,7 @@ namespace Sitecore.SharedSource.DataImporter.HtmlScraper
             return cleanups;
         }
 
-        private List<PreProcessor> GetPreProcessors(Item config, Database db)
+        public virtual List<PreProcessor> GetPreProcessors(Item config, Database db)
         {
             List<PreProcessor> processors = new List<PreProcessor>();
             MultilistField processorItems = config.Fields[Constants.FieldNames.PreProcessors];
@@ -174,7 +166,5 @@ namespace Sitecore.SharedSource.DataImporter.HtmlScraper
             }
             return processors;
         }
-
-
     }
 }

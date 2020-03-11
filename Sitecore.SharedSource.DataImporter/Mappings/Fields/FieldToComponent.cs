@@ -67,11 +67,11 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
 
         public virtual void FillField(IDataMap map, ref Item newItem, object importRow, string importValue)
         {
-            var importItem = (Item)importRow;
-
             if (string.IsNullOrWhiteSpace(Component) || !ID.IsID(Component))
             {
-                Logger.Log($"The Component value is empty or is not an id", importItem.Paths.FullPath, ProcessStatus.FieldToComponentLog, "Component", Component);
+                var path = importRow is Item ? ((Item)importRow).Paths.FullPath : "N/A";
+                Logger.Log($"The Component value is empty or is not an id", path, ProcessStatus.FieldToComponentLog, "Component", Component);
+
                 return;
             }
 

@@ -1,8 +1,8 @@
 ﻿---
-ID: "1059ad12-8048-49c6-b304-877d28118a77"
+ID: "68d1e57e-9462-4059-85b7-08d71eb27f6c"
 Parent: "0053b3ea-5ebc-421b-9e54-c63e4f2a068f"
 Template: "455a3e98-a627-4b40-8035-e683a0331ac7"
-Path: /sitecore/templates/Modules/Data Import/Mappings/Base Mapping/Events/Post Processors
+Path: /sitecore/templates/Modules/Data Import/Mappings/Base Mapping/Events/Field Post Processors
 DB: master
 SharedFields:
 - ID: "1eb8ae32-e190-44a6-968d-ed904c794ebf"
@@ -13,7 +13,7 @@ SharedFields:
   Value: Multilist
 - ID: "ba3f86a2-4a1c-4d78-b63d-91c2779c1b5e"
   Hint: __Sortorder
-  Value: 200
+  Value: 350
 Languages:
 - Language: en
   Versions:
@@ -21,8 +21,4 @@ Languages:
     Fields:
     - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
       Hint: __Created
-      Value: 20171226T181146Z
-    - ID: "5dd74568-4d4b-44c1-b513-0af5f4cda34f"
-      Hint: __Created by
-      Value: |
-        sitecore\Admin
+      Value: 20200311T173334Z
