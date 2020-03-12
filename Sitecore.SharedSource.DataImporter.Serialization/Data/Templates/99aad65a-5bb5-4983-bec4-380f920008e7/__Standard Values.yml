@@ -1,0 +1,20 @@
+﻿---
+ID: "efcfc024-ab94-4e28-8a88-c3fe1baab0c1"
+Parent: "99aad65a-5bb5-4983-bec4-380f920008e7"
+Template: "99aad65a-5bb5-4983-bec4-380f920008e7"
+Path: /sitecore/templates/Modules/Data Import/Mappings/Processors/Field/TrimValue/__Standard Values
+DB: master
+Languages:
+- Language: en
+  Versions:
+  - Version: 1
+    Fields:
+    - ID: "0077d452-689a-4264-9805-ee8a115a13b4"
+      Hint: Handler Assembly
+      Value: Sitecore.SharedSource.DataImporter
+    - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
+      Hint: __Created
+      Value: 20200311T212138Z
+    - ID: "95650d05-b5ab-44ab-b442-3a510611ab5f"
+      Hint: Handler Class
+      Value: Sitecore.SharedSource.DataImporter.Processors.TrimValue

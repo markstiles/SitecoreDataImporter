@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using Sitecore.Data;
 using Sitecore.Data.Fields;
 using Sitecore.Data.Items;
 using Sitecore.Resources.Media;
+using Sitecore.SecurityModel;
 using Sitecore.SharedSource.DataImporter.Logger;
+using Sitecore.SharedSource.DataImporter.Processors.Models;
 using Sitecore.SharedSource.DataImporter.Providers;
 
 namespace Sitecore.SharedSource.DataImporter.Services
@@ -253,6 +256,111 @@ namespace Sitecore.SharedSource.DataImporter.Services
             var mediaItem = ((ImageField)item.Fields[fieldName])?.MediaItem;
 
             return mediaItem;
+        }
+
+        public MediaItem UploadMedia(string mediaUrl, string destination, Item item, ImageField imageField = null)
+        {
+            MediaItem mediaItem = null;
+            string cleanMediaUrl = mediaUrl.Contains("?") 
+                ? mediaUrl.Remove(mediaUrl.IndexOf('?'))
+                : mediaUrl;
+
+            string extension = Path.GetExtension(cleanMediaUrl);
+            string mediaName = Path.GetFileName(cleanMediaUrl);
+            mediaName = mediaName
+                .Replace(extension, "")
+                .Replace("-", " ")
+                .Replace("_", " ")
+                .Trim();
+            
+            try
+            {
+                var webRequest = WebRequest.Create(mediaUrl);
+                using (var webResponse = webRequest.GetResponse())
+                using (var stream = webResponse.GetResponseStream())
+                {
+                    if (stream == null)
+                        return mediaItem;
+                        
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        stream.CopyTo(memoryStream);
+
+                        var mediaCreator = new MediaCreator();
+                        var options = new MediaCreatorOptions
+                        {
+                            Versioned = false,
+                            IncludeExtensionInItemName = true,
+                            Database = item.Database,
+                            Destination = destination + mediaName
+                        };
+
+                        using (new SecurityDisabler())
+                        {
+                            mediaItem = item.Database.GetItem(options.Destination);
+                            if (mediaItem == null)
+                            {
+                                mediaItem = MediaManager.Creator.CreateFromStream(memoryStream, mediaName + extension, options);
+                                Logger.Log($"New media item has been imported from {mediaUrl}", item.Paths.FullPath, ProcessStatus.Info);
+                            }
+
+                            if (imageField != null)
+                                imageField.MediaID = mediaItem.ID;
+
+                            mediaItem.BeginEdit();
+                            mediaItem.Alt = mediaName;
+                            mediaItem.EndEdit();
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Log($"Error during media import from {mediaUrl}. Error: {ex.Message}", item.Paths.FullPath, ProcessStatus.Error, imageField?.InnerField?.InnerItem?.Name);
+            }
+
+            return mediaItem;
+        }
+        
+        public string RetrieveDestination(Item processor, string rootDestination, string source, Uri mediaSource, Uri baseUri)
+        {
+            var keepHeirarchy = (CheckboxField)processor.Fields["Keep Folder Heirarchy"];
+            string cleanSource = source.Contains("?")
+                ? source.Remove(source.IndexOf('?'))
+                : source;
+
+            var path = mediaSource.Host == baseUri.Host
+                    ? cleanSource
+                    : mediaSource.PathAndQuery;
+            
+            var finalDestination = keepHeirarchy != null && keepHeirarchy.Checked
+                ? string.Concat(rootDestination, Path.GetDirectoryName(path), "/")
+                : rootDestination + "/";
+
+            var returnValue = finalDestination
+                .Replace("%20", "-")
+                .Replace("\\", "/")
+                .Replace("//", "/")
+                .Replace("/-/media/", "/");
+
+            return returnValue;
+        }
+        
+        public List<MediaType> RetrieveMediaTypes(Item processor)
+        {
+            List<MediaType> mediaTypes = new List<MediaType>();
+
+            MultilistField mappings = processor.Fields["Media Types"];
+            foreach (var id in mappings.TargetIDs)
+            {
+                var map = processor.Database.GetItem(id);
+                MediaType media = new MediaType();
+                media.Identifier = map.Fields["Identifier"].Value;
+                media.Attribute = map.Fields["Attribute"].Value;
+                media.Extension = map.Fields["Extension"].Value;
+                mediaTypes.Add(media);
+            }
+            return mediaTypes;
         }
     }
 }

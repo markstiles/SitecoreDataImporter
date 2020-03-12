@@ -1,0 +1,14 @@
+﻿---
+ID: "6ec9a142-39c6-4f97-9631-bffd71266869"
+Parent: "d87bc2ef-df95-423e-b86f-ea495a3a21ee"
+Template: "e269fbb5-3750-427a-9149-7aa950b49301"
+Path: /sitecore/templates/Modules/Data Import/Mappings/Processors/Pre/DOM Warnings/Warnings
+DB: master
+Languages:
+- Language: en
+  Versions:
+  - Version: 1
+    Fields:
+    - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
+      Hint: __Created
+      Value: 20180309T200918Z

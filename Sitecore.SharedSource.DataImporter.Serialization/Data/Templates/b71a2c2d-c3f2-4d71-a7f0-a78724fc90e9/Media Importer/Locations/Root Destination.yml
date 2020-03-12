@@ -1,16 +1,19 @@
 ﻿---
-ID: "6cdc7b45-f934-4b1b-8a08-603a490cdd0f"
-Parent: "9c1086b4-bf21-4c22-8ac6-32fc4a282b8d"
+ID: "89091e28-f530-4572-8864-e55139fab57d"
+Parent: "088dc790-aaa7-4894-ba39-c8f882c633ec"
 Template: "455a3e98-a627-4b40-8035-e683a0331ac7"
-Path: /sitecore/templates/Modules/Data Import/Mappings/Processors/Field/Media Importer/Settings/Import External Media URLs
+Path: /sitecore/templates/Modules/Data Import/Mappings/Processors/Field/Media Importer/Locations/Root Destination
 DB: master
 SharedFields:
+- ID: "1eb8ae32-e190-44a6-968d-ed904c794ebf"
+  Hint: Source
+  Value: /sitecore/media library
 - ID: "ab162cc0-dc80-4abf-8871-998ee5d7ba32"
   Hint: Type
-  Value: Checkbox
+  Value: Treelist
 - ID: "ba3f86a2-4a1c-4d78-b63d-91c2779c1b5e"
   Hint: __Sortorder
-  Value: 500
+  Value: 300
 Languages:
 - Language: en
   Versions:
@@ -18,7 +21,7 @@ Languages:
     Fields:
     - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
       Hint: __Created
-      Value: 20180308T160848Z
+      Value: 20180108T184728Z
     - ID: "5dd74568-4d4b-44c1-b513-0af5f4cda34f"
       Hint: __Created by
       Value: |

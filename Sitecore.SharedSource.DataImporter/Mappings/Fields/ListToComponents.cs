@@ -7,7 +7,7 @@ using Sitecore.Data.Fields;
 using Sitecore.Data.Items;
 using Sitecore.Layouts;
 using Sitecore.SharedSource.DataImporter.Logger;
-using Sitecore.SharedSource.DataImporter.Models;
+using Sitecore.SharedSource.DataImporter.Mappings.Fields.Models;
 using Sitecore.SharedSource.DataImporter.Providers;
 using Sitecore.SharedSource.DataImporter.Services;
 
@@ -18,21 +18,14 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
         #region Properties
 
         public string Name { get; set; }
-
-        public string Device { get; set; }
-        
+        public string Device { get; set; }        
         public string DatasourceFolder { get; set; }
-
         public IEnumerable<string> ExistingDataNames { get; set; }
-
         public string Delimiter { get; set; }
 
         protected readonly char[] comSplitr = { ',' };
-
         protected Dictionary<string, ComponentMap> ComponentMaps { get; set; }
-
         protected PresentationService PresentationService { get; set; }
-
         protected MediaService MediaService { get; set; }
 
         #endregion Properties

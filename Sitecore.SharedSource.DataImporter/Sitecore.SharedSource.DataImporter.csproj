@@ -216,15 +216,13 @@
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Extensions\SystemExtensions.cs" />
     <Compile Include="Extensions\TemplateExtensions.cs" />
-    <Compile Include="HtmlScraper\ComplexWarningTag.cs" />
-    <Compile Include="HtmlScraper\Constants.cs" />
-    <Compile Include="HtmlScraper\Helper.cs" />
-    <Compile Include="HtmlScraper\ImportConfig.cs" />
-    <Compile Include="HtmlScraper\ItemNameCleanup.cs" />
-    <Compile Include="HtmlScraper\MediaProcessor.cs" />
-    <Compile Include="HtmlScraper\MediaType.cs" />
-    <Compile Include="HtmlScraper\PostProcessors.cs" />
-    <Compile Include="HtmlScraper\PreProcessors.cs" />
+    <Compile Include="Processors\Field\IFieldProcessor.cs" />
+    <Compile Include="Processors\Models\ComplexWarningTag.cs" />
+    <Compile Include="Processors\Pre\IPreProcessor.cs" />
+    <Compile Include="Processors\Models\ItemNameCleanup.cs" />
+    <Compile Include="Processors\Models\MediaType.cs" />
+    <Compile Include="Processors\Models\PostProcessors.cs" />
+    <Compile Include="Processors\Models\PreProcessors.cs" />
     <Compile Include="Logger\DefaultLogger.cs" />
     <Compile Include="Logger\ILogger.cs" />
     <Compile Include="Logger\ProcessStatus.cs" />
@@ -267,23 +265,19 @@
     <Compile Include="Mappings\ReferenceFields\ToMediaImage.cs" />
     <Compile Include="Mappings\ReferenceFields\ToMediaLink.cs" />
     <Compile Include="Mappings\Templates\TemplateMapping.cs" />
-    <Compile Include="Models\ComponentMap.cs" />
-    <Compile Include="Processors\ImportProcessor.cs" />
-    <Compile Include="Processors\IPostProcessor.cs" />
+    <Compile Include="Mappings\Fields\Models\ComponentMap.cs" />
+    <Compile Include="ImportProcessor.cs" />
     <Compile Include="Processors\PostImport.cs" />
-    <Compile Include="Processors\PostProcessors.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\CSVDataMap.cs" />
-    <Compile Include="Processors\Cleanup.cs" />
-    <Compile Include="Processors\DOMWarnings.cs" />
-    <Compile Include="Processors\Execute.cs" />
-    <Compile Include="Processors\Helpers\MediaUpload.cs" />
-    <Compile Include="Processors\MediaImporter.cs" />
-    <Compile Include="Processors\Process.cs" />
-    <Compile Include="Processors\SetTemplate.cs" />
-    <Compile Include="Processors\TrimValue.cs" />
-    <Compile Include="Processors\UpdateLinks.cs" />
-    <Compile Include="Processors\WriteTagWarnings.cs" />
+    <Compile Include="Processors\Field\Cleanup.cs" />
+    <Compile Include="Processors\Pre\DOMWarnings.cs" />
+    <Compile Include="Processors\Field\MediaImporter.cs" />
+    <Compile Include="Processors\Models\Process.cs" />
+    <Compile Include="Processors\Pre\SetTemplate.cs" />
+    <Compile Include="Processors\Field\TrimValue.cs" />
+    <Compile Include="Processors\Field\UpdateLinks.cs" />
+    <Compile Include="Processors\Field\WriteTagWarnings.cs" />
     <Compile Include="Providers\BaseDataMap.cs" />
     <Compile Include="Providers\SitecoreDeleteMap.cs" />
     <Compile Include="Providers\UrlImportMap.cs" />
@@ -291,17 +285,15 @@
     <Compile Include="Providers\MySqlDataMap.cs" />
     <Compile Include="Providers\SitecoreDataMap.cs" />
     <Compile Include="Providers\SqlDataMap.cs" />
-    <Compile Include="Reporting\ImportReporter.cs" />
     <Compile Include="Services\DateTimeService.cs" />
     <Compile Include="Services\HtmlService.cs" />
     <Compile Include="Services\JobService.cs" />
     <Compile Include="Services\MediaService.cs" />
     <Compile Include="Services\PresentationService.cs" />
+    <Compile Include="Services\ProcessorService.cs" />
     <Compile Include="Services\StringService.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="packages\" />
-  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

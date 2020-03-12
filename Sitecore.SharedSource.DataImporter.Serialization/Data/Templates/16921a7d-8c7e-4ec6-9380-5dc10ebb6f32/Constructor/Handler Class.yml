@@ -1,16 +1,16 @@
 ﻿---
-ID: "ab680780-1fd4-464f-be09-755b63d2079d"
-Parent: "95945306-853b-4297-9030-e952626cceb4"
+ID: "95650d05-b5ab-44ab-b442-3a510611ab5f"
+Parent: "c44ab211-3b9e-4cda-a54d-c3afdb03bb92"
 Template: "455a3e98-a627-4b40-8035-e683a0331ac7"
-Path: /sitecore/templates/Modules/Data Import/Mappings/Base Mapping/Settings/Use XPath For From
+Path: /sitecore/templates/Modules/Data Import/Mappings/Processors/Process/Constructor/Handler Class
 DB: master
 SharedFields:
 - ID: "ab162cc0-dc80-4abf-8871-998ee5d7ba32"
   Hint: Type
-  Value: Checkbox
+  Value: "Single-Line Text"
 - ID: "ba3f86a2-4a1c-4d78-b63d-91c2779c1b5e"
   Hint: __Sortorder
-  Value: 400
+  Value: 300
 Languages:
 - Language: en
   Versions:
@@ -18,4 +18,4 @@ Languages:
     Fields:
     - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
       Hint: __Created
-      Value: 20200311T195917Z
+      Value: 20200311T213948Z

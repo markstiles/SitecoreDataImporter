@@ -43,7 +43,7 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
 				.Split(comSplitr, StringSplitOptions.RemoveEmptyEntries);
 			MediaParentItem = i.Database.GetItem(GetItemField(i, "Media Parent Item"));
 			FromDB = Factory.GetDatabase("master");
-            HtmlService = new HtmlService();
+            HtmlService = new HtmlService(l);
             MediaService = new MediaService(l);
         }
 
