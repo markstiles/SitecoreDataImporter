@@ -217,9 +217,7 @@
     <Compile Include="Extensions\SystemExtensions.cs" />
     <Compile Include="Extensions\TemplateExtensions.cs" />
     <Compile Include="Processors\Field\IFieldProcessor.cs" />
-    <Compile Include="Processors\Models\MediaType.cs" />
-    <Compile Include="Processors\Models\PostProcessors.cs" />
-    <Compile Include="Processors\Models\PreProcessors.cs" />
+    <Compile Include="Services\Models\MediaType.cs" />
     <Compile Include="Logger\DefaultLogger.cs" />
     <Compile Include="Logger\ILogger.cs" />
     <Compile Include="Logger\ProcessStatus.cs" />
@@ -269,7 +267,6 @@
     <Compile Include="Providers\CSVDataMap.cs" />
     <Compile Include="Processors\Field\Cleanup.cs" />
     <Compile Include="Processors\Field\MediaImporter.cs" />
-    <Compile Include="Processors\Models\Process.cs" />
     <Compile Include="Processors\Field\TrimValue.cs" />
     <Compile Include="Processors\Field\UpdateLinks.cs" />
     <Compile Include="Providers\BaseDataMap.cs" />

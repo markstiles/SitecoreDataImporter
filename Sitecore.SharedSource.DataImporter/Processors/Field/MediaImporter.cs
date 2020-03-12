@@ -7,7 +7,6 @@ using System.IO;
 using HtmlAgilityPack;
 using Sitecore.SharedSource.DataImporter.Logger;
 using Sitecore.SharedSource.DataImporter.Services;
-using Sitecore.SharedSource.DataImporter.Processors.Models;
 using Sitecore.Data.Fields;
 using Sitecore.SecurityModel;
 using Sitecore.SharedSource.DataImporter.Providers;

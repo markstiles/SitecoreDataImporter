@@ -9,8 +9,8 @@ using Sitecore.Data.Items;
 using Sitecore.Resources.Media;
 using Sitecore.SecurityModel;
 using Sitecore.SharedSource.DataImporter.Logger;
-using Sitecore.SharedSource.DataImporter.Processors.Models;
 using Sitecore.SharedSource.DataImporter.Providers;
+using Sitecore.SharedSource.DataImporter.Services.Models;
 
 namespace Sitecore.SharedSource.DataImporter.Services
 {

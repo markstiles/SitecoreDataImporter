@@ -15,7 +15,6 @@ using Sitecore.SharedSource.DataImporter.Logger;
 using Sitecore.SharedSource.DataImporter.Mappings.Fields;
 using Sitecore.SharedSource.DataImporter.Mappings.Properties;
 using Sitecore.SharedSource.DataImporter.Services;
-using Sitecore.SharedSource.DataImporter.Processors.Models;
 using System.Xml.Linq;
 
 namespace Sitecore.SharedSource.DataImporter.Providers

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Sitecore.SharedSource.DataImporter.Processors.Models
+namespace Sitecore.SharedSource.DataImporter.Services.Models
 {
     public class MediaType
     {

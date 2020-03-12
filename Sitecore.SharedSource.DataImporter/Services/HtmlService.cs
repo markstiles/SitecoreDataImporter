@@ -4,7 +4,6 @@ using System.Linq;
 using HtmlAgilityPack;
 using Sitecore.Data.Items;
 using Sitecore.SharedSource.DataImporter.Logger;
-using Sitecore.SharedSource.DataImporter.Processors.Models;
 
 namespace Sitecore.SharedSource.DataImporter.Services
 {
