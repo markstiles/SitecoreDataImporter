@@ -271,13 +271,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\CSVDataMap.cs" />
     <Compile Include="Processors\Field\Cleanup.cs" />
-    <Compile Include="Processors\Pre\DOMWarnings.cs" />
     <Compile Include="Processors\Field\MediaImporter.cs" />
     <Compile Include="Processors\Models\Process.cs" />
     <Compile Include="Processors\Pre\SetTemplate.cs" />
     <Compile Include="Processors\Field\TrimValue.cs" />
     <Compile Include="Processors\Field\UpdateLinks.cs" />
-    <Compile Include="Processors\Field\WriteTagWarnings.cs" />
     <Compile Include="Providers\BaseDataMap.cs" />
     <Compile Include="Providers\SitecoreDeleteMap.cs" />
     <Compile Include="Providers\UrlImportMap.cs" />

@@ -85,7 +85,6 @@ namespace Sitecore.SharedSource.DataImporter.Providers
             PreProcessors = GetPreProcessors(ImportItem, ToDB);
             PostProcessors = GetPostProcessors(ImportItem, ToDB);
             BaseUrl = ImportItem.Fields["Base URL"].Value;
-
             URLCount = ImportItem.Fields["Top x URLs"].Value;
             ExcludeDirectories = ImportItem.Fields["Exclude Directories"].Value.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
             SelectedMapping = ImportItem;
@@ -97,15 +96,11 @@ namespace Sitecore.SharedSource.DataImporter.Providers
             List<string> pageURLs = urls.Where(u => !u.Trim().EndsWith(".xml")).ToList();
 
             if (sitemapURLs.Any())
-            {
                 ImportFromSitemap(sitemapURLs, StoredURLs);
-            }
-
+            
             if (pageURLs.Any())
-            {
                 StoredURLs.AddRange(pageURLs);
-            }
-
+            
             StoredURLs = StoredURLs.Select(u => u.TrimEnd('\r', '\n').ToLower()).ToList();
 
             if (AllowedExtensions != null && AllowedExtensions.Any())
@@ -119,14 +114,11 @@ namespace Sitecore.SharedSource.DataImporter.Providers
                     queryPages = queryPages.Where(x => AllowedExtensions.Any(e => x.Contains(("." + e.Trim() + "?")))).ToList();
                     StoredURLs.AddRange(queryPages);
                 }
-
             }
 
             if (int.TryParse(URLCount, out count))
-            {
                 StoredURLs = StoredURLs.Take(count).ToList();
-            }
-
+            
             ImportLocation = ImportToWhere;
 
             if (ItemNameFields.FirstOrDefault() == "[URL]")
@@ -170,16 +162,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers
             
             foreach (var field in FieldDefinitions)
             {
-                //Check for warnings
-                MultilistField WarningTags = field.InnerItem.Fields["Warning Trigger Tags"];
-                if (WarningTags.Count > 0)
-                {
-                    new WriteTagWarnings(this, Logger).Run(null, newItem, field.InnerItem);
-                }
-
-                //"To What Field"
                 MultilistField processors = field.InnerItem.Fields["Field Post Processors"];
-
                 foreach (var targetId in processors.TargetIDs)
                 {
                     Item processor = ToDB.GetItem(targetId);
