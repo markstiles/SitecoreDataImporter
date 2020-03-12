@@ -21,4 +21,4 @@ Languages:
         sitecore\admin
     - ID: "95650d05-b5ab-44ab-b442-3a510611ab5f"
       Hint: Handler Class
-      Value: Sitecore.SharedSource.DataImporter.Processors.UpdateLinks
+      Value: Sitecore.SharedSource.DataImporter.Processors.Field.UpdateLinks

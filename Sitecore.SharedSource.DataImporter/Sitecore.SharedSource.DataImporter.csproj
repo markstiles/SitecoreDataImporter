@@ -217,9 +217,6 @@
     <Compile Include="Extensions\SystemExtensions.cs" />
     <Compile Include="Extensions\TemplateExtensions.cs" />
     <Compile Include="Processors\Field\IFieldProcessor.cs" />
-    <Compile Include="Processors\Models\ComplexWarningTag.cs" />
-    <Compile Include="Processors\Pre\IPreProcessor.cs" />
-    <Compile Include="Processors\Models\ItemNameCleanup.cs" />
     <Compile Include="Processors\Models\MediaType.cs" />
     <Compile Include="Processors\Models\PostProcessors.cs" />
     <Compile Include="Processors\Models\PreProcessors.cs" />
@@ -267,13 +264,12 @@
     <Compile Include="Mappings\Templates\TemplateMapping.cs" />
     <Compile Include="Mappings\Fields\Models\ComponentMap.cs" />
     <Compile Include="ImportProcessor.cs" />
-    <Compile Include="Processors\PostImport.cs" />
+    <Compile Include="Processors\Field\PostImport.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\CSVDataMap.cs" />
     <Compile Include="Processors\Field\Cleanup.cs" />
     <Compile Include="Processors\Field\MediaImporter.cs" />
     <Compile Include="Processors\Models\Process.cs" />
-    <Compile Include="Processors\Pre\SetTemplate.cs" />
     <Compile Include="Processors\Field\TrimValue.cs" />
     <Compile Include="Processors\Field\UpdateLinks.cs" />
     <Compile Include="Providers\BaseDataMap.cs" />

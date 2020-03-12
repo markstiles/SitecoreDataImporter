@@ -243,7 +243,7 @@ namespace Sitecore.SharedSource.DataImporter.Services
             return data;
         }
 
-        public string RemoveInvalidChars(List<ItemNameCleanup> itemNameCleanups, string data, bool root, bool report = true)
+        public string RemoveInvalidChars(string data, bool root)
         {
             string originalName = data;
 
@@ -254,20 +254,7 @@ namespace Sitecore.SharedSource.DataImporter.Services
             }
 
             data = ItemUtil.ProposeValidItemName(data);
-
-            foreach (var cleanup in itemNameCleanups)
-            {
-                if (!data.Contains(cleanup.Find))
-                    continue;
-
-                data = data.Replace(cleanup.Find, cleanup.Replace);
-
-                if (!report)
-                    continue;
-
-                Logger.Log($"Name Change To: {data}", cleanup.CleanupItem.Paths.FullPath, Providers.ProcessStatus.Info, $"Name > From: {originalName}");
-            }
-
+            
             return data;
         }
     }

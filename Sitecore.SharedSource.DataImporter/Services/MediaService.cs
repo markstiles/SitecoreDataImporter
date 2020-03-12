@@ -348,18 +348,28 @@ namespace Sitecore.SharedSource.DataImporter.Services
         
         public List<MediaType> RetrieveMediaTypes(Item processor)
         {
-            List<MediaType> mediaTypes = new List<MediaType>();
-
-            MultilistField mappings = processor.Fields["Media Types"];
-            foreach (var id in mappings.TargetIDs)
+            List<MediaType> mediaTypes = new List<MediaType>
             {
-                var map = processor.Database.GetItem(id);
-                MediaType media = new MediaType();
-                media.Identifier = map.Fields["Identifier"].Value;
-                media.Attribute = map.Fields["Attribute"].Value;
-                media.Extension = map.Fields["Extension"].Value;
-                mediaTypes.Add(media);
-            }
+                new MediaType
+                {
+                    Identifier = "img",
+                    Attribute = "src",
+                    Extension = "jpg",
+                },
+                new MediaType
+                {
+                    Identifier = "img",
+                    Attribute = "src",
+                    Extension = "png",
+                },
+                new MediaType
+                {
+                    Identifier = "a",
+                    Attribute = "href",
+                    Extension = "pdf",
+                },
+            };
+            
             return mediaTypes;
         }
     }

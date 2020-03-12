@@ -17,4 +17,4 @@ Languages:
       Value: 20200311T212131Z
     - ID: "95650d05-b5ab-44ab-b442-3a510611ab5f"
       Hint: Handler Class
-      Value: Sitecore.SharedSource.DataImporter.Processors.MediaImporter
+      Value: Sitecore.SharedSource.DataImporter.Processors.Field.MediaImporter

@@ -1,16 +1,14 @@
 ﻿---
-ID: "b1352e0b-4a09-408a-bf43-62809b98bdcf"
-Parent: "261895c1-65ca-4fbf-8222-3c72ed390664"
-Template: "261895c1-65ca-4fbf-8222-3c72ed390664"
-Path: /sitecore/templates/Modules/Data Import/Folders/Pre Processors/__Standard Values
+ID: "954d4564-7bff-42c3-90d2-915c1a40f732"
+Parent: "aa0eb094-b970-4aaf-9c05-7b493deeeb2c"
+Template: "aa0eb094-b970-4aaf-9c05-7b493deeeb2c"
+Path: /sitecore/templates/Modules/Data Import/Folders/Settings Folder/__Standard Values
 DB: master
 SharedFields:
 - ID: "1172f251-dad4-4efb-a329-0c63500e4f1e"
   Hint: __Masters
   Type: TreelistEx
-  Value: |
-    {DE84E379-0505-43F9-9250-2206ED977122}
-    {16921A7D-8C7E-4EC6-9380-5DC10EBB6F32}
+  Value: "{AA0EB094-B970-4AAF-9C05-7B493DEEEB2C}"
 Languages:
 - Language: en
   Versions:
@@ -18,7 +16,7 @@ Languages:
     Fields:
     - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
       Hint: __Created
-      Value: 20170222T134313Z
+      Value: 20200312T204746Z
     - ID: "5dd74568-4d4b-44c1-b513-0af5f4cda34f"
       Hint: __Created by
       Value: |

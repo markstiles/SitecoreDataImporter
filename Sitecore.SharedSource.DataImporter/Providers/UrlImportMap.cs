@@ -32,13 +32,10 @@ namespace Sitecore.SharedSource.DataImporter.Providers
         protected string Name { get; set; }
         protected bool ImportTextOnly { get; set; }
         protected List<string> AllowedExtensions { get; set; }
-        protected List<PreProcessor> PreProcessors { get; set; }
-        protected List<PostProcessors> PostProcessors { get; set; }
         protected string URLCount { get; set; }
         protected Item SelectedMapping { get; set; }
         protected List<string> StoredURLs { get; set; }
-
-        public List<ItemNameCleanup> ItemNameCleanups { get; set; }
+        
         public string BaseUrl { get; set; }
         public List<string> ExcludeDirectories { get; set; }
         public bool MaintainHierarchy { get; set; }
@@ -81,9 +78,6 @@ namespace Sitecore.SharedSource.DataImporter.Providers
             MaintainHierarchy = ImportItem.Fields["Maintain Hierarchy"].Value == "1" ? true : false;
             ImportTextOnly = ImportItem.Fields["Import Text Only"].Value == "1" ? true : false;
             AllowedExtensions = ImportItem.Fields["Allowed URL Extensions"].Value.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
-            ItemNameCleanups = GetItemNameCleanups(ImportItem, ToDB);
-            PreProcessors = GetPreProcessors(ImportItem, ToDB);
-            PostProcessors = GetPostProcessors(ImportItem, ToDB);
             BaseUrl = ImportItem.Fields["Base URL"].Value;
             URLCount = ImportItem.Fields["Top x URLs"].Value;
             ExcludeDirectories = ImportItem.Fields["Exclude Directories"].Value.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
@@ -256,7 +250,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers
             bool root = true;
             foreach (string dir in directories)
             {
-                string directroy = HtmlService.RemoveInvalidChars(ItemNameCleanups, dir, root);
+                string directroy = HtmlService.RemoveInvalidChars(dir, root);
                 string fullPath = string.Empty;
 
                 if (string.IsNullOrEmpty(prevDir))
@@ -324,7 +318,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers
                 }
                 else
                 {
-                    name = HtmlService.RemoveInvalidChars(ItemNameCleanups, dir, root);
+                    name = HtmlService.RemoveInvalidChars(dir, root);
                     dirPath = location.Paths.FullPath + "/" + name;
                     urlVal = dir;
                 }
@@ -341,8 +335,6 @@ namespace Sitecore.SharedSource.DataImporter.Providers
                 dr[RequestedURL] = currentDirURL;
                 var contentHtml = WebContentRequest(currentDirURL);
                 doc.LoadHtml(contentHtml);
-
-                RunPreProcessors(doc, dr, currentDirURL);
                 
                 foreach (var key in mappings)
                 {
@@ -361,19 +353,6 @@ namespace Sitecore.SharedSource.DataImporter.Providers
                     updatedFields.Add(toFieldName);
                 }
                 root = false;
-            }
-        }
-
-        public virtual void RunPreProcessors(HtmlDocument doc, DataRow dr, string currentDirURL)
-        {
-            foreach (var processor in PreProcessors)
-            {
-                string returnValue = ProcessorService.ExecutePreProcessor(this, processor.ProcessItem, doc, currentDirURL, ImportToWhatTemplate.ID.ToString());
-
-                if (string.IsNullOrEmpty(returnValue))
-                    continue;
-                
-                dr[ActionColumn] = returnValue;
             }
         }
 
@@ -463,24 +442,6 @@ namespace Sitecore.SharedSource.DataImporter.Providers
             return content;
         }
         
-        public virtual List<PostProcessors> GetPostProcessors(Item config, Database db)
-        {
-            List<PostProcessors> processors = new List<PostProcessors>();
-            MultilistField processorItems = config.Fields["Post Processors"];
-            foreach (var id in processorItems.TargetIDs)
-            {
-                var item = db.GetItem(id);
-                PostProcessors processor = new PostProcessors();
-                processor.Identifier = item.Fields["Identifier"] != null ? item.Fields["Identifier"].Value : string.Empty;
-                processor.Action = item.Fields["Action"] != null ? item.Fields["Action"].Value : string.Empty;
-                processor.Type = item.Fields["Type"] != null ? item.Fields["Type"].Value : string.Empty;
-                processor.Method = item.Fields["Method"] != null ? item.Fields["Method"].Value : string.Empty;
-                processor.ProcessItem = item;
-                processors.Add(processor);
-            }
-            return processors;
-        }
-
         public virtual void ImportFromSitemap(List<string> sitemapURLs, List<string> storedList)
         {
             foreach (var s in sitemapURLs)
@@ -494,40 +455,6 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 
                 storedList.AddRange(urls);
             }
-        }
-
-        public virtual List<ItemNameCleanup> GetItemNameCleanups(Item config, Database db)
-        {
-            List<ItemNameCleanup> cleanups = new List<ItemNameCleanup>();
-            MultilistField cleanupItems = config.Fields["Item Name Cleanups"];
-            foreach (var id in cleanupItems.TargetIDs)
-            {
-                var cleanupItem = db.GetItem(id);
-                ItemNameCleanup cleanup = new ItemNameCleanup();
-                cleanup.Find = cleanupItem.Fields["Find"].Value;
-                cleanup.Replace = cleanupItem.Fields["Replace"].Value;
-                cleanup.CleanupItem = cleanupItem;
-                cleanups.Add(cleanup);
-            }
-            return cleanups;
-        }
-
-        public virtual List<PreProcessor> GetPreProcessors(Item config, Database db)
-        {
-            List<PreProcessor> processors = new List<PreProcessor>();
-            MultilistField processorItems = config.Fields["Pre Processors"];
-            foreach (var id in processorItems.TargetIDs)
-            {
-                var item = db.GetItem(id);
-                PreProcessor processor = new PreProcessor();
-                processor.Identifier = item.Fields["Identifier"] != null ? item.Fields["Identifier"].Value : string.Empty;
-                processor.Action = item.Fields["Action"] != null ? item.Fields["Action"].Value : string.Empty;
-                processor.Type = item.Fields["Type"] != null ? item.Fields["Type"].Value : string.Empty;
-                processor.Method = item.Fields["Method"] != null ? item.Fields["Method"].Value : string.Empty;
-                processor.ProcessItem = item;
-                processors.Add(processor);
-            }
-            return processors;
         }
     }
 }

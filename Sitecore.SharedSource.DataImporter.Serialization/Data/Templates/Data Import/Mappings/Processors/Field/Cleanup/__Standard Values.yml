@@ -21,4 +21,4 @@ Languages:
         sitecore\Admin
     - ID: "95650d05-b5ab-44ab-b442-3a510611ab5f"
       Hint: Handler Class
-      Value: Sitecore.SharedSource.DataImporter.Processors.Cleanup
+      Value: Sitecore.SharedSource.DataImporter.Processors.Field.Cleanup

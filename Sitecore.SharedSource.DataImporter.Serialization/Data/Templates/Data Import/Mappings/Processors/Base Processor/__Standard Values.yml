@@ -2,7 +2,7 @@
 ID: "f3a9d331-11c3-4e0b-9bb6-77b6754a1d13"
 Parent: "16921a7d-8c7e-4ec6-9380-5dc10ebb6f32"
 Template: "16921a7d-8c7e-4ec6-9380-5dc10ebb6f32"
-Path: /sitecore/templates/Modules/Data Import/Mappings/Processors/Process/__Standard Values
+Path: /sitecore/templates/Modules/Data Import/Mappings/Processors/Base Processor/__Standard Values
 DB: master
 Languages:
 - Language: en

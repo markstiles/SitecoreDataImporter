@@ -99,14 +99,14 @@ namespace Sitecore.SharedSource.DataImporter.Processors.Field
                             try
                             {
                                 Uri baseURi = new Uri(UrlImportMap.BaseUrl);
-                                rootPath = UrlImportMap.ImportLocation.Paths.FullPath + "/" + HtmlService.RemoveInvalidChars(UrlImportMap.ItemNameCleanups, baseURi.Host, true);
+                                rootPath = UrlImportMap.ImportLocation.Paths.FullPath + "/" + HtmlService.RemoveInvalidChars(baseURi.Host, true);
                                 Item rootItem = UrlImportMap.ImportLocation.Database.GetItem(rootPath);
 
                                 if (rootItem == null)
                                 {
                                     foreach (var domain in internalDomains)
                                     {
-                                        rootPath = UrlImportMap.ImportLocation.Paths.FullPath + "/" + HtmlService.RemoveInvalidChars(UrlImportMap.ItemNameCleanups, domain, true);
+                                        rootPath = UrlImportMap.ImportLocation.Paths.FullPath + "/" + HtmlService.RemoveInvalidChars(domain, true);
                                         rootItem = UrlImportMap.ImportLocation.Database.GetItem(rootPath);
 
                                         if (rootItem != null) { break; }
@@ -125,7 +125,7 @@ namespace Sitecore.SharedSource.DataImporter.Processors.Field
                             
                             foreach (var dir in directories)
                             {
-                                internalPath += HtmlService.RemoveInvalidChars(UrlImportMap.ItemNameCleanups, dir, false);
+                                internalPath += HtmlService.RemoveInvalidChars(dir, false);
 
                                 if (dir != directories.LastOrDefault())
                                 {
@@ -137,7 +137,7 @@ namespace Sitecore.SharedSource.DataImporter.Processors.Field
                         }
                         else
                         {
-                            string itemName = HtmlService.RemoveInvalidChars(UrlImportMap.ItemNameCleanups, directories.LastOrDefault(), false);
+                            string itemName = HtmlService.RemoveInvalidChars(directories.LastOrDefault(), false);
                             internalPath = UrlImportMap.ImportLocation.Paths.FullPath + "/" + itemName;
                             linkItem = UrlImportMap.ImportLocation.Database.GetItem(internalPath);
                         }
