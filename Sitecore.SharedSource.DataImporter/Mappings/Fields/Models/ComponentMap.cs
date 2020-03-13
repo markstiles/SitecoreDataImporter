@@ -12,7 +12,7 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields.Models
         public string Placeholder { get; set; }
         public string DatasourcePath { get; set; }
         public bool OverwriteExisting { get; set; }
-        public Dictionary<string, string> Fields { get; set; }
+        public Dictionary<string, IBaseField> Fields { get; set; }
         public string Parameters { get; set; }
     }
 }

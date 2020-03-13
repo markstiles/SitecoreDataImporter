@@ -27,8 +27,9 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
 
         #region IBaseField
 
-        public override void FillField(IDataMap map, ref Item newItem, object importRow, string importValue) {
-
+        public override void FillField(IDataMap map, ref Item newItem, object importRow)
+        {
+            var importValue = string.Join(Delimiter, map.GetFieldValues(ExistingDataNames, importRow));
             if (string.IsNullOrEmpty(importValue))
                 return;
 
@@ -38,7 +39,7 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
             var url = values.Length > 1 ? values[1] : string.Empty;
 
             //get the field as a link field and store the url
-            Field lf = newItem.Fields[NewItemField];
+            Field lf = newItem.Fields[ToWhatField];
             if (lf != null)
                 lf.Value = $"<link text=\"{text}\" linktype=\"external\" url=\"{url}\" anchor=\"\" class=\"link-item__external\" target=\"_blank\" />";
         }

@@ -9,7 +9,6 @@ using Microsoft.VisualBasic.FileIO;
 using Sitecore.Resources.Media;
 using Sitecore.SharedSource.DataImporter.Extensions;
 using Sitecore.SharedSource.DataImporter.Logger;
-using Sitecore.SharedSource.DataImporter.Mappings.Properties;
 
 namespace Sitecore.SharedSource.DataImporter.Providers
 {
@@ -48,7 +47,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 
             if (!isSitecorePath && !File.Exists(this.Query))
 			{
-				Logger.Log($"the file: '{Query}' could not be found. Try moving the file under the webroot.", "N/A", ProcessStatus.Error);
+				Logger.Log($"the file: '{Query}' could not be found. Try moving the file under the webroot.", "N/A", LogType.Error);
 				return Enumerable.Empty<object>();
 			}
             

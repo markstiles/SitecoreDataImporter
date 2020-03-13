@@ -5,10 +5,8 @@ using Sitecore.SharedSource.DataImporter.Providers;
 using Sitecore.Diagnostics;
 using Sitecore.SharedSource.DataImporter.Logger;
 
-namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
-    /// <summary>
-    /// Class form importing ReferenceFields like DropList
-    /// </summary>
+namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
+{
     public class UrlToReference : ToText {
        
         #region Properties
@@ -36,16 +34,18 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
 
         #region IBaseField
 
-        public override void FillField(IDataMap map, ref Item newItem, object importRow, string importValue) {
+        public override void FillField(IDataMap map, ref Item newItem, object importRow)
+        {
+            var importValue = string.Join(Delimiter, map.GetFieldValues(ExistingDataNames, importRow));
 
-			Assert.IsNotNull(map, "map");
+            Assert.IsNotNull(map, "map");
 			Assert.IsNotNull(newItem, "newItem");
 
             if (string.IsNullOrEmpty(importValue))
                 return;
 
             //get the field as a link field and store the url
-            ReferenceField lf = newItem.Fields[NewItemField];
+            ReferenceField lf = newItem.Fields[ToWhatField];
 
             if (lf != null) {
                 //Try to get link using and item path
@@ -62,7 +62,7 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields {
                 if (importItem != null)
                     lf.Value = importItem.ID.ToString();
                 else {
-                    string errorMessage = string.Format("Could not find item at the following locations for field: {0}: \n", NewItemField);
+                    string errorMessage = string.Format("Could not find item at the following locations for field: {0}: \n", ToWhatField);
                     errorMessage += string.Format("Original Value: {0}\n", importValue);
 
                     if (!string.IsNullOrEmpty(pathFromUrl))

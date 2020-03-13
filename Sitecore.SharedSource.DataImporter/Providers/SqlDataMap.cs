@@ -12,7 +12,6 @@ using Sitecore.SharedSource.DataImporter.Mappings.Fields;
 using Sitecore.SharedSource.DataImporter.Extensions;
 using System.Collections;
 using Sitecore.SharedSource.DataImporter.Logger;
-using Sitecore.SharedSource.DataImporter.Mappings.Properties;
 
 namespace Sitecore.SharedSource.DataImporter.Providers
 {

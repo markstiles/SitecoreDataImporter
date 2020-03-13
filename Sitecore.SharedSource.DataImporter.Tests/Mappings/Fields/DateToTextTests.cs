@@ -8,8 +8,7 @@ using NUnit.Framework;
 using Sitecore.Data.Items;
 using Sitecore.FakeDb;
 using Sitecore.SharedSource.DataImporter.Logger;
-using Sitecore.SharedSource.DataImporter.Mappings.Fields;
-using Sitecore.SharedSource.DataImporter.Mappings.ReferenceFields;
+using Sitecore.SharedSource.DataImporter.Mappings.Fields.SitecoreFields;
 using Sitecore.SharedSource.DataImporter.Providers;
 
 namespace Sitecore.SharedSource.DataImporter.Tests.Mappings.Fields
@@ -42,7 +41,7 @@ namespace Sitecore.SharedSource.DataImporter.Tests.Mappings.Fields
 
             using (new EditContext(newItem))
             {
-                _sut.FillField(_dataMap, ref newItem, oldItem, "");
+                _sut.FillField(_dataMap, ref newItem, oldItem);
             }
 
             var field = newItem.Fields[TestingConstants.DateToText.ToFieldName];

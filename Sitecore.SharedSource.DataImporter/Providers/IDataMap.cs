@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Sitecore.SharedSource.DataImporter.Mappings.Properties;
 
 namespace Sitecore.SharedSource.DataImporter.Providers
 {
@@ -51,6 +50,10 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 
 		TemplateItem FolderTemplate { get; set; }
 
+        List<Item> PreProcessors { get; set; }
+
+        List<Item> PostProcessors { get; set; }
+
 		#endregion Fields
 
 		#region Methods
@@ -60,13 +63,10 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 		/// </summary>
 		/// <returns></returns>
 		IEnumerable<object> GetImportData();
-        
-		/// <summary>
-		/// this is used to process custom fields or properties
-		/// </summary>
-		void ProcessCustomData(ref Item newItem, object importRow, List<IBaseProperty> propDefinitions = null);
 
-        void PostProcess(List<Item> newItems);
+        void PreProcessItem(object importRow, Item newItem);
+
+        void PostProcessItem(object importRow, Item newItem);
 
 		/// <summary>
 		/// Defines how the subclass will retrieve a field value
@@ -108,6 +108,8 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 		/// <returns></returns>
 		Item GetParentNode(object importRow, string newItemName);
 
-		#endregion Methods
-	}
+        IEnumerable<string> GetFieldValues(IEnumerable<string> fieldNames, object importRow);
+
+        #endregion Methods
+    }
 }

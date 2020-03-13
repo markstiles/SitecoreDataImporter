@@ -1,0 +1,18 @@
+﻿---
+ID: "3ff2005e-d373-4b82-9121-748994e85bb8"
+Parent: "0f528c70-e771-4f2f-8d80-103a57104519"
+Template: "e269fbb5-3750-427a-9149-7aa950b49301"
+Path: /sitecore/templates/Modules/Data Import/Mappings/Fields/Url To Reference/Locations
+DB: master
+Languages:
+- Language: en
+  Versions:
+  - Version: 1
+    Fields:
+    - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
+      Hint: __Created
+      Value: 20141209T154242
+    - ID: "5dd74568-4d4b-44c1-b513-0af5f4cda34f"
+      Hint: __Created by
+      Value: |
+        sitecore\markw

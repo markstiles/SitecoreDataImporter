@@ -14,7 +14,6 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
 	/// </summary>
 	public class ToDate : ToText
 	{
-
 		#region Properties
 
 		#endregion Properties
@@ -31,13 +30,14 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
 
 		#region IBaseField
 
-		public override void FillField(IDataMap map, ref Item newItem, object importRow, string importValue)
+		public override void FillField(IDataMap map, ref Item newItem, object importRow)
 		{
-			Field f = newItem.Fields[NewItemField];
+			Field f = newItem.Fields[ToWhatField];
 			if (f == null)
 				return;
 
-			if (string.IsNullOrEmpty(importValue))
+            var importValue = string.Join(Delimiter, map.GetFieldValues(ExistingDataNames, importRow));
+            if (string.IsNullOrEmpty(importValue))
 			{
 				f.Value = string.Empty;
 				return;
@@ -49,7 +49,7 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
 			if (!DateTime.TryParse(cleanImportValue, out date)
 					&& !DateTime.TryParseExact(cleanImportValue, new string[] { "d/M/yyyy", "d/M/yyyy HH:mm:ss", "yyyyMMddTHHmmss", "yyyyMMddTHHmmssZ" }, CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
 			{
-				map.Logger.Log("Date parse error", newItem.Paths.FullPath, ProcessStatus.DateParseError, ItemName(), cleanImportValue);
+				map.Logger.Log("Date parse error", newItem.Paths.FullPath, LogType.DateParseError, Name, cleanImportValue);
 				return;
 			}
 

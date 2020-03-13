@@ -18,23 +18,20 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
 			FromAttributeValue = GetItemField(i, "From Attribute Value");
 		}
 
-		public override void FillField(IDataMap map, ref Item newItem, object importRow, string importValue)
+		public override void FillField(IDataMap map, ref Item newItem, object importRow)
 		{
 			Assert.IsNotNull(newItem, "newItem");
-			if (string.IsNullOrEmpty(importValue))
+
+            var importValue = string.Join(Delimiter, map.GetFieldValues(ExistingDataNames, importRow));
+            if (string.IsNullOrEmpty(importValue))
 				return;
 
 			//store the imported value as is
-			Field f = newItem.Fields[NewItemField];
-			if (f != null)
-			{
-				string fragment = GetFragment(importValue);
-				if (!string.IsNullOrEmpty(fragment))
-				{
-					f.Value = fragment;
-				}
-			}
-				
+			Field f = newItem.Fields[ToWhatField];
+            string fragment = GetFragment(importValue);
+
+            if (f != null && !string.IsNullOrEmpty(fragment))
+                f.Value = fragment;				
 		}
 
 		private string GetFragment(string importValue)
@@ -44,14 +41,14 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
 
 			var node = document.DocumentNode.SelectSingleNode(FromNode);
 
-			if (node == null) return null;
+			if (node == null)
+                return null;
 
-			if (string.IsNullOrEmpty(FromAttributeValue))
-			{
-				return node.InnerHtml;
-			}
+			var returnValue = string.IsNullOrEmpty(FromAttributeValue)
+				? node.InnerHtml
+                : node.Attributes[FromAttributeValue]?.Value;
 
-			return node.Attributes[FromAttributeValue]?.Value;
+            return returnValue;
 		}
 	}
 }

@@ -1,0 +1,28 @@
+﻿---
+ID: "72dddfe4-0e3a-442f-b296-909347738546"
+Parent: "3cca1c34-b636-4437-81d4-b9fef820c4a1"
+Template: "3cca1c34-b636-4437-81d4-b9fef820c4a1"
+Path: /sitecore/templates/Modules/Data Import/Mappings/Fields/SitecoreFields/Multilist To Components/__Standard Values
+DB: master
+SharedFields:
+- ID: "1172f251-dad4-4efb-a329-0c63500e4f1e"
+  Hint: __Masters
+  Type: TreelistEx
+  Value: "{A34685BF-BD8E-45E7-8AA9-E9075F9E90F4}"
+- ID: "ba3f86a2-4a1c-4d78-b63d-91c2779c1b5e"
+  Hint: __Sortorder
+  Value: 300
+- ID: "fa7b99b1-6bb9-469c-b786-f8a9d52d2f0a"
+  Hint: Handler Class
+  Value: Sitecore.SharedSource.DataImporter.Mappings.Fields.SitecoreFields.MultilistToComponents
+Languages:
+- Language: en
+  Versions:
+  - Version: 1
+    Fields:
+    - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
+      Hint: __Created
+      Value: 20110704T143147Z
+    - ID: "64a7b020-6b03-4ff0-862c-91981ccbdd48"
+      Hint: Device
+      Value: "{FE5D7FDF-89C0-4D99-9AA3-B5FBD009C9F3}"

@@ -11,6 +11,8 @@ using Sitecore.Jobs;
 using Sitecore.SecurityModel;
 using CsvHelper;
 using System.Web;
+using Sitecore.SharedSource.DataImporter.Mappings.Fields;
+using Sitecore.Caching;
 
 namespace Sitecore.SharedSource.DataImporter
 {
@@ -39,8 +41,8 @@ namespace Sitecore.SharedSource.DataImporter
 
 			Logger.Log($"Import Started at: {DateTime.Now:yyyy-MM-dd HH:mm:ss}", "N/A");
 
-			if (Sitecore.Context.Job != null)
-				Sitecore.Context.Job.Options.Priority = ThreadPriority.Highest;
+			if (Context.Job != null)
+				Context.Job.Options.Priority = ThreadPriority.Highest;
 
 			IEnumerable<object> importItems;
 			try
@@ -49,18 +51,18 @@ namespace Sitecore.SharedSource.DataImporter
 			}
 			catch (Exception ex)
 			{
-				Logger.Log($"GetImportData Failed: {ex.Message}", "N/A", Providers.ProcessStatus.Error);
+				Logger.Log($"GetImportData Failed: {ex.Message}", "N/A", Providers.LogType.Error);
 				Logger.Log($"Import Finished at: {DateTime.Now:yyyy-MM-dd HH:mm:ss}", "N/A");
 
-				if (Sitecore.Context.Job != null)
-					Sitecore.Context.Job.Status.State = JobState.Finished;
+				if (Context.Job != null)
+					Context.Job.Status.State = JobState.Finished;
 
 				return;
 			}
 
 			int totalLines = importItems.Count();
-			if (Sitecore.Context.Job != null)
-				Sitecore.Context.Job.Status.Total = totalLines;
+			if (Context.Job != null)
+				Context.Job.Status.Total = totalLines;
 
 			long line = 0;
 
@@ -71,7 +73,6 @@ namespace Sitecore.SharedSource.DataImporter
 			{ // try to eliminate some of the extra pipeline work
 				foreach (object importRow in importItems)
 				{
-					//import each row of data
 					line++;
 					try
 					{
@@ -79,35 +80,56 @@ namespace Sitecore.SharedSource.DataImporter
                         
 						if (string.IsNullOrEmpty(newItemName))
 						{
-							Logger.Log($"BuildNewItemName failed on import row {line} because the new item name was empty", "N/A", Providers.ProcessStatus.NewItemError);
+							Logger.Log($"BuildNewItemName failed on import row {line} because the new item name was empty", "N/A", LogType.NewItemError);
 							continue;
 						}
 
 						Item thisParent = DataMap.GetParentNode(importRow, newItemName);
 						if (thisParent.IsNull())
 						{
-							Logger.Log($"Get parent failed on import row {line} because the new item's parent is null", "N/A", Providers.ProcessStatus.NewItemError);
+							Logger.Log($"Get parent failed on import row {line} because the new item's parent is null", "N/A", LogType.NewItemError);
 							continue;
 						}
 
 						var newItem = DataMap.CreateNewItem(thisParent, importRow, newItemName);
                         if (newItem != null)
                             newItemList.Add(newItem);
+
+                        newItem.Editing.BeginEdit();
+
+                        DataMap.PreProcessItem(importRow, newItem);
+
+                        List<IBaseField> fieldDefs = DataMap.GetFieldDefinitionsByRow(importRow);
+                        foreach (IBaseField d in fieldDefs)
+                        {
+                            string importValue = string.Empty;
+                            try
+                            {
+                                d.FillField(DataMap, ref newItem, importRow);
+                            }
+                            catch (Exception)
+                            {
+                                Logger.Log("the FillField failed", newItem.Paths.FullPath, LogType.FieldError, d.Name, importValue);
+                            }
+                        }
+
+                        DataMap.PostProcessItem(importRow, newItem);
+
+                        newItem.Editing.EndEdit(false, false);
+                        newItem.Database.Caches.ItemCache.RemoveItem(newItem.ID);
                     }
 					catch (Exception ex)
 					{
-						Logger.Log($"Exception thrown on import row {line} : {ex.Message}", "N/A", Providers.ProcessStatus.NewItemError);
+						Logger.Log($"Exception thrown on import row {line} : {ex.Message}", "N/A", LogType.NewItemError);
 					}
 
-					if (Sitecore.Context.Job != null)
+					if (Context.Job != null)
 					{
-						Sitecore.Context.Job.Status.Processed = line;
-						Sitecore.Context.Job.Status.Messages.Add($"Processed item {line} of {totalLines}");
+						Context.Job.Status.Processed = line;
+						Context.Job.Status.Messages.Add($"Processed item {line} of {totalLines}");
 					}
 				}
 			}
-
-            DataMap.PostProcess(newItemList);
 
             //if no messages then you're good
             if (!Logger.LoggedError)
@@ -115,10 +137,10 @@ namespace Sitecore.SharedSource.DataImporter
 
 			Logger.Log($"Import Finished at: {DateTime.Now:yyyy-MM-dd HH:mm:ss}", "N/A");
 
-			if (Sitecore.Context.Job != null)
-				Sitecore.Context.Job.Status.State = JobState.Finished;
+			if (Context.Job != null)
+				Context.Job.Status.State = JobState.Finished;
 
-			Sitecore.Caching.CacheManager.ClearAllCaches();
+			CacheManager.ClearAllCaches();
 
             foreach (KeyValuePair<string, List<ImportRow>> kvp in Logger.GetLogRecords())
             {

@@ -9,11 +9,8 @@ using Sitecore.Data.Items;
 using System.Data;
 using HtmlAgilityPack;
 using Sitecore.SharedSource.DataImporter.Mappings;
-using Sitecore.Data.Fields;
-using Sitecore.SharedSource.DataImporter.Processors.Field;
 using Sitecore.SharedSource.DataImporter.Logger;
 using Sitecore.SharedSource.DataImporter.Mappings.Fields;
-using Sitecore.SharedSource.DataImporter.Mappings.Properties;
 using Sitecore.SharedSource.DataImporter.Services;
 using System.Xml.Linq;
 
@@ -42,7 +39,6 @@ namespace Sitecore.SharedSource.DataImporter.Providers
         public Item ImportLocation { get; set; }
 
         protected NameValueCollection mappings;
-        protected ProcessorService ProcessorService;
         protected HtmlService HtmlService;
 
         public UrlImportMap(Database db, string ConnectionString, Item importItem, ILogger l)
@@ -141,31 +137,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers
             
             return (dt.Rows).Cast<object>();
         }
-                
-        /// <summary>
-        /// There is no custom data for this type
-        /// </summary>
-        /// <param name="newItem"></param>
-        /// <param name="importRow"></param>
-        public override void ProcessCustomData(ref Item newItem, object importRow, List<IBaseProperty> propDefinitions = null)
-        {
-            DataRow dataRow = importRow as DataRow;
-            string requestedURL = dataRow[RequestedURL].ToString();
-            Logger.Log("Item Added/Updated", newItem.Paths.FullPath, ProcessStatus.Info, "", requestedURL);
-            
-            foreach (var field in FieldDefinitions)
-            {
-                MultilistField processors = field.InnerItem.Fields["Field Post Processors"];
-                foreach (var targetId in processors.TargetIDs)
-                {
-                    Item processor = ToDB.GetItem(targetId);
-                    if (processor == null) { continue; }
-
-                    ProcessorService.ExecuteFieldProcessor(this, processor, newItem, field.InnerItem);
-                }
-            }
-        }
-        
+                        
         public override CustomItemBase GetNewItemTemplate(object importRow)
         {
             DataRow dataRow = importRow as DataRow;
@@ -191,7 +163,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers
             }
             catch (Exception ex)
             {
-                Logger.Log(ex.ToString(), parentPath, ProcessStatus.NewItemError, PathColumn, parentPath);
+                Logger.Log(ex.ToString(), parentPath, LogType.NewItemError, PathColumn, parentPath);
             }
 
 
@@ -229,9 +201,9 @@ namespace Sitecore.SharedSource.DataImporter.Providers
             NameValueCollection mappings = new NameValueCollection();
             foreach (IBaseField field in FieldDefinitions)
             {
-                BaseMapping baseMap = new BaseMapping(field.InnerItem, Logger);
-                string fromFieldName = baseMap.InnerItem.Fields[FromWhatField].Value;
-                string toFieldName = baseMap.NewItemField + "_" + Guid.NewGuid().ToString().Replace("-", "");
+                var toWhatField = field.InnerItem.Fields["To What Field"].Value;
+                string fromFieldName = field.InnerItem.Fields[FromWhatField].Value;
+                string toFieldName = toWhatField + "_" + Guid.NewGuid().ToString().Replace("-", "");
                 mappings.Add(fromFieldName, toFieldName);
             }
 
@@ -264,7 +236,6 @@ namespace Sitecore.SharedSource.DataImporter.Providers
                 }
 
                 prevDir = fullPath;
-
                 root = false;
             }
             return dirs;
@@ -335,9 +306,9 @@ namespace Sitecore.SharedSource.DataImporter.Providers
                 var contentHtml = WebContentRequest(currentDirURL);
                 doc.LoadHtml(contentHtml);
                 
-                foreach (var key in mappings)
+                foreach (string key in mappings)
                 {
-                    string toFieldName = mappings[key.ToString()];
+                    string toFieldName = mappings[key];
                     bool isOverride = toFieldName.StartsWith("!");
 
                     //This is for if 2 mapping target the same field so the next one to not override the first update, 
@@ -355,55 +326,30 @@ namespace Sitecore.SharedSource.DataImporter.Providers
             }
         }
 
-        public virtual string FetchContent(HtmlDocument doc, object key, NameValueCollection mappings)
+        public virtual string FetchContent(HtmlDocument doc, string key, NameValueCollection mappings)
         {
             string rowValue = string.Empty;
             bool textOnly = false;
-            bool useXPath = false;
             try
             {
-                int index = mappings[key.ToString()].IndexOf('_');
-                string toWhatField = mappings[key.ToString()].Substring(0, index);
+                int index = mappings[key].IndexOf('_');
+                string toWhatField = mappings[key].Substring(0, index);
                 IBaseField mappingItem = FieldDefinitions.FirstOrDefault(f => 
-                        f.InnerItem.Fields[FromWhatField].Value == key.ToString()
+                        f.InnerItem.Fields[FromWhatField].Value == key
                         && f.InnerItem.Fields["To What Field"].Value == toWhatField);
-
-                useXPath = mappingItem.InnerItem.Fields["Use XPath For From"].Value == "1";
-
-                textOnly = mappingItem.InnerItem.Fields["Strip HTML"]?.Value == "1" 
-                           || ImportTextOnly;
+                
+                textOnly = mappingItem.InnerItem.Fields["Strip HTML"]?.Value == "1" || ImportTextOnly;
             }
             catch (Exception ex)
             {
-                Logger.Log(ex.ToString(), rowValue, ProcessStatus.GetImportDataError, key.ToString(), rowValue);
+                Logger.Log(ex.ToString(), rowValue, LogType.GetImportDataError, key, rowValue);
             }
 
-            string htmlObj = string.Empty;
-            bool isAttrValue = false;
-            string attrName = string.Empty;
-            HtmlNode node = null;
-
-            htmlObj = key.ToString();
-
-            if (htmlObj.Contains("/@"))
-            {
-                isAttrValue = true;
-                List<string> attrItems = htmlObj.Split('/').Where(a => a.StartsWith("@")).ToList();
-                attrName = attrItems.FirstOrDefault(a => !a.Contains("="));
-                htmlObj = htmlObj.Replace($"/{attrName}", "");
-                attrName = attrName.Replace("@", "");
-            }
-
-            node = useXPath 
-                ? HtmlService.HandleNodesLookup(htmlObj, doc, true) 
-                : HtmlService.HandleNodesLookup(htmlObj, doc);
-
+            var node = HtmlService.HandleNodesLookup(key, doc);
             if (node == null)
                 return rowValue;
 
-            rowValue = isAttrValue && node.Attributes[attrName] != null
-                ? node.Attributes[attrName].Value
-                : (textOnly ? node.InnerText : node.InnerHtml);
+            rowValue = textOnly ? node.InnerText : node.InnerHtml;
 
             return rowValue;
         }
@@ -427,7 +373,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers
             }
             catch (Exception ex)
             {
-                Logger.Log(ex.ToString(), url, ProcessStatus.NewItemError, "", url);
+                Logger.Log(ex.ToString(), url, LogType.NewItemError, "", url);
             }
             finally
             {
@@ -445,13 +391,11 @@ namespace Sitecore.SharedSource.DataImporter.Providers
         {
             foreach (var s in sitemapURLs)
             {
-
                 XDocument xdoc = XDocument.Load(s);
                 var ns = xdoc.Root.Name.Namespace;
                 List<XElement> xLocs = xdoc.Root.Elements(ns + "url").Elements(ns + "loc").ToList();
                 List<string> urls = xLocs.Select(u => u.Value).ToList();
-
-
+                
                 storedList.AddRange(urls);
             }
         }

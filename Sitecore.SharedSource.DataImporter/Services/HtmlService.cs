@@ -99,28 +99,15 @@ namespace Sitecore.SharedSource.DataImporter.Services
         /// <param name="htmlObj"></param>
         /// <param name="doc"></param>
         /// <returns></returns>
-        public HtmlNode HandleNodesLookup(string htmlObj, HtmlDocument doc, bool useXPath = false)
+        public HtmlNode HandleNodesLookup(string xPath, HtmlDocument doc)
         {
             HtmlNode node = null;
             List<HtmlNode> nodes = new List<HtmlNode>();
-            bool isMultiNodesData = htmlObj.Contains("/*");
-
-            if (!useXPath)
-                htmlObj = isMultiNodesData ? htmlObj.Replace("/*", "") : htmlObj;
-
+            
             try
             {
-                if (useXPath)
-                {
-                    nodes = doc.DocumentNode.SelectNodes(htmlObj).ToList();
-                    isMultiNodesData = true;
-                }
-                else
-                {
-                    nodes = HandleXPathQuery(htmlObj, doc);
-                }
-
-                if (isMultiNodesData)
+                nodes = doc.DocumentNode.SelectNodes(xPath).ToList();
+                if (nodes.Count > 1)
                 {
                     node = new HtmlNode(HtmlNodeType.Element, doc, 0);
                     foreach (HtmlNode n in nodes)
@@ -136,110 +123,10 @@ namespace Sitecore.SharedSource.DataImporter.Services
             }
             catch (Exception ex)
             {
-                //This is just means selector was looking for in dom was not found.
+                //The selector in dom was not found.
             }
 
             return node;
-        }
-
-        public List<HtmlNode> HandleXPathQuery(string selector, HtmlDocument doc)
-        {
-            string xPath = "//";
-            string attrName = "";
-            List<HtmlNode> nodes = new List<HtmlNode>();
-            List<string> dataItems = selector.Split('/').ToList();
-            bool isTagName = !(selector.StartsWith(".") || selector.StartsWith("#"));
-
-            if (dataItems.Any() && selector.Contains("/"))
-            {
-                foreach (var data in dataItems)
-                {
-                    string option = data.ToCharArray().FirstOrDefault().ToString();
-                    attrName = FormatXpath(data, option);
-                    selector = selector.Replace(data, attrName);
-                    selector = (selector.Contains("/[@"))
-                        ? selector.Replace("/[@", "[@")
-                        : selector.Replace("/[", "/*[");
-                }
-
-                xPath += (!isTagName) ? "*" + selector : selector;
-            }
-            else
-            {
-                if (selector.StartsWith("."))
-                {
-                    attrName = FormatXpath(selector, ".");
-                    selector = "*" + selector.Replace(selector, attrName);
-                }
-                else if (selector.StartsWith("#"))
-                {
-                    attrName = FormatXpath(selector, "#");
-                    selector = "*" + selector.Replace(selector, attrName);
-                }
-
-                xPath += selector;
-            }
-
-            xPath = HandleIndex(xPath);
-            nodes = doc.DocumentNode.SelectNodes(xPath).ToList();
-
-            return nodes;
-        }
-
-        public string FormatXpath(string data, string option)
-        {
-            string formated = data;
-            string value = data;
-            bool contains = false;
-
-            if (value.EndsWith("!"))
-            {
-
-                contains = true;
-                value = value.Replace("!", "");
-            }
-
-            if (option == ".")
-            {
-                value = value.Replace(".", "");
-                formated = (contains)
-                    ? "[contains(@class, '" + value + "')]"
-                    : "[@class='" + value + "']";
-            }
-            else if (option == "#")
-            {
-                value = value.Replace("#", "");
-                formated = "[@id='" + value + "']";
-            }
-            else if (option == "@" && value.Contains("="))
-            {
-                string[] attrData = value.Split('=');
-                formated = "[" + attrData[0] + "='" + attrData[1] + "']";
-            }
-
-            return formated;
-        }
-
-        /// <summary>
-        /// ie. [1]/p[3]
-        /// </summary>
-        /// <param name="data"></param>
-        public string HandleIndex(string data)
-        {
-            string[] splits = data.Split('/');
-
-            foreach (var s in splits)
-            {
-                int indexOut;
-                if (!int.TryParse(s, out indexOut))
-                    continue;
-
-                string lookUp2 = "/" + s;
-                string replace = "[" + s + "]";
-                data = data.Replace(lookUp2, replace);
-            }
-
-            return data;
         }
 
         public string RemoveInvalidChars(string data, bool root)

@@ -192,7 +192,7 @@ namespace Sitecore.SharedSource.DataImporter.Services
             if (fieldValue.Contains("youtu"))
             {
                 var newValue = StripYTPaths(fieldValue);
-                Logger.Log($"YouTube video value: {fieldValue}", "N/A", Providers.ProcessStatus.VideoInfo, "", newValue);
+                Logger.Log($"YouTube video value: {fieldValue}", "N/A", Providers.LogType.VideoInfo, "", newValue);
                 return newValue;
             }
 
@@ -208,7 +208,7 @@ namespace Sitecore.SharedSource.DataImporter.Services
                     continue;
 
                 var newValue = StripYTPaths(videoValue);
-                Logger.Log($"YouTube video value: {videoValue}", "N/A", Providers.ProcessStatus.VideoInfo, "", newValue);
+                Logger.Log($"YouTube video value: {videoValue}", "N/A", Providers.LogType.VideoInfo, "", newValue);
 
                 return newValue;
             }
@@ -301,7 +301,7 @@ namespace Sitecore.SharedSource.DataImporter.Services
                             if (mediaItem == null)
                             {
                                 mediaItem = MediaManager.Creator.CreateFromStream(memoryStream, mediaName + extension, options);
-                                Logger.Log($"New media item has been imported from {mediaUrl}", item.Paths.FullPath, ProcessStatus.Info);
+                                Logger.Log($"New media item has been imported from {mediaUrl}", item.Paths.FullPath, LogType.Info);
                             }
 
                             if (imageField != null)
@@ -316,7 +316,7 @@ namespace Sitecore.SharedSource.DataImporter.Services
             }
             catch (Exception ex)
             {
-                Logger.Log($"Error during media import from {mediaUrl}. Error: {ex.Message}", item.Paths.FullPath, ProcessStatus.Error, imageField?.InnerField?.InnerItem?.Name);
+                Logger.Log($"Error during media import from {mediaUrl}. Error: {ex.Message}", item.Paths.FullPath, LogType.Error, imageField?.InnerField?.InnerItem?.Name);
             }
 
             return mediaItem;

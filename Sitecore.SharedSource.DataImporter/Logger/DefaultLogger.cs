@@ -22,7 +22,7 @@ namespace Sitecore.SharedSource.DataImporter.Logger {
             log = new StringBuilder();
         }
         
-        public void Log(string message, string affectedItem, ProcessStatus pResult = ProcessStatus.Info, string fieldName = "", string fieldValue = "")
+        public void Log(string message, string affectedItem, LogType pResult = LogType.Info, string fieldName = "", string fieldValue = "")
         {
             if (pResult.ToString().ToLower().Contains("error"))
                 LoggedError = true;

@@ -37,13 +37,14 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
 
 		#region public methods
 
-		public override void FillField(IDataMap map, ref Item newItem, object importRow, string importValue)
+		public override void FillField(IDataMap map, ref Item newItem, object importRow)
 		{
-			Field f = newItem.Fields[NewItemField];
+			Field f = newItem.Fields[ToWhatField];
 			if (f == null)
 				return;
 
-			if (importValue.IsNullOrEmpty())
+            var importValue = string.Join(Delimiter, map.GetFieldValues(ExistingDataNames, importRow));
+            if (importValue.IsNullOrEmpty())
 			{
 				f.Value = "0";
 				return;
@@ -51,13 +52,9 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
 
 			bool b = PositiveValuesList.Contains(importValue);
 			if (b || NegativeValuesList.Contains(importValue))
-			{
 				f.Value = (b) ? "1" : "0";
-			}
 			else
-			{
-				map.Logger.Log("Couldn't parse the boolean value", newItem.Paths.FullPath, ProcessStatus.FieldError, ItemName(), importValue);
-			}
+				map.Logger.Log("Couldn't parse the boolean value", newItem.Paths.FullPath, LogType.FieldError, Name, importValue);
 		}
 
 		#endregion

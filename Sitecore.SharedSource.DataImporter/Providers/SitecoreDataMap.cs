@@ -6,7 +6,6 @@ using Sitecore.SharedSource.DataImporter.Extensions;
 using Sitecore.Data.Items;
 using Sitecore.Data;
 using Sitecore.SharedSource.DataImporter.Mappings.Fields;
-using Sitecore.SharedSource.DataImporter.Mappings.Properties;
 using Sitecore.SharedSource.DataImporter.Mappings;
 using Sitecore.Collections;
 using System.IO;
@@ -17,37 +16,23 @@ using Sitecore.Data.Managers;
 using Sitecore.Layouts;
 using Sitecore.SharedSource.DataImporter.Mappings.Templates;
 using Sitecore.SharedSource.DataImporter.Logger;
-using Sitecore.SharedSource.DataImporter.Mappings.ReferenceFields;
-using Sitecore.SharedSource.DataImporter.Comparers;
+using Sitecore.SecurityModel;
+using Sitecore.SharedSource.DataImporter.Services;
 
 namespace Sitecore.SharedSource.DataImporter.Providers
 {
 	public class SitecoreDataMap : BaseDataMap
 	{
-
 		#region Static IDs
-
-		/// <summary>
-		/// template id of the properties folder
-		/// </summary>
-		public static readonly string PropertiesFolderTemplateID = "{8452785D-FFE7-47F3-911E-F219F5BDEA3A}";
-
-		/// <summary>
-		/// template id of the templates folder
-		/// </summary>
+        
 		public static readonly string TemplatesFolderTemplateID = "{3D915406-97F6-4E94-AC50-B7CAF468A50F}";
-
-		/// <summary>
-		/// template id of the components folder
-		/// </summary>
-		public static readonly string ComponentsFolderTemplateID = "{4E8E2F3D-2327-4BBA-A14F-C586391892CA}";
+        public static readonly string ComponentsFolderTemplateID = "{4E8E2F3D-2327-4BBA-A14F-C586391892CA}";
 
 		#endregion Static IDs
 
 		#region Properties
 
 		private Database _FromDB;
-
 		public Database FromDB
 		{
 			get
@@ -73,60 +58,19 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 
 				return _FromDB;
 			}
-		}
-
-		private DeviceItem _defaultDevice;
-
-		public DeviceItem DefaultDevice
-		{
-			get
-			{
-				if (_defaultDevice == null)
-				{
-					_defaultDevice = ToDB.GetItem("{FE5D7FDF-89C0-4D99-9AA3-B5FBD009C9F3}");
-				}
-
-				return _defaultDevice;
-			}
-		}
-
-		/// <summary>
-		/// List of properties
-		/// </summary>
-		public List<IBaseProperty> PropertyDefinitions { get; set; }
-
-		/// <summary>
-		/// List of properties
-		/// </summary>
-		public List<IBaseFieldWithReference> ReferenceFieldDefinitions { get; set; }
-
-		/// <summary>
-		/// List of template mappings
-		/// </summary>
-		public Dictionary<string, TemplateMapping> TemplateMappingDefinitions { get; set; }
-
-		/// <summary>
-		/// List of template mappings
-		/// </summary>
-		public IList<ComponentMapping> ComponentMappingDefinitions { get; set; }
-
+		}        
+		public Dictionary<string, TemplateMapping> TemplateMappings { get; set; }
+		public IList<ComponentMapping> ComponentMappings { get; set; }
 		public Item ImportRoot { get; set; }
 		public bool DeleteOnOverwrite { get; set; }
-
 		public bool SkipIfExists { get; set; }
 		public DateTime SkipIfUpdatedAfter { get; set; }
-
-		#endregion Properties
-
-		#region Fields
-
-		public Language ImportFromLanguage { get; set; }
-
+        public PresentationService PresentationService { get; set; }
+        public Language ImportFromLanguage { get; set; }
 		public bool RecursivelyFetchChildren { get; set; }
-
 		public Language[] AllLanguages { get; set; }
 
-		#endregion Fields
+		#endregion 
 
 		#region Constructor
 
@@ -139,16 +83,11 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 
 			//get recursive setting
 			RecursivelyFetchChildren = ImportItem.GetItemBool("Recursively Fetch Children");
-
-			//populate property definitions
-			PropertyDefinitions = GetPropDefinitions(ImportItem);
-
-			ReferenceFieldDefinitions = GetReferenceFieldDefinitions(importItem);
-
+            
 			//populate template definitions
-			TemplateMappingDefinitions = GetTemplateDefinitions(ImportItem);
+			TemplateMappings = GetTemplateDefinitions(ImportItem);
 
-			ComponentMappingDefinitions = GetComponentDefinitions(ImportItem);
+			ComponentMappings = GetComponentDefinitions(ImportItem);
 
 			ImportRoot = GetImportRootItem();
 			DeleteOnOverwrite = ImportItem.GetItemBool("Delete On Overwrite");
@@ -157,9 +96,11 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 
 			SkipIfExists = importItem.GetItemBool("Skip Already Imported Items");
 			SkipIfUpdatedAfter = importItem.GetItemDate("Skip If Updated After");
-		}
 
-		#endregion Constructor
+            PresentationService = new PresentationService(l);
+        }
+
+		#endregion 
 
 		#region Constructor Helpers
 
@@ -173,7 +114,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 			if (string.IsNullOrEmpty(toWhereID))
 			{
 				Logger.Log("the 'Import Root' field is not set on the import item",
-                    ImportItem.Paths.FullPath, ProcessStatus.ImportDefinitionError, "Import To Where");
+                    ImportItem.Paths.FullPath, LogType.ImportDefinitionError, "Import To Where");
 				return null;
 			}
 
@@ -181,7 +122,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 			toWhere = FromDB.Items[toWhereID];
 			if (toWhere.IsNull())
 				Logger.Log("the 'Import Root' item is null on the import item",
-                    ImportItem.Paths.FullPath, ProcessStatus.ImportDefinitionError, "Import Root", toWhereID);
+                    ImportItem.Paths.FullPath, LogType.ImportDefinitionError, "Import Root", toWhereID);
 
 			return toWhere;
 		}
@@ -218,44 +159,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 
 			return items;
 		}
-
-		/// <summary>
-		/// deals with the sitecore properties
-		/// </summary>
-		/// <param name="newItem"></param>
-		/// <param name="importRow"></param>
-		/// <param name="propDefinitions"></param>
-		public override void ProcessCustomData(ref Item newItem, object importRow, List<IBaseProperty> propDefinitions = null)
-		{
-			Item row = importRow as Item;
-
-			List<IBaseProperty> l = propDefinitions ?? GetPropDefinitionsByRow(importRow);
-
-			//add in the property mappings
-			foreach (IBaseProperty d in l)
-				d.FillField(this, ref newItem, row);
-		}
-
-		/// <summary>
-		/// deals with the sitecore properties
-		/// </summary>
-		/// <param name="newItem"></param>
-		/// <param name="importRow"></param>
-		/// <param name="referenceFields"></param>
-		public void ProcessReferenceFields(ref Item newItem, object importRow, List<IBaseFieldWithReference> referenceFields = null)
-		{
-			Item row = importRow as Item;
-
-			List<IBaseFieldWithReference> l = referenceFields ?? GetReferenceFieldDefinitionsByRow(importRow);
-
-			//add in the property mappings
-			foreach (IBaseFieldWithReference d in l)
-			{
-				var fieldName = d.GetExistingFieldName();
-				d.FillField(this, ref newItem, row, fieldName);
-			}
-		}
-
+        
 		/// <summary>
 		/// gets a field value from an item
 		/// </summary>
@@ -354,20 +258,17 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 
 		public override Item CreateNewItem(Item parent, object importRow, string newItemName)
 		{
-			CustomItemBase nItemTemplate = GetNewItemTemplate(importRow);
-
 			var oldItem = (Item)importRow;
             Item newItem = null;
 
             foreach (var language in oldItem.Languages)
 			{
-				ImportToLanguage =
-					AllLanguages.FirstOrDefault(l => l.Name.StartsWith(language.Name, StringComparison.InvariantCultureIgnoreCase));
+				ImportToLanguage = AllLanguages.FirstOrDefault(l => l.Name.StartsWith(language.Name, StringComparison.InvariantCultureIgnoreCase));
 				ImportFromLanguage = language;
 
 				var oldLangItem = GetLastPublishableVersion(oldItem, ImportFromLanguage);
-
-				if (oldLangItem.Versions.Count <= 0) continue;
+				if (oldLangItem.Versions.Count <= 0)
+                    continue;
 
 				using (new LanguageSwitcher(ImportToLanguage))
 				{
@@ -396,35 +297,17 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 						//if not found then create one
 						if (newItem == null)
 						{
-							newItem = ItemManager.AddFromTemplate(newItemName, nItemTemplate.ID, parent, oldItem.ID);
-						}
+                            var nItemTemplate = GetNewItemTemplate(importRow);
+                            newItem = ItemManager.AddFromTemplate(newItemName, nItemTemplate.ID, parent, oldItem.ID);
+                            ProcessComponents(newItem, oldItem);
+                        }
 
 						if (newItem == null)
 							throw new NullReferenceException("the new item created was null");
-
-                        newItem.Editing.BeginEdit();
-                        //if found and is default template, change it to the correct one
-						if (ImportToWhatTemplate != null &&
-							newItem.TemplateID == ImportToWhatTemplate.ID &&
-							nItemTemplate.ID != ImportToWhatTemplate.ID &&
-							!(nItemTemplate is BranchItem))
-						{
-							newItem.ChangeTemplate(new TemplateItem(nItemTemplate.InnerItem));
-						}
-
-						ProcessFields(oldLangItem, ref newItem);
-
-						ProcessReferenceFields(ref newItem, oldLangItem);
-                        
-						ProcessCustomData(ref newItem, oldLangItem);
-
-                        newItem.Editing.EndEdit(false, false);
-
-                        newItem.Database.Caches.ItemCache.RemoveItem(newItem.ID);
                     }
 					else if(SkipIfUpdatedAfter > DateTime.MinValue && newItem.Statistics.Updated > SkipIfUpdatedAfter)
 					{
-						Logger.Log("Item has been updated since last migration, skipping...", newItem.Paths.FullPath, ProcessStatus.Info, $"Language: {newItem.Language.Name}", $"Version: {newItem.Version.Number}");
+						Logger.Log("Item has been updated since last migration, skipping...", newItem.Paths.FullPath, LogType.Info, $"Language: {newItem.Language.Name}", $"Version: {newItem.Version.Number}");
 					}
 
 					// Now for draft versions
@@ -442,171 +325,27 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 
 							if (SkipIfUpdatedAfter > DateTime.MinValue && newItem.Statistics.Updated > SkipIfUpdatedAfter)
 							{
-								Logger.Log("Item has been updated since last migration, skipping...", newItem.Paths.FullPath, ProcessStatus.Info, $"Language: {newItem.Language.Name}", $"Version: {newItem.Version.Number}");
+								Logger.Log("Item has been updated since last migration, skipping...", newItem.Paths.FullPath, LogType.Info, $"Language: {newItem.Language.Name}", $"Version: {newItem.Version.Number}");
 								continue;
 							}
                         }
-						
-                        newItem.Editing.BeginEdit();
-                        //if found and is default template, change it to the correct one
-						if (newItem.TemplateID == ImportToWhatTemplate.ID && nItemTemplate.ID != ImportToWhatTemplate.ID &&
-							!(nItemTemplate is BranchItem))
-						{
-							newItem.ChangeTemplate(new TemplateItem(nItemTemplate.InnerItem));
-						}
-
-						ProcessFields(oldLangItem, ref newItem);
-
-						ProcessReferenceFields(ref newItem, oldLangItem);
-                        
-						ProcessCustomData(ref newItem, oldLangItem);
-                        newItem.Editing.EndEdit(false, false);
-
-                        newItem.Database.Caches.ItemCache.RemoveItem(newItem.ID);
                     }
 				}
 			}
-
+            
             return newItem;
         }
-        
-		protected void ProcessFields(object importRow, ref Item newItem)
-		{
-			//add in the field mappings
-			List<IBaseField> fieldDefs = GetFieldDefinitionsByRow(importRow);
-			ProcessFields(importRow, ref newItem, fieldDefs);
-		}
-
-		protected void ProcessFields(object importRow, ref Item newItem, List<IBaseField> fieldDefs)
-		{
-			//add in the field mappings
-			foreach (IBaseField d in fieldDefs)
-			{
-				string importValue = string.Empty;
-				try
-				{
-					var fieldNames = d.GetExistingFieldNames();
-
-					IEnumerable<string> values = d is ToRichText ? GetRTEFieldValues(fieldNames,importRow) : GetFieldValues(fieldNames, importRow);
-
-					importValue = String.Join(d.GetFieldValueDelimiter(), values.Where(v => !string.IsNullOrEmpty(v)));
-					d.FillField(this, ref newItem, importRow, importValue);
-				}
-				catch (Exception ex)
-				{
-					Logger.Log($"the FillField failed: {ex}", newItem.Paths.FullPath, ProcessStatus.FieldError, d.ItemName(), importValue);
-					Diagnostics.Log.Error(ex.Message, ex, this);
-				}
-			}
-		}
 
 		protected TemplateMapping GetTemplateMapping(Item item)
 		{
 			string tID = item.TemplateID.ToString();
-			return (TemplateMappingDefinitions.ContainsKey(tID))
-					? TemplateMappingDefinitions[tID]
+			return (TemplateMappings.ContainsKey(tID))
+					? TemplateMappings[tID]
 					: null;
 		}
-
-		protected List<IBaseProperty> GetPropDefinitionsByRow(object importRow)
-		{
-			List<IBaseProperty> l = new List<IBaseProperty>();
-			TemplateMapping tm = GetTemplateMapping((Item)importRow);
-			if (tm == null)
-				return PropertyDefinitions;
-
-			//get the template fields
-			List<IBaseProperty> tempProps = tm.PropertyDefinitions;
-
-			//filter duplicates in template fields from global fields
-			List<string> names = tempProps.Select(a => a.Name).ToList();
-			l.AddRange(tempProps);
-			l.AddRange(PropertyDefinitions.Where(a => !names.Contains(a.Name)));
-
-			return l;
-		}
-
-		protected List<IBaseFieldWithReference> GetReferenceFieldDefinitionsByRow(object importRow)
-		{
-			List<IBaseFieldWithReference> l = new List<IBaseFieldWithReference>();
-			TemplateMapping tm = GetTemplateMapping((Item)importRow);
-			if (tm == null)
-				return ReferenceFieldDefinitions;
-
-			//get the template fields
-			List<IBaseFieldWithReference> tempProps = tm.ReferenceFieldDefinitions;
-
-			//filter duplicates in template fields from global fields
-			List<string> names = tempProps.Select(a => a.Name).ToList();
-			l.AddRange(tempProps);
-			l.AddRange(ReferenceFieldDefinitions.Where(a => !names.Contains(a.Name)));
-
-			return l;
-		}
-
-		protected List<IBaseProperty> GetPropDefinitions(Item i)
-		{
-
-			List<IBaseProperty> l = new List<IBaseProperty>();
-
-			//check for properties folder
-			Item Props = i.GetChildByTemplate(PropertiesFolderTemplateID);
-			if (Props.IsNull())
-			{
-				Logger.Log($"there is no 'Properties' folder on '{i.DisplayName}'", i.Paths.FullPath);
-				return l;
-			}
-
-			//check for any children
-			if (!Props.HasChildren)
-			{
-				Logger.Log($"there are no properties to import on '{i.DisplayName}'", i.Paths.FullPath);
-				return l;
-			}
-
-			ChildList c = Props.GetChildren();
-			foreach (Item child in c)
-			{
-				//create an item to get the class / assembly name from
-				BaseMapping bm = new BaseMapping(child, Logger);
-
-				//check for assembly
-				if (string.IsNullOrEmpty(bm.HandlerAssembly))
-				{
-					Logger.Log("the 'Handler Assembly' is not defined", child.Paths.FullPath, ProcessStatus.ImportDefinitionError, "Handler Assembly", bm.HandlerAssembly);
-					continue;
-				}
-
-				//check for class
-				if (string.IsNullOrEmpty(bm.HandlerClass))
-				{
-					Logger.Log("the Handler Class is not defined", child.Paths.FullPath, ProcessStatus.ImportDefinitionError, "Handler Class", bm.HandlerClass);
-					continue;
-				}
-
-				//create the object from the class and cast as base field to add it to field definitions
-				IBaseProperty bp = null;
-				try
-				{
-					bp = (IBaseProperty)Sitecore.Reflection.ReflectionUtil.CreateObject(bm.HandlerAssembly, bm.HandlerClass, new object[] { child, Logger });
-				}
-				catch (FileNotFoundException)
-				{
-					Logger.Log("the binary could not be found", child.Paths.FullPath, ProcessStatus.ImportDefinitionError, "Handler Assembly", bm.HandlerAssembly);
-				}
-
-				if (bp != null)
-					l.Add(bp);
-				else
-					Logger.Log("the class type could not be instantiated", child.Paths.FullPath, ProcessStatus.ImportDefinitionError, "Handler Class", bm.HandlerClass);
-			}
-
-			return l;
-		}
-
+                
 		protected Dictionary<string, TemplateMapping> GetTemplateDefinitions(Item i)
 		{
-
 			Dictionary<string, TemplateMapping> d = new Dictionary<string, TemplateMapping>();
 
 			//check for templates folder
@@ -630,20 +369,18 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 				//create an item to get the class / assembly name from
 				TemplateMapping tm = new TemplateMapping(child);
 				tm.FieldDefinitions = GetFieldDefinitions(child);
-				tm.PropertyDefinitions = GetPropDefinitions(child);
-				tm.ReferenceFieldDefinitions = GetReferenceFieldDefinitions(child);
 
 				//check for 'from' template
 				if (string.IsNullOrEmpty(tm.FromWhatTemplate))
 				{
-					Logger.Log("the template mapping field 'FromWhatTemplate' is not defined", child.Paths.FullPath, ProcessStatus.ImportDefinitionError, "From What Template");
+					Logger.Log("the template mapping field 'FromWhatTemplate' is not defined", child.Paths.FullPath, LogType.ImportDefinitionError, "From What Template");
 					continue;
 				}
 
 				//check for 'to' template
 				if (string.IsNullOrEmpty(tm.ToWhatTemplate))
 				{
-					Logger.Log("the template mapping field 'ToWhatTemplate' is not defined", child.Paths.FullPath, ProcessStatus.ImportDefinitionError, "To What Template");
+					Logger.Log("the template mapping field 'ToWhatTemplate' is not defined", child.Paths.FullPath, LogType.ImportDefinitionError, "To What Template");
 					continue;
 				}
 
@@ -678,8 +415,6 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 				//create an item to get the class / assembly name from
 				ComponentMapping tm = new ComponentMapping(child);
 				tm.FieldDefinitions = GetFieldDefinitions(child);
-				tm.PropertyDefinitions = GetPropDefinitions(child);
-				tm.ReferenceFieldDefinitions = GetReferenceFieldDefinitions(child);
 
 				d.Add(tm);
 			}
@@ -762,7 +497,34 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 			}
 			return item;
 		}
-        
-		#endregion Methods
-	}
+
+        public void ProcessComponents(Item newItem, Item importItem)
+        {
+            ////add components to the new item
+            //using (new LanguageSwitcher(ImportToLanguage))
+            //{
+            //    //get the parent in the specific language
+            //    foreach (var cm in ComponentMappings)
+            //    {
+            //        try
+            //        {                            
+            //            var datasource = PresentationService.CreateDatasource(this, newItem, deviceItem, dsName, DatasourceFolder, cm.DatasourcePath, cm.Component, cm.OverwriteExisting);
+            //            if (datasource == null)
+            //            {
+            //                Logger.Log($"There was no datasource created for matching device:{Device} - placeholder:{cm.Placeholder} - component:{cm.Component}", i.Paths.FullPath, LogType.MultilistToComponent, "device xml", deviceItem.ToXml());
+            //                continue;
+            //            }
+            //            var deviceId = newItem.Database.Resources.Devices.GetAll().First(d => d.IsDefault).ID.ToString()
+            //            PresentationService.AddComponent(item, datasource.ID.ToString(), cm.Placeholder, cm.Rendering, deviceId, "");
+            //        }
+            //        catch (Exception ex)
+            //        {
+            //            Logger.Log("SitecoreDataMap.ProcessComponents", string.Format("failed to import component {0} on item {1}", cm.ComponentName, newItem.Paths.FullPath));
+            //        }
+            //    }
+            //}
+        }
+
+        #endregion Methods
+    }
 }

@@ -19,15 +19,10 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
 		#region Properties
 
 		public IEnumerable<string> UnwantedTags { get; set; }
-
 		public IEnumerable<string> UnwantedAttributes { get; set; }
-
 		public Item MediaParentItem { get; set; }
-
 		public Database FromDB { get; set; }
-
         protected HtmlService HtmlService { get; set; }
-
         protected MediaService MediaService { get; set; }
 
         #endregion Properties
@@ -51,10 +46,12 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
 
 		#region IBaseField
 
-		public override void FillField(IDataMap map, ref Item newItem, object importRow, string importValue)
+		public override void FillField(IDataMap map, ref Item newItem, object importRow)
 		{
 			Assert.IsNotNull(newItem, "item");
-			Field f = newItem.Fields[NewItemField];
+            var importValue = string.Join(Delimiter, map.GetFieldValues(ExistingDataNames, importRow));
+
+            Field f = newItem.Fields[ToWhatField];
 			if (f != null)
 				f.Value = CleanHtml(map, newItem.Paths.FullPath, importValue);
 		}

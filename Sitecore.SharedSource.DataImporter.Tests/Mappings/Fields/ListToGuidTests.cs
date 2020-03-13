@@ -16,7 +16,7 @@ namespace Sitecore.SharedSource.DataImporter.Tests.Mappings.Fields
     [TestFixture]
     public class ListToGuidTests : BaseFakeDBTestFixture
     {
-        public ListToGuid _sut;
+        public ToDroplink _sut;
         public ILogger _log;
         public IDataMap _dataMap;
         public Db _database;
@@ -29,7 +29,7 @@ namespace Sitecore.SharedSource.DataImporter.Tests.Mappings.Fields
             var defItem = _database.GetItem(TestingConstants.ListToGuid.DefinitionId);
 
             _log = new DefaultLogger();
-            _sut = new ListToGuid(defItem, _log);
+            _sut = new ToDroplink(defItem, _log);
             _dataMap = Substitute.For<IDataMap>();
             _dataMap.ItemNameMaxLength = 20;
         }

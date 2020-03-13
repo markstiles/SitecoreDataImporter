@@ -8,21 +8,13 @@ using Sitecore.SharedSource.DataImporter.Logger;
 
 namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
 {
-
 	/// <summary>
 	/// this is used to set a field to a specific predetermined value when importing data.
 	/// </summary>
-	public class ToStaticValue : BaseMapping, IBaseField
+	public class ToStaticValue : BaseField
 	{
-
 		#region Properties
-
-		///<summary>
-		/// Value
-		/// </summary>
-		/// <value>
-		/// value to import
-		/// </value>
+        
 		public string Value { get; set; }
 
 		#endregion Properties
@@ -37,36 +29,16 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
 		#endregion Constructor
 
 		#region IBaseField
-
-		public string Name { get; set; }
-
-		public void FillField(IDataMap map, ref Item newItem, object importRow, string importValue)
+        
+		public override void FillField(IDataMap map, ref Item newItem, object importRow)
 		{
 			Assert.IsNotNull(newItem, "newItem");
 			//ignore import value and store value provided
-			Field f = newItem.Fields[NewItemField];
+			Field f = newItem.Fields[ToWhatField];
 			if (f != null)
 				f.Value = Value;
 		}
-
-		/// <summary>
-		/// doesn't provide any existing fields
-		/// </summary>
-		/// <returns></returns>
-		public IEnumerable<string> GetExistingFieldNames()
-		{
-			return Enumerable.Empty<string>();
-		}
-
-		/// <summary>
-		/// doesn't need any delimiter
-		/// </summary>
-		/// <returns></returns>
-		public string GetFieldValueDelimiter()
-		{
-			return string.Empty;
-		}
-
+        
 		#endregion IBaseField
 	}
 }

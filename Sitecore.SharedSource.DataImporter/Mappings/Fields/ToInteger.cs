@@ -13,19 +13,20 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
         {
         }
 
-        public override void FillField(IDataMap map, ref Item newItem, object importRow, string importValue) {
-
+        public override void FillField(IDataMap map, ref Item newItem, object importRow)
+        {
+            var importValue = string.Join(Delimiter, map.GetFieldValues(ExistingDataNames, importRow));
             if (string.IsNullOrEmpty(importValue))
                 return;
 
             int value = 0;
             if (!int.TryParse(importValue.Trim(), out value))
             {
-                map.Logger.Log("Couldn't parse the integer value", newItem.Paths.FullPath, ProcessStatus.FieldError, ItemName(), importValue);
+                map.Logger.Log("Couldn't parse the integer value", newItem.Paths.FullPath, LogType.FieldError, Name, importValue);
                 return;
             }
             
-            Field f = newItem.Fields[NewItemField];
+            Field f = newItem.Fields[ToWhatField];
             if (f == null)
                 return;
                 

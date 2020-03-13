@@ -7,7 +7,7 @@ using Sitecore.SharedSource.DataImporter.Providers;
 namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
 {
    
-    public class ToNumber : ToText, IBaseField
+    public class ToNumber : ToText
     {
         public CultureInfo TargetCulture { get; set; }
         public CultureInfo ImportCulture { get; set; }
@@ -19,8 +19,9 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
             ImportCulture = (string.IsNullOrEmpty(iCulture)) ? CultureInfo.CurrentCulture : new CultureInfo(iCulture);
         }
 
-        public override void FillField(IDataMap map, ref Item newItem, object importRow, string importValue) {
-
+        public override void FillField(IDataMap map, ref Item newItem, object importRow)
+        {
+            var importValue = string.Join(Delimiter, map.GetFieldValues(ExistingDataNames, importRow));
             if (string.IsNullOrEmpty(importValue))
                 return;
 
@@ -29,7 +30,7 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
             if (!double.TryParse(importValue.Trim(), style, ImportCulture, out value))
                 return;
 
-            Field f = newItem.Fields[NewItemField];
+            Field f = newItem.Fields[ToWhatField];
             if (f == null)
                 return;
                

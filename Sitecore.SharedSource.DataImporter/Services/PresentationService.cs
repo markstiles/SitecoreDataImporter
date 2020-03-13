@@ -83,35 +83,35 @@ namespace Sitecore.SharedSource.DataImporter.Services
         {
             if (!ID.IsID(datasourceFolderId))
             {
-                Logger.Log("The datasource folder is not an ID", newItem.Paths.FullPath, Providers.ProcessStatus.PresentationServiceLog, "datasourceFolderId", datasourceFolderId);
+                Logger.Log("The datasource folder is not an ID", newItem.Paths.FullPath, Providers.LogType.PresentationService, "datasourceFolderId", datasourceFolderId);
                 return null;
             }                
 
             var componentItem = map.ToDB.GetItem(new ID(componentId));
             if (componentItem == null)
             {
-                Logger.Log("The component is null", newItem.Paths.FullPath, Providers.ProcessStatus.PresentationServiceLog, "componentId", componentId);
+                Logger.Log("The component is null", newItem.Paths.FullPath, Providers.LogType.PresentationService, "componentId", componentId);
                 return null;
             }
 
             var datasourceTemplateValue = componentItem.Fields["Datasource Template"]?.Value;
             if (string.IsNullOrWhiteSpace(datasourceTemplateValue))
             {
-                Logger.Log("The datasource template value is empty", componentItem.Paths.FullPath, Providers.ProcessStatus.PresentationServiceLog);
+                Logger.Log("The datasource template value is empty", componentItem.Paths.FullPath, Providers.LogType.PresentationService);
                 return null;
             }
 
             var dsTemplate = (TemplateItem)map.ToDB.GetItem(datasourceTemplateValue);
             if (dsTemplate == null)
             {
-                Logger.Log("The datasource template is null", componentItem.Paths.FullPath, Providers.ProcessStatus.PresentationServiceLog, "datasourceTemplateValue", datasourceTemplateValue);
+                Logger.Log("The datasource template is null", componentItem.Paths.FullPath, Providers.LogType.PresentationService, "datasourceTemplateValue", datasourceTemplateValue);
                 return null;
             }
 
             var folderTemplateItem = map.ToDB.GetTemplate(new ID(datasourceFolderId));
             if (folderTemplateItem == null)
             {
-                Logger.Log("The folder template is null", componentItem.Paths.FullPath, Providers.ProcessStatus.PresentationServiceLog, "datasourceFolderId", datasourceFolderId);
+                Logger.Log("The folder template is null", componentItem.Paths.FullPath, Providers.LogType.PresentationService, "datasourceFolderId", datasourceFolderId);
                 return null;
             }
 
@@ -153,7 +153,7 @@ namespace Sitecore.SharedSource.DataImporter.Services
             var ds = rendering.DynamicProperties.FirstOrDefault(a => a.LocalName.Equals("ds"));
             if (string.IsNullOrWhiteSpace(ds?.Value))
             {
-                Logger.Log("The rendering has no datasource property", newItem.Paths.FullPath, Providers.ProcessStatus.PresentationServiceLog, "rendering", rendering.ToXml());
+                Logger.Log("The rendering has no datasource property", newItem.Paths.FullPath, Providers.LogType.PresentationService, "rendering", rendering.ToXml());
                 return null;
             }
 
@@ -167,12 +167,12 @@ namespace Sitecore.SharedSource.DataImporter.Services
 
             if (dsItem == null)
             {
-                Logger.Log("The datasource item is null", newItem.Paths.FullPath, Providers.ProcessStatus.PresentationServiceLog, "ds.Value", ds.Value);
+                Logger.Log("The datasource item is null", newItem.Paths.FullPath, Providers.LogType.PresentationService, "ds.Value", ds.Value);
                 return null;
             }
             else if (!dsItem.Name.Equals(name))
             {
-                Logger.Log($"The datasource item name '{dsItem.Name}' doesn't equal '{name}'", dsItem.Paths.FullPath, Providers.ProcessStatus.PresentationServiceLog, "dsItem.Name", dsItem.Name);
+                Logger.Log($"The datasource item name '{dsItem.Name}' doesn't equal '{name}'", dsItem.Paths.FullPath, Providers.LogType.PresentationService, "dsItem.Name", dsItem.Name);
                 return null;
             }
 

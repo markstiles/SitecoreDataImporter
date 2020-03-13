@@ -2,6 +2,7 @@
 using Sitecore.Data.Items;
 using Sitecore.Reflection;
 using Sitecore.SharedSource.DataImporter.Logger;
+using Sitecore.SharedSource.DataImporter.Processors;
 using Sitecore.SharedSource.DataImporter.Processors.Field;
 using Sitecore.SharedSource.DataImporter.Providers;
 using System;
@@ -20,18 +21,18 @@ namespace Sitecore.SharedSource.DataImporter.Services
             Logger = logger;
         }
 
-        public virtual void ExecuteFieldProcessor(UrlImportMap urlImportMap, Item processor, Item itemToProcess, Item fieldMapping)
+        public virtual void ExecuteProcessor(IDataMap dataMap, Item processor, object importRow, Item newItem)
         {
             string handler = processor.Fields["Handler Class"].Value;
             string assembly = processor.Fields["Handler Assembly"].Value;
-            var obj = ReflectionUtil.CreateObject(assembly, handler, new object[] { urlImportMap, Logger });
+            var obj = ReflectionUtil.CreateObject(assembly, handler, new object[] { dataMap, processor, Logger });
 
-            var isProc = obj is IFieldProcessor;
+            var isProc = obj is IProcessor;
             if (!isProc)
                 return;
 
-            var p = (IFieldProcessor)obj;
-            p.Run(processor, itemToProcess, fieldMapping);
+            var p = (IProcessor)obj;
+            p.Run(importRow, newItem);
         }
     }
 }

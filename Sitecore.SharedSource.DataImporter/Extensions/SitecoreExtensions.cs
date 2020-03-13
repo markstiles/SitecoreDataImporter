@@ -36,7 +36,7 @@ namespace Sitecore.SharedSource.DataImporter.Extensions
 			//check item
 			if (i == null)
 			{
-				logger.Log("the item is null", "N/A", ProcessStatus.ImportDefinitionError, fieldName);
+				logger.Log("the item is null", "N/A", LogType.ImportDefinitionError, fieldName);
 				return string.Empty;
 			}
 
@@ -44,14 +44,14 @@ namespace Sitecore.SharedSource.DataImporter.Extensions
 			Field f = i.Fields[fieldName];
 			if (f == null)
 			{
-				logger.Log("the field is null", i.Paths.FullPath, ProcessStatus.ImportDefinitionError, fieldName);
+				logger.Log("the field is null", i.Paths.FullPath, LogType.ImportDefinitionError, fieldName);
 				return string.Empty;
 			}
 
 			//check value
 			string s = f.Value;
 			if (string.IsNullOrEmpty(s))
-				logger.Log("the field was empty", i.Paths.FullPath, ProcessStatus.ImportDefinitionError, fieldName);
+				logger.Log("the field was empty", i.Paths.FullPath, LogType.ImportDefinitionError, fieldName);
 
 			return s;
 		}

@@ -1,0 +1,18 @@
+﻿---
+ID: "72dc1104-8470-4abd-ab3b-f94901fb138c"
+Parent: "3383d995-d7ed-47c2-ab18-422d19af371c"
+Template: "3383d995-d7ed-47c2-ab18-422d19af371c"
+Path: /sitecore/templates/Modules/Data Import/Mappings/Fields/SitecoreFields/Date To Text/__Standard Values
+DB: master
+SharedFields:
+- ID: "fa7b99b1-6bb9-469c-b786-f8a9d52d2f0a"
+  Hint: Handler Class
+  Value: Sitecore.SharedSource.DataImporter.Mappings.Fields.SitecoreFields.DateToText
+Languages:
+- Language: en
+  Versions:
+  - Version: 1
+    Fields:
+    - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
+      Hint: __Created
+      Value: 20200313T170553Z
