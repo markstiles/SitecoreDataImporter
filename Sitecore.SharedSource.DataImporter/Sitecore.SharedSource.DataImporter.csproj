@@ -215,6 +215,7 @@
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Extensions\SystemExtensions.cs" />
     <Compile Include="Extensions\TemplateExtensions.cs" />
+    <Compile Include="Mappings\Components\IComponentMapping.cs" />
     <Compile Include="Processors\IProcessor.cs" />
     <Compile Include="Services\FieldService.cs" />
     <Compile Include="Services\Models\MediaType.cs" />

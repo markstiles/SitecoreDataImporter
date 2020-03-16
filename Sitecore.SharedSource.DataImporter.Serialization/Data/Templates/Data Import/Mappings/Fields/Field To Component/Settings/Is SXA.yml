@@ -1,8 +1,8 @@
 ﻿---
-ID: "abe128d7-8a36-40e2-bf90-76a162efc914"
-Parent: "58c1b76c-4582-4bc4-b259-817d572d47ec"
+ID: "5541186d-67b1-48f5-b987-7670d157216b"
+Parent: "77400272-372c-4cf4-b2f1-e093ab83bd6e"
 Template: "455a3e98-a627-4b40-8035-e683a0331ac7"
-Path: /sitecore/templates/Modules/Data Import/Mappings/Components/ComponentMapping/Component Mapping/Use Parent as Datasource
+Path: /sitecore/templates/Modules/Data Import/Mappings/Fields/Field To Component/Settings/Is SXA
 DB: master
 SharedFields:
 - ID: "ab162cc0-dc80-4abf-8871-998ee5d7ba32"
@@ -10,7 +10,7 @@ SharedFields:
   Value: Checkbox
 - ID: "ba3f86a2-4a1c-4d78-b63d-91c2779c1b5e"
   Hint: __Sortorder
-  Value: 700
+  Value: 100
 Languages:
 - Language: en
   Versions:
@@ -18,4 +18,4 @@ Languages:
     Fields:
     - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
       Hint: __Created
-      Value: 20170718T133609Z
+      Value: 20200316T185833Z

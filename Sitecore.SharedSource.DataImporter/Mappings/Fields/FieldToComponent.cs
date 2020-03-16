@@ -23,6 +23,7 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
         public bool OverwriteExisting { get; set; }        
         public string DatasourceFolder { get; set; }
         public string Parameters { get; set; }
+        public bool IsSXA { get; set; }
         public IEnumerable<string> ExistingDataNames { get; set; }
         public string Delimiter { get; set; }
         protected readonly char[] comSplitr = { ',' };
@@ -44,6 +45,7 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
             OverwriteExisting = GetItemField(i, "Overwrite Existing") == "1";
             DatasourceFolder = GetItemField(i, "Datasource Folder");
             Parameters = GetItemField(i, "Parameters");
+            IsSXA = GetItemField(i, "Is SXA") == "1";
             PresentationService = new PresentationService(l);
             MediaService = new MediaService(l);
         }
@@ -64,19 +66,11 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
                 return;
             }
 
-            var layoutField = newItem.Fields[FieldIDs.FinalLayoutField];
-            if (layoutField == null)
-            {
-                Logger.Log($"The layout field is null", newItem.Paths.FullPath, LogType.FieldToComponent);
-                return;
-            }
-
+            var deviceItem = PresentationService.FindDeviceDefinition(newItem, Device);
             var dsName = DatasourcePath.Contains("/")
                 ? DatasourcePath.Substring(DatasourcePath.LastIndexOf("/") + 1)
                 : DatasourcePath;
 
-            var layout = LayoutDefinition.Parse(layoutField.Value);
-            var deviceItem = layout.GetDevice(Device);
             if (!OverwriteExisting)
             {
                 var datasource = PresentationService.CreateDatasource(map, newItem, deviceItem, dsName, DatasourceFolder, DatasourcePath, Component, OverwriteExisting);
@@ -90,19 +84,19 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
                 }
                 else
                 {
-                    PresentationService.AddComponent(newItem, datasource, Placeholder, Component, Device, Parameters);
+                    PresentationService.AddComponent(newItem, datasource, Placeholder, Component, Device, Parameters, IsSXA);
                 }
             }
             else
             {
-                var rendering = PresentationService.GetRendering(deviceItem, Placeholder, Component);
+                var rendering = PresentationService.FindRendering(deviceItem, Placeholder, Component);
                 if (rendering == null)
                 {
                     Logger.Log($"There was no rendering matching device:{Device} - placeholder:{Placeholder} - component:{Component}", newItem.Paths.FullPath, LogType.MultilistToComponent, "device xml", deviceItem.ToXml());
                     return;
                 }
 
-                var datasource = PresentationService.GetDatasourceByName(map, newItem, rendering, dsName);
+                var datasource = PresentationService.FindDatasourceByName(map, newItem, rendering, dsName);
                 if (datasource == null)
                 {
                     Logger.Log($"There was no datasource found matching name:{dsName}", newItem.Paths.FullPath, LogType.MultilistToComponent, "rendering xml", rendering.ToXml());

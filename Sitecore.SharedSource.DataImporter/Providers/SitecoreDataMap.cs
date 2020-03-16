@@ -6,17 +6,13 @@ using Sitecore.SharedSource.DataImporter.Extensions;
 using Sitecore.Data.Items;
 using Sitecore.Data;
 using Sitecore.SharedSource.DataImporter.Mappings.Fields;
-using Sitecore.SharedSource.DataImporter.Mappings;
 using Sitecore.Collections;
-using System.IO;
 using Sitecore.Data.Fields;
 using System.Configuration;
 using Sitecore.Globalization;
 using Sitecore.Data.Managers;
-using Sitecore.Layouts;
 using Sitecore.SharedSource.DataImporter.Mappings.Templates;
 using Sitecore.SharedSource.DataImporter.Logger;
-using Sitecore.SecurityModel;
 using Sitecore.SharedSource.DataImporter.Services;
 
 namespace Sitecore.SharedSource.DataImporter.Providers
@@ -60,7 +56,7 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 			}
 		}        
 		public Dictionary<string, TemplateMapping> TemplateMappings { get; set; }
-		public IList<ComponentMapping> ComponentMappings { get; set; }
+		public List<IComponentMapping> ComponentMappings { get; set; }
 		public Item ImportRoot { get; set; }
 		public bool DeleteOnOverwrite { get; set; }
 		public bool SkipIfExists { get; set; }
@@ -369,9 +365,10 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 				//create an item to get the class / assembly name from
 				TemplateMapping tm = new TemplateMapping(child);
 				tm.FieldDefinitions = GetFieldDefinitions(child);
+                tm.ComponentMappings = GetComponentDefinitions(child);
 
-				//check for 'from' template
-				if (string.IsNullOrEmpty(tm.FromWhatTemplate))
+                //check for 'from' template
+                if (string.IsNullOrEmpty(tm.FromWhatTemplate))
 				{
 					Logger.Log("the template mapping field 'FromWhatTemplate' is not defined", child.Paths.FullPath, LogType.ImportDefinitionError, "From What Template");
 					continue;
@@ -385,38 +382,6 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 				}
 
 				d.Add(tm.FromWhatTemplate, tm);
-			}
-
-			return d;
-		}
-
-		protected IList<ComponentMapping> GetComponentDefinitions(Item i)
-		{
-			List<ComponentMapping> d = new List<ComponentMapping>();
-
-			//check for templates folder
-			Item temps = i.GetChildByTemplate(ComponentsFolderTemplateID);
-			if (temps.IsNull())
-			{
-				Logger.Log($"there is no 'Components' folder on '{i.DisplayName}'", i.Paths.FullPath);
-				return d;
-			}
-
-			//check for any children
-			if (!temps.HasChildren)
-			{
-				Logger.Log($"there are no component mappings to import on '{i.DisplayName}'", i.Paths.FullPath);
-				return d;
-			}
-
-			ChildList c = temps.Children;
-			foreach (Item child in c)
-			{
-				//create an item to get the class / assembly name from
-				ComponentMapping tm = new ComponentMapping(child);
-				tm.FieldDefinitions = GetFieldDefinitions(child);
-
-				d.Add(tm);
 			}
 
 			return d;
@@ -498,31 +463,130 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 			return item;
 		}
 
+		protected List<IComponentMapping> GetComponentDefinitions(Item i)
+		{
+			List<IComponentMapping> d = new List<IComponentMapping>();
+
+			//check for templates folder
+			Item temps = i.GetChildByTemplate(ComponentsFolderTemplateID);
+			if (temps.IsNull())
+			{
+				Logger.Log($"there is no 'Components' folder on '{i.DisplayName}'", i.Paths.FullPath);
+				return d;
+			}
+
+			//check for any children
+			if (!temps.HasChildren)
+			{
+				Logger.Log($"there are no component mappings to import on '{i.DisplayName}'", i.Paths.FullPath);
+				return d;
+			}
+
+			ChildList c = temps.Children;
+			foreach (Item child in c)
+			{
+				//create an item to get the class / assembly name from
+				ComponentMapping cm = new ComponentMapping(child);
+				cm.FieldDefinitions = GetFieldDefinitions(child);
+
+				d.Add(cm);
+			}
+
+            return d;
+		}
+
         public void ProcessComponents(Item newItem, Item importItem)
         {
-            ////add components to the new item
-            //using (new LanguageSwitcher(ImportToLanguage))
-            //{
-            //    //get the parent in the specific language
-            //    foreach (var cm in ComponentMappings)
-            //    {
-            //        try
-            //        {                            
-            //            var datasource = PresentationService.CreateDatasource(this, newItem, deviceItem, dsName, DatasourceFolder, cm.DatasourcePath, cm.Component, cm.OverwriteExisting);
-            //            if (datasource == null)
-            //            {
-            //                Logger.Log($"There was no datasource created for matching device:{Device} - placeholder:{cm.Placeholder} - component:{cm.Component}", i.Paths.FullPath, LogType.MultilistToComponent, "device xml", deviceItem.ToXml());
-            //                continue;
-            //            }
-            //            var deviceId = newItem.Database.Resources.Devices.GetAll().First(d => d.IsDefault).ID.ToString()
-            //            PresentationService.AddComponent(item, datasource.ID.ToString(), cm.Placeholder, cm.Rendering, deviceId, "");
-            //        }
-            //        catch (Exception ex)
-            //        {
-            //            Logger.Log("SitecoreDataMap.ProcessComponents", string.Format("failed to import component {0} on item {1}", cm.ComponentName, newItem.Paths.FullPath));
-            //        }
-            //    }
-            //}
+            var components = new List<IComponentMapping>();
+            components.AddRange(ComponentMappings);
+            
+            TemplateMapping tm = GetTemplateMapping(newItem);
+            if (tm != null)
+                components.AddRange(tm.ComponentMappings);
+            
+            foreach (var cm in components)
+            {
+                using (new LanguageSwitcher(ImportToLanguage))
+                {
+                    try
+                    {
+                        var dsName = cm.ToDatasourcePath.Contains("/")
+                            ? cm.ToDatasourcePath.Substring(cm.ToDatasourcePath.LastIndexOf("/") + 1)
+                            : cm.ToDatasourcePath;
+
+                        var oldDeviceDef = PresentationService.FindDeviceDefinition(importItem, cm.FromDevice);
+                        if (oldDeviceDef == null)
+                            continue;
+
+                        var oldRendering = PresentationService.FindRendering(oldDeviceDef, cm.FromPlaceholder, cm.FromComponent);
+                        if (oldRendering == null)
+                        {
+                            Logger.Log($"There was no rendering matching device:{cm.FromDevice} - placeholder:{cm.FromPlaceholder} - component:{cm.FromComponent}", importItem.Paths.FullPath, LogType.MultilistToComponent, "device xml", oldDeviceDef.ToXml());
+                            continue;
+                        }
+
+                        var oldDatasource = PresentationService.FindDatasource(this, importItem, oldRendering);
+                        if (oldDatasource == null)
+                        {
+                            Logger.Log($"There was no datasource found matching name:{dsName}", importItem.Paths.FullPath, LogType.MultilistToComponent, "rendering xml", oldRendering.ToXml());
+                            continue;
+                        }
+
+                        var newDeviceDef = PresentationService.FindDeviceDefinition(newItem, cm.ToDevice);
+                        if (newDeviceDef == null)
+                            continue;
+
+                        if (!cm.OverwriteExisting)
+                        {
+                            var createDatasource = !string.IsNullOrWhiteSpace(cm.ToDatasourcePath);
+                            var newDatasource = createDatasource 
+                                ? PresentationService.CreateDatasource(this, newItem, newDeviceDef, dsName, cm.ToDatasourceFolder, cm.ToDatasourcePath, cm.ToComponent, cm.OverwriteExisting)
+                                : null;
+                            if (newDatasource == null && createDatasource)
+                            {
+                                Logger.Log($"There was no datasource created for device:{cm.ToDevice} - placeholder:{cm.ToPlaceholder} - component:{cm.ToComponent}", newItem.Paths.FullPath, LogType.MultilistToComponent, "device xml", newDeviceDef.ToXml());    
+                                continue;
+                            }
+
+                            SetDatasourceFields(oldDatasource, newDatasource, cm);
+                            PresentationService.AddComponent(newItem, newDatasource, cm.ToPlaceholder, cm.ToComponent, cm.ToDevice, cm.ToParameters, cm.IsSXA);
+                        }
+                        else
+                        {
+                            var newRendering = PresentationService.FindRendering(newDeviceDef, cm.ToPlaceholder, cm.ToComponent);
+                            if (newRendering == null)
+                            {
+                                Logger.Log($"There was no rendering matching device:{cm.ToDevice} - placeholder:{cm.ToPlaceholder} - component:{cm.ToComponent}", importItem.Paths.FullPath, LogType.MultilistToComponent, "device xml", newDeviceDef.ToXml());
+                                continue;
+                            }
+
+                            var newDatasource = PresentationService.FindDatasource(this, newItem, newRendering);
+                            if (newDatasource == null)
+                            {
+                                Logger.Log($"There was no datasource found matching name:{dsName}", newItem.Paths.FullPath, LogType.MultilistToComponent, "rendering xml", newRendering.ToXml());
+                                continue;
+                            }
+
+                            SetDatasourceFields(oldDatasource, newDatasource, cm);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Log("SitecoreDataMap.ProcessComponents", string.Format("failed to import component {0} on item {1}", cm.FromComponent, importItem.Paths.FullPath));
+                    }
+                }
+            }
+        }
+
+        public virtual void SetDatasourceFields(Item oldDatasource, Item newDatasource, IComponentMapping cm)
+        {
+            newDatasource.Editing.BeginEdit();
+            foreach (var fieldMap in cm.FieldDefinitions)
+            {
+                fieldMap.FillField(this, ref newDatasource, oldDatasource);
+            }
+            newDatasource.Editing.EndEdit(false, false);
+            newDatasource.Database.Caches.ItemCache.RemoveItem(newDatasource.ID);
         }
 
         #endregion Methods

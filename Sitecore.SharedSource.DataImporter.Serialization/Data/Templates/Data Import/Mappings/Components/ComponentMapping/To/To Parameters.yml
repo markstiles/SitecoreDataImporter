@@ -1,8 +1,8 @@
 ﻿---
-ID: "b2b89561-7642-49fe-a6da-9bcb91defd67"
-Parent: "d40a57f3-b6b5-451d-9cc5-60a66cc798d7"
+ID: "0597cfd2-1ae3-46f7-9c47-cf4b28469240"
+Parent: "58c1b76c-4582-4bc4-b259-817d572d47ec"
 Template: "455a3e98-a627-4b40-8035-e683a0331ac7"
-Path: /sitecore/templates/Modules/Data Import/Mappings/Components/ComponentMapping/From Mapping/From What Placeholder
+Path: /sitecore/templates/Modules/Data Import/Mappings/Components/ComponentMapping/To/To Parameters
 DB: master
 SharedFields:
 - ID: "ab162cc0-dc80-4abf-8871-998ee5d7ba32"
@@ -10,7 +10,7 @@ SharedFields:
   Value: "Single-Line Text"
 - ID: "ba3f86a2-4a1c-4d78-b63d-91c2779c1b5e"
   Hint: __Sortorder
-  Value: 500
+  Value: 1450
 Languages:
 - Language: en
   Versions:
@@ -18,4 +18,4 @@ Languages:
     Fields:
     - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
       Hint: __Created
-      Value: 20171215T165148Z
+      Value: 20180215T152948Z

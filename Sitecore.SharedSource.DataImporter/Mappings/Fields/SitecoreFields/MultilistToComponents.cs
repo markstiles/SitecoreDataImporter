@@ -21,6 +21,7 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields.SitecoreFields
         public string DatasourceFolder { get; set; }
         public IEnumerable<string> ExistingDataNames { get; set; }
         public string Delimiter { get; set; }
+        public bool IsSXA { get; set; }
 
         protected readonly char[] comSplitr = { ',' };
         protected Dictionary<string, ComponentMap> ComponentMaps { get; set; }
@@ -38,6 +39,7 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields.SitecoreFields
             Delimiter = GetItemField(i, "Delimiter");
             Device = GetItemField(i, "Device");
             DatasourceFolder = GetItemField(i, "Datasource Folder");
+            IsSXA = GetItemField(i, "Is SXA") == "1";
             PresentationService = new PresentationService(l);
             ComponentMaps = new Dictionary<string, ComponentMap>();
             MediaService = new MediaService(l);
@@ -120,18 +122,18 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields.SitecoreFields
                     }
 
                     SetFields(i, datasource, cm, sitecoreMap);
-                    PresentationService.AddComponent(newItem, datasource, cm.Placeholder, cm.Component, Device, cm.Parameters);
+                    PresentationService.AddComponent(newItem, datasource, cm.Placeholder, cm.Component, Device, cm.Parameters, IsSXA);
                 }
                 else
                 {
-                    var rendering = PresentationService.GetRendering(deviceItem, cm.Placeholder, cm.Component);
+                    var rendering = PresentationService.FindRendering(deviceItem, cm.Placeholder, cm.Component);
                     if (rendering == null)
                     {
                         Logger.Log($"There was no rendering matching device:{Device} - placeholder:{cm.Placeholder} - component:{cm.Component}", i.Paths.FullPath, LogType.MultilistToComponent, "device xml", deviceItem.ToXml());
                         continue;
                     }
 
-                    var datasource = PresentationService.GetDatasourceByName(map, newItem, rendering, dsName);                    
+                    var datasource = PresentationService.FindDatasourceByName(map, newItem, rendering, dsName);                    
                     if (datasource == null)
                     {
                         Logger.Log($"There was no datasource found matching name:{dsName}", i.Paths.FullPath, LogType.MultilistToComponent, "rendering xml", rendering.ToXml());

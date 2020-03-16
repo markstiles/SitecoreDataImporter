@@ -1,16 +1,16 @@
 ﻿---
-ID: "fe909129-c527-4160-ac9a-a8bcb403d90b"
-Parent: "58c1b76c-4582-4bc4-b259-817d572d47ec"
+ID: "054030e1-fb36-4047-8d92-03513cadefee"
+Parent: "76e18572-1665-4454-8a58-9725409e66fe"
 Template: "455a3e98-a627-4b40-8035-e683a0331ac7"
-Path: /sitecore/templates/Modules/Data Import/Mappings/Components/ComponentMapping/Component Mapping/Default Datasource
+Path: /sitecore/templates/Modules/Data Import/Mappings/Fields/SitecoreFields/Multilist To Components/Settings/Is SXA
 DB: master
 SharedFields:
 - ID: "ab162cc0-dc80-4abf-8871-998ee5d7ba32"
   Hint: Type
-  Value: "Single-Line Text"
+  Value: Checkbox
 - ID: "ba3f86a2-4a1c-4d78-b63d-91c2779c1b5e"
   Hint: __Sortorder
-  Value: 900
+  Value: 100
 Languages:
 - Language: en
   Versions:
@@ -18,4 +18,4 @@ Languages:
     Fields:
     - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
       Hint: __Created
-      Value: 20180123T151157Z
+      Value: 20200316T185813Z

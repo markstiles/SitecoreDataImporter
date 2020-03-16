@@ -1,13 +1,13 @@
 ﻿---
-ID: "d40a57f3-b6b5-451d-9cc5-60a66cc798d7"
-Parent: "b901530b-f739-4a63-bef0-5371e49168f8"
+ID: "76e18572-1665-4454-8a58-9725409e66fe"
+Parent: "3cca1c34-b636-4437-81d4-b9fef820c4a1"
 Template: "e269fbb5-3750-427a-9149-7aa950b49301"
-Path: /sitecore/templates/Modules/Data Import/Mappings/Components/ComponentMapping/From Mapping
+Path: /sitecore/templates/Modules/Data Import/Mappings/Fields/SitecoreFields/Multilist To Components/Settings
 DB: master
 SharedFields:
 - ID: "ba3f86a2-4a1c-4d78-b63d-91c2779c1b5e"
   Hint: __Sortorder
-  Value: 100
+  Value: 210
 Languages:
 - Language: en
   Versions:
@@ -15,7 +15,7 @@ Languages:
     Fields:
     - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
       Hint: __Created
-      Value: 20171215T165049Z
+      Value: 20200316T185813Z
     - ID: "5dd74568-4d4b-44c1-b513-0af5f4cda34f"
       Hint: __Created by
       Value: |

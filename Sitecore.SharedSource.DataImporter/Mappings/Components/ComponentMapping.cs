@@ -8,43 +8,47 @@ using Sitecore.SharedSource.DataImporter.Mappings.Fields;
 
 namespace Sitecore.SharedSource.DataImporter.Mappings.Templates
 {
-	public class ComponentMapping
-	{
-		#region Properties
-        
-		public string FromWhatTemplate { get; set; }
-		public string ToWhatTemplate { get; set; }
-		public string ComponentName { get; set; }
-		public string FolderName { get; set; }
-		public string FromWhatRendering { get; set; }
-		public string ToWhatRendering { get; set; }
-		public string FromWhatPlaceholder { get; set; }
-		public string ToWhatPlaceholder { get; set; }
-		public string ReplaceWhatRendering { get; set; }
-		public string DefaultDatasource { get; set; }
-		public string RenderingParameters { get; set; }
-		public bool UseParentAsDatasource { get; set; }
-		public string Id { get; set; }
+	public class ComponentMapping : IComponentMapping
+    {
+        #region Properties
 
-		public List<IBaseField> FieldDefinitions { get; set; }
+        public string Id { get; set; }
+        public string FromDevice { get; set; }
+		public string FromPlaceholder { get; set; }
+		public string FromComponent { get; set; }
+		public string ToDevice { get; set; }
+		public string ToTemplate { get; set; }
+		public string ToComponent { get; set; }
+		public string ToPlaceholder { get; set; }
+		public string ToDatasourcePath { get; set; }
+        public string ToDatasourceFolder { get; set; }
+        public string ToParameters { get; set; }
+		public bool OverwriteExisting { get; set; }
+		public bool IsSXA { get; set; }
+        
+        public List<IBaseField> FieldDefinitions { get; set; }
                 
 		#endregion
 
 		public ComponentMapping(Item i)
 		{
-			Id = i.ID.ToString();
-			FromWhatTemplate = i.Fields["From What Template"].Value;
-			ToWhatTemplate = i.Fields["To What Template"].Value;
-			ComponentName = i.Fields["Component Name"].Value;
-			FolderName = i.Fields["Folder Name"].Value;
-			FromWhatRendering = i.Fields["From What Rendering"].Value;
-			ToWhatRendering = i.Fields["To What Rendering"].Value;
-			FromWhatPlaceholder = i.Fields["From What Placeholder"].Value;
-			ToWhatPlaceholder = i.Fields["To What Placeholder"].Value;
-			ReplaceWhatRendering = i.Fields["Replace What Rendering"].Value;
-			DefaultDatasource = i.Fields["Default Datasource"].Value;
-			RenderingParameters = i.Fields["Rendering Parameters"].Value;
-			UseParentAsDatasource = i.Fields["Use Parent As Datasource"].Value == "1";
+            Id = i.ID.ToString();
+            FromDevice = i.Fields["From Device"].Value;
+            FromPlaceholder = i.Fields["From Placeholder"].Value;
+            FromComponent = i.Fields["From Component"].Value;
+
+            ToDevice = i.Fields["To Device"].Value;
+            ToTemplate = i.Fields["To Template"].Value;
+            ToComponent = i.Fields["To Component"].Value;
+            ToPlaceholder = i.Fields["To Placeholder"].Value;
+            ToDatasourcePath = i.Fields["To Datasource Path"].Value;
+            ToDatasourceFolder = i.Fields["To Datasource Folder"].Value;
+            ToParameters = i.Fields["To Parameters"].Value;
+            
+            OverwriteExisting = i.Fields["Overwrite Existing"].Value == "1";
+            IsSXA = i.Fields["Is SXA"].Value == "1";
+            
+            FieldDefinitions = new List<IBaseField>();
 		}
 	}
 }

@@ -27,6 +27,8 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Templates
 		/// </summary>
 		public List<IBaseField> FieldDefinitions { get; set; }
         
+        public List<IComponentMapping> ComponentMappings { get; set; }
+
 		#endregion
 
 		//constructor
