@@ -18,5 +18,10 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 
             return null;
 		}
-	}
+
+        public override Item GetParentNode(object importRow, string newItemName)
+        {
+            return ImportToWhere;
+        }
+    }
 }
