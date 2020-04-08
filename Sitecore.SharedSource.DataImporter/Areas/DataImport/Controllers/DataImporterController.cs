@@ -114,7 +114,7 @@ namespace Sitecore.SharedSource.DataImporter.Controllers
 
             var importService = new ImportProcessor(map, l);
             
-            var jobOptions = new JobOptions(
+            var jobOptions = new DefaultJobOptions(
                 handleName,
                 importItem.DisplayName,
                 Context.Site.Name,
@@ -129,7 +129,7 @@ namespace Sitecore.SharedSource.DataImporter.Controllers
 
         public ActionResult GetJobStatus(string handleName)
         {
-            Job j = JobManager.GetJob(handleName);
+            var j = JobManager.GetJob(handleName);
 
             var result = new JobStatusViewModel()
             {
