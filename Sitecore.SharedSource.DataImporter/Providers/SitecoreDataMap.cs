@@ -295,7 +295,11 @@ namespace Sitecore.SharedSource.DataImporter.Providers
 						{
                             var nItemTemplate = GetNewItemTemplate(importRow);
                             newItem = ItemManager.AddFromTemplate(newItemName, nItemTemplate.ID, parent, oldItem.ID);
+
+                            newItem.Editing.BeginEdit();
                             ProcessComponents(newItem, oldItem);
+                            newItem.Editing.EndEdit(false, false);
+                            newItem.Database.Caches.ItemCache.RemoveItem(newItem.ID);
                         }
 
 						if (newItem == null)
