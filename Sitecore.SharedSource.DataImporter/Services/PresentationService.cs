@@ -51,12 +51,11 @@ namespace Sitecore.SharedSource.DataImporter.Services
 
             var finalLayout = LayoutDefinition.Parse(finalLayoutField.Value);
             var deviceItem = finalLayout.GetDevice(deviceId);
-            if (deviceItem == null)
-            {
-                Logger.Log($"The final layout field is null", item.Paths.FullPath, LogType.FieldError);
+            if (deviceItem != null)
                 return deviceItem;
-            }
-  
+            else
+                Logger.Log($"The final layout field is null", item.Paths.FullPath, LogType.FieldError);
+            
             var layout = LayoutDefinition.Parse(layoutField.Value);
             deviceItem = layout.GetDevice(deviceId);
 
