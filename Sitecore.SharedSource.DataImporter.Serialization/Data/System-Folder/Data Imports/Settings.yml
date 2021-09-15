@@ -1,0 +1,18 @@
+﻿---
+ID: "3d697ab9-53be-4e7a-b683-e544a905c4c1"
+Parent: "236fda64-d3db-43ec-be1d-9d0297ff4492"
+Template: "aa0eb094-b970-4aaf-9c05-7b493deeeb2c"
+Path: /sitecore/system/Modules/Data Imports/Settings
+DB: master
+Languages:
+- Language: en
+  Versions:
+  - Version: 1
+    Fields:
+    - ID: "25bed78c-4957-4165-998a-ca1b52f67497"
+      Hint: __Created
+      Value: 20210915T195418Z
+    - ID: "5dd74568-4d4b-44c1-b513-0af5f4cda34f"
+      Hint: __Created by
+      Value: |
+        sitecore\Admin
