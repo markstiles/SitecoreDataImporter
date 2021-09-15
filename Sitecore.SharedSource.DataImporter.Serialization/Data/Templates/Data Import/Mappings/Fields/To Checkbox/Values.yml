@@ -2,7 +2,7 @@
 ID: "a1c409aa-ddd2-4f36-9c32-21c38868f328"
 Parent: "fb9c4ea6-d2e2-4f73-b1be-e4aa68de00c4"
 Template: "e269fbb5-3750-427a-9149-7aa950b49301"
-Path: /sitecore/templates/Modules/Data Import/Mappings/Fields/To Checkbox/Values
+Path: /sitecore/templates/Data Import/Mappings/Fields/To Checkbox/Values
 DB: master
 SharedFields:
 - ID: "ba3f86a2-4a1c-4d78-b63d-91c2779c1b5e"

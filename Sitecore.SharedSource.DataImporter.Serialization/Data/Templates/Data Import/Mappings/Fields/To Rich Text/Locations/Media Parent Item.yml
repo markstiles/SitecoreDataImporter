@@ -2,7 +2,7 @@
 ID: "a454988a-0355-4935-8fe9-23167403a359"
 Parent: "b2f7b047-5100-4074-bfe6-e901fad47237"
 Template: "455a3e98-a627-4b40-8035-e683a0331ac7"
-Path: /sitecore/templates/Modules/Data Import/Mappings/Fields/To Rich Text/Locations/Media Parent Item
+Path: /sitecore/templates/Data Import/Mappings/Fields/To Rich Text/Locations/Media Parent Item
 DB: master
 SharedFields:
 - ID: "ab162cc0-dc80-4abf-8871-998ee5d7ba32"

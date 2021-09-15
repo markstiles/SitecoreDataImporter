@@ -2,7 +2,7 @@
 ID: "270d8e2b-f498-4f63-970b-94b63f0b163e"
 Parent: "a1c409aa-ddd2-4f36-9c32-21c38868f328"
 Template: "455a3e98-a627-4b40-8035-e683a0331ac7"
-Path: /sitecore/templates/Modules/Data Import/Mappings/Fields/To Checkbox/Values/NegativeValues
+Path: /sitecore/templates/Data Import/Mappings/Fields/To Checkbox/Values/NegativeValues
 DB: master
 SharedFields:
 - ID: "ab162cc0-dc80-4abf-8871-998ee5d7ba32"

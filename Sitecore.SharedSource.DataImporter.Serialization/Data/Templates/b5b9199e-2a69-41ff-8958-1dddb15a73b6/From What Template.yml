@@ -2,7 +2,7 @@
 ID: "87406a40-4f34-488b-acac-09b28c7cafe3"
 Parent: "b5b9199e-2a69-41ff-8958-1dddb15a73b6"
 Template: "455a3e98-a627-4b40-8035-e683a0331ac7"
-Path: /sitecore/templates/Modules/Data Import/Mappings/Fields/SitecoreFields/Template Component Map/Component/From What Template
+Path: /sitecore/templates/Data Import/Mappings/Fields/SitecoreFields/Template Component Map/Component/From What Template
 DB: master
 SharedFields:
 - ID: "1eb8ae32-e190-44a6-968d-ed904c794ebf"

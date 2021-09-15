@@ -2,7 +2,7 @@
 ID: "5fef5eec-092d-42e7-a008-57d76294dd87"
 Parent: "ec4e9590-f027-4c6f-ac08-dcabd8877f1b"
 Template: "e269fbb5-3750-427a-9149-7aa950b49301"
-Path: /sitecore/templates/Modules/Data Import/Mappings/Fields/To Droplink/Locations
+Path: /sitecore/templates/Data Import/Mappings/Fields/To Droplink/Locations
 DB: master
 SharedFields:
 - ID: "06d5295c-ed2f-4a54-9bf2-26228d113318"

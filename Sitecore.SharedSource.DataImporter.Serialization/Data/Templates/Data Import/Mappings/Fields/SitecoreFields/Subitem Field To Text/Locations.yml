@@ -2,7 +2,7 @@
 ID: "d3bae99b-6989-4fc3-9baf-aaed855d8b4b"
 Parent: "5c73c4e4-d157-4099-92a4-321b45165c53"
 Template: "e269fbb5-3750-427a-9149-7aa950b49301"
-Path: /sitecore/templates/Modules/Data Import/Mappings/Fields/SitecoreFields/Subitem Field To Text/Locations
+Path: /sitecore/templates/Data Import/Mappings/Fields/SitecoreFields/Subitem Field To Text/Locations
 DB: master
 SharedFields:
 - ID: "06d5295c-ed2f-4a54-9bf2-26228d113318"

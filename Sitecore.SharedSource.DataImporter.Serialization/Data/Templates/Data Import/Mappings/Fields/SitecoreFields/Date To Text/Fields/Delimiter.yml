@@ -2,7 +2,7 @@
 ID: "b38ac212-add0-4675-b03e-2ac53dab604a"
 Parent: "c6c92178-6bd5-4781-a557-05b6c3283984"
 Template: "455a3e98-a627-4b40-8035-e683a0331ac7"
-Path: /sitecore/templates/Modules/Data Import/Mappings/Fields/SitecoreFields/Date To Text/Fields/Delimiter
+Path: /sitecore/templates/Data Import/Mappings/Fields/SitecoreFields/Date To Text/Fields/Delimiter
 DB: master
 SharedFields:
 - ID: "ab162cc0-dc80-4abf-8871-998ee5d7ba32"

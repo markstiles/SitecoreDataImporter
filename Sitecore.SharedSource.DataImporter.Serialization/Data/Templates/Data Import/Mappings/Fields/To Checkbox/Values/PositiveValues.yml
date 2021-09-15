@@ -2,7 +2,7 @@
 ID: "331b4c21-80e1-498f-9bf8-e191535545b4"
 Parent: "a1c409aa-ddd2-4f36-9c32-21c38868f328"
 Template: "455a3e98-a627-4b40-8035-e683a0331ac7"
-Path: /sitecore/templates/Modules/Data Import/Mappings/Fields/To Checkbox/Values/PositiveValues
+Path: /sitecore/templates/Data Import/Mappings/Fields/To Checkbox/Values/PositiveValues
 DB: master
 SharedFields:
 - ID: "ab162cc0-dc80-4abf-8871-998ee5d7ba32"

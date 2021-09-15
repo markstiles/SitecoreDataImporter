@@ -2,7 +2,7 @@
 ID: "091ba226-27a5-4f4d-91ff-8686e870af18"
 Parent: "20b1f9c1-9c09-49c9-b760-6ffde99c35ea"
 Template: "98ef4356-8bfe-4f6a-a697-adfd0aad0b65"
-Path: /sitecore/templates/Modules/Data Import/Branches/CSV Import Map/$name/Fields
+Path: /sitecore/templates/Data Import/Branches/CSV Import Map/$name/Fields
 DB: master
 Languages:
 - Language: en

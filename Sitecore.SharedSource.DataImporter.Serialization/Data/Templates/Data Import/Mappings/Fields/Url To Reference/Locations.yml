@@ -2,7 +2,7 @@
 ID: "3ff2005e-d373-4b82-9121-748994e85bb8"
 Parent: "0f528c70-e771-4f2f-8d80-103a57104519"
 Template: "e269fbb5-3750-427a-9149-7aa950b49301"
-Path: /sitecore/templates/Modules/Data Import/Mappings/Fields/Url To Reference/Locations
+Path: /sitecore/templates/Data Import/Mappings/Fields/Url To Reference/Locations
 DB: master
 Languages:
 - Language: en

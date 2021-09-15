@@ -2,7 +2,7 @@
 ID: "5b401bcc-7b80-44e7-84f3-4ae7b5e134a4"
 Parent: "2781663b-24de-4c8a-98e0-3e6a216fff9d"
 Template: "455a3e98-a627-4b40-8035-e683a0331ac7"
-Path: /sitecore/templates/Modules/Data Import/Mappings/Fields/To Rich Text/Fields/Delimiter
+Path: /sitecore/templates/Data Import/Mappings/Fields/To Rich Text/Fields/Delimiter
 DB: master
 SharedFields:
 - ID: "ab162cc0-dc80-4abf-8871-998ee5d7ba32"

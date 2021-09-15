@@ -2,7 +2,7 @@
 ID: "5541186d-67b1-48f5-b987-7670d157216b"
 Parent: "77400272-372c-4cf4-b2f1-e093ab83bd6e"
 Template: "455a3e98-a627-4b40-8035-e683a0331ac7"
-Path: /sitecore/templates/Modules/Data Import/Mappings/Fields/Field To Component/Settings/Is SXA
+Path: /sitecore/templates/Data Import/Mappings/Fields/Field To Component/Settings/Is SXA
 DB: master
 SharedFields:
 - ID: "ab162cc0-dc80-4abf-8871-998ee5d7ba32"

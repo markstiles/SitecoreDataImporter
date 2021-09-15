@@ -2,7 +2,7 @@
 ID: "c44ab211-3b9e-4cda-a54d-c3afdb03bb92"
 Parent: "16921a7d-8c7e-4ec6-9380-5dc10ebb6f32"
 Template: "e269fbb5-3750-427a-9149-7aa950b49301"
-Path: /sitecore/templates/Modules/Data Import/Mappings/Processors/Processor/Constructor
+Path: /sitecore/templates/Data Import/Mappings/Processors/Processor/Constructor
 DB: master
 SharedFields:
 - ID: "06d5295c-ed2f-4a54-9bf2-26228d113318"

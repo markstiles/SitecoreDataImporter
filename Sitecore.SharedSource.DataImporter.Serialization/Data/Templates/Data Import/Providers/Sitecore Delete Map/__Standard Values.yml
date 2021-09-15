@@ -2,7 +2,7 @@
 ID: "0cd0afaa-c35f-4492-8e56-8788c1d7b8cb"
 Parent: "e483e617-74f9-4a09-896f-dbcd2897951b"
 Template: "e483e617-74f9-4a09-896f-dbcd2897951b"
-Path: /sitecore/templates/Modules/Data Import/Providers/Sitecore Delete Map/__Standard Values
+Path: /sitecore/templates/Data Import/Providers/Sitecore Delete Map/__Standard Values
 DB: master
 SharedFields:
 - ID: "0790a745-13e8-44f1-aa17-469e8fc7d20e"

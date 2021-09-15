@@ -2,7 +2,7 @@
 ID: "725a5898-3183-4334-a770-d531d0e46384"
 Parent: "b3cf453e-5ab9-4037-a7c3-1a5341bcec9e"
 Template: "455a3e98-a627-4b40-8035-e683a0331ac7"
-Path: /sitecore/templates/Modules/Data Import/Mappings/Components/ComponentMapping/Settings/Overwrite Existing
+Path: /sitecore/templates/Data Import/Mappings/Components/ComponentMapping/Settings/Overwrite Existing
 DB: master
 SharedFields:
 - ID: "ab162cc0-dc80-4abf-8871-998ee5d7ba32"

@@ -2,7 +2,7 @@
 ID: "0d36ae5a-e2ba-4de5-b930-cd1bef43c7f8"
 Parent: "98ef4356-8bfe-4f6a-a697-adfd0aad0b65"
 Template: "98ef4356-8bfe-4f6a-a697-adfd0aad0b65"
-Path: /sitecore/templates/Modules/Data Import/Folders/Field Folder/__Standard Values
+Path: /sitecore/templates/Data Import/Folders/Field Folder/__Standard Values
 DB: master
 SharedFields:
 - ID: "1172f251-dad4-4efb-a329-0c63500e4f1e"

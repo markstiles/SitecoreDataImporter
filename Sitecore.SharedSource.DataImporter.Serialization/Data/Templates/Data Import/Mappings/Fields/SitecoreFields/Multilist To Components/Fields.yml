@@ -2,7 +2,7 @@
 ID: "14faacd7-5c1a-48d7-be0e-41997392cdfe"
 Parent: "3cca1c34-b636-4437-81d4-b9fef820c4a1"
 Template: "e269fbb5-3750-427a-9149-7aa950b49301"
-Path: /sitecore/templates/Modules/Data Import/Mappings/Fields/SitecoreFields/Multilist To Components/Fields
+Path: /sitecore/templates/Data Import/Mappings/Fields/SitecoreFields/Multilist To Components/Fields
 DB: master
 Languages:
 - Language: en

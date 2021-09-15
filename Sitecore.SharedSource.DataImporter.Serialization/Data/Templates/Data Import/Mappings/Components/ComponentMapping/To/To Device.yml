@@ -2,7 +2,7 @@
 ID: "2d75e9c6-ce07-420f-aca9-c061eea5bcf7"
 Parent: "58c1b76c-4582-4bc4-b259-817d572d47ec"
 Template: "455a3e98-a627-4b40-8035-e683a0331ac7"
-Path: /sitecore/templates/Modules/Data Import/Mappings/Components/ComponentMapping/To/To Device
+Path: /sitecore/templates/Data Import/Mappings/Components/ComponentMapping/To/To Device
 DB: master
 SharedFields:
 - ID: "1eb8ae32-e190-44a6-968d-ed904c794ebf"

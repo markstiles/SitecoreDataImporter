@@ -2,7 +2,7 @@
 ID: "faa98ed3-0cf8-4c68-99b9-5cb6a904ea9e"
 Parent: "84cf5ecd-18e3-4c5a-9031-d5b2b09b4f8b"
 Template: "84cf5ecd-18e3-4c5a-9031-d5b2b09b4f8b"
-Path: /sitecore/templates/Modules/Data Import/Folders/Taxonomy Field Folder/__Standard Values
+Path: /sitecore/templates/Data Import/Folders/Taxonomy Field Folder/__Standard Values
 DB: master
 SharedFields:
 - ID: "1172f251-dad4-4efb-a329-0c63500e4f1e"

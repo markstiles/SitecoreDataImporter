@@ -2,7 +2,7 @@
 ID: "a8e914be-49fd-4325-a1ce-daa3148091ed"
 Parent: "bd3fff3f-5b33-497f-af66-62d133005cad"
 Template: "455a3e98-a627-4b40-8035-e683a0331ac7"
-Path: /sitecore/templates/Modules/Data Import/Providers/CSV Import Map/Fields/Field Delimiter
+Path: /sitecore/templates/Data Import/Providers/CSV Import Map/Fields/Field Delimiter
 DB: master
 SharedFields:
 - ID: "ab162cc0-dc80-4abf-8871-998ee5d7ba32"

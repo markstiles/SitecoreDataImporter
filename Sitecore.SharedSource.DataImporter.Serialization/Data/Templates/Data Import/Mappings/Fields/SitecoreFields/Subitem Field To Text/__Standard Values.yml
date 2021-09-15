@@ -2,7 +2,7 @@
 ID: "b941195f-f233-4df3-836a-f5d6289be188"
 Parent: "5c73c4e4-d157-4099-92a4-321b45165c53"
 Template: "5c73c4e4-d157-4099-92a4-321b45165c53"
-Path: /sitecore/templates/Modules/Data Import/Mappings/Fields/SitecoreFields/Subitem Field To Text/__Standard Values
+Path: /sitecore/templates/Data Import/Mappings/Fields/SitecoreFields/Subitem Field To Text/__Standard Values
 DB: master
 SharedFields:
 - ID: "fa7b99b1-6bb9-469c-b786-f8a9d52d2f0a"

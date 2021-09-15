@@ -2,7 +2,7 @@
 ID: "5950f3c4-8c86-4485-a9e3-6b06c6175e1f"
 Parent: "bedd1e93-2bce-4449-b722-4269cb751751"
 Template: "455a3e98-a627-4b40-8035-e683a0331ac7"
-Path: /sitecore/templates/Modules/Data Import/Mappings/Fields/To Rich Text/Html/Unwanted Tags
+Path: /sitecore/templates/Data Import/Mappings/Fields/To Rich Text/Html/Unwanted Tags
 DB: master
 SharedFields:
 - ID: "ab162cc0-dc80-4abf-8871-998ee5d7ba32"

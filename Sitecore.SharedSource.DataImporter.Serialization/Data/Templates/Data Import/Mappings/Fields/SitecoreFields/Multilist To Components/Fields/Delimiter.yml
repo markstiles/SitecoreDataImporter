@@ -2,7 +2,7 @@
 ID: "786703ee-b16b-4fb6-89dd-e3fd7cd5e20d"
 Parent: "14faacd7-5c1a-48d7-be0e-41997392cdfe"
 Template: "455a3e98-a627-4b40-8035-e683a0331ac7"
-Path: /sitecore/templates/Modules/Data Import/Mappings/Fields/SitecoreFields/Multilist To Components/Fields/Delimiter
+Path: /sitecore/templates/Data Import/Mappings/Fields/SitecoreFields/Multilist To Components/Fields/Delimiter
 DB: master
 SharedFields:
 - ID: "ab162cc0-dc80-4abf-8871-998ee5d7ba32"

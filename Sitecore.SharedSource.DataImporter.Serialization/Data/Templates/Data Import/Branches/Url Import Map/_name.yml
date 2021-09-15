@@ -2,7 +2,7 @@
 ID: "87e3fb10-6330-4d39-b855-707d5b2c392f"
 Parent: "b45f3a2f-1ff7-496e-a34d-1d4f89e04292"
 Template: "8c445567-92cb-4d7e-8ec1-c91667062211"
-Path: /sitecore/templates/Modules/Data Import/Branches/Url Import Map/$name
+Path: /sitecore/templates/Data Import/Branches/Url Import Map/$name
 DB: master
 Languages:
 - Language: en

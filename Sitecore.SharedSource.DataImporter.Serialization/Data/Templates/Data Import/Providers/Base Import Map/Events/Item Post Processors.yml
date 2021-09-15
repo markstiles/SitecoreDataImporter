@@ -2,7 +2,7 @@
 ID: "c4c3031d-ef55-4185-956b-f5ace3ad6132"
 Parent: "b8d4a735-f298-4d61-af5b-231423df5ad8"
 Template: "455a3e98-a627-4b40-8035-e683a0331ac7"
-Path: /sitecore/templates/Modules/Data Import/Providers/Base Import Map/Events/Item Post Processors
+Path: /sitecore/templates/Data Import/Providers/Base Import Map/Events/Item Post Processors
 DB: master
 SharedFields:
 - ID: "1eb8ae32-e190-44a6-968d-ed904c794ebf"

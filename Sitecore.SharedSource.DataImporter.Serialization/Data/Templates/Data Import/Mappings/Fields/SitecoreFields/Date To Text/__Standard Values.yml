@@ -2,7 +2,7 @@
 ID: "72dc1104-8470-4abd-ab3b-f94901fb138c"
 Parent: "3383d995-d7ed-47c2-ab18-422d19af371c"
 Template: "3383d995-d7ed-47c2-ab18-422d19af371c"
-Path: /sitecore/templates/Modules/Data Import/Mappings/Fields/SitecoreFields/Date To Text/__Standard Values
+Path: /sitecore/templates/Data Import/Mappings/Fields/SitecoreFields/Date To Text/__Standard Values
 DB: master
 SharedFields:
 - ID: "fa7b99b1-6bb9-469c-b786-f8a9d52d2f0a"

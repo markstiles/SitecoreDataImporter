@@ -2,7 +2,7 @@
 ID: "3f18638a-12e2-4f2e-8920-d8ea47d67ff5"
 Parent: "0b61b32d-c647-4ed3-b237-1056f6f31d34"
 Template: "b901530b-f739-4a63-bef0-5371e49168f8"
-Path: /sitecore/templates/Modules/Data Import/Branches/ComponentMapping/$name
+Path: /sitecore/templates/Data Import/Branches/ComponentMapping/$name
 DB: master
 Languages:
 - Language: en

@@ -2,7 +2,7 @@
 ID: "f6dc50df-4636-43d9-aecd-0043c90ff2e3"
 Parent: "0899bf32-1f5c-4018-9818-e21316088cfa"
 Template: "0899bf32-1f5c-4018-9818-e21316088cfa"
-Path: /sitecore/templates/Modules/Data Import/Mappings/Fields/Html Fragment To Text/__Standard Values
+Path: /sitecore/templates/Data Import/Mappings/Fields/Html Fragment To Text/__Standard Values
 DB: master
 SharedFields:
 - ID: "ba3f86a2-4a1c-4d78-b63d-91c2779c1b5e"

@@ -2,7 +2,7 @@
 ID: "f37df260-906a-4f0a-9b64-f2bb8ba9dc65"
 Parent: "96aac80c-ce36-43c5-93eb-eda101794aac"
 Template: "e269fbb5-3750-427a-9149-7aa950b49301"
-Path: /sitecore/templates/Modules/Data Import/Providers/Sitecore Import Map/Settings
+Path: /sitecore/templates/Data Import/Providers/Sitecore Import Map/Settings
 DB: master
 SharedFields:
 - ID: "06d5295c-ed2f-4a54-9bf2-26228d113318"

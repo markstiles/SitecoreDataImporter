@@ -2,7 +2,7 @@
 ID: "fa7b99b1-6bb9-469c-b786-f8a9d52d2f0a"
 Parent: "9dafae49-18bd-4be4-9b17-671593011006"
 Template: "455a3e98-a627-4b40-8035-e683a0331ac7"
-Path: /sitecore/templates/Modules/Data Import/Mappings/Fields/Base Field/Constructor/Handler Class
+Path: /sitecore/templates/Data Import/Mappings/Fields/Base Field/Constructor/Handler Class
 DB: master
 SharedFields:
 - ID: "1eb8ae32-e190-44a6-968d-ed904c794ebf"

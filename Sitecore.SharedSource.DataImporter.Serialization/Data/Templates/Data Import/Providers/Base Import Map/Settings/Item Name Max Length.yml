@@ -2,7 +2,7 @@
 ID: "02bab16b-d351-4502-a579-f3d6e0edb4f8"
 Parent: "2b7ed962-3fae-492a-9fde-b2bb212a99c0"
 Template: "455a3e98-a627-4b40-8035-e683a0331ac7"
-Path: /sitecore/templates/Modules/Data Import/Providers/Base Import Map/Settings/Item Name Max Length
+Path: /sitecore/templates/Data Import/Providers/Base Import Map/Settings/Item Name Max Length
 DB: master
 SharedFields:
 - ID: "ab162cc0-dc80-4abf-8871-998ee5d7ba32"

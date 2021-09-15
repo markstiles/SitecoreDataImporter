@@ -2,7 +2,7 @@
 ID: "2781663b-24de-4c8a-98e0-3e6a216fff9d"
 Parent: "82e5148c-b778-45bf-89dd-a6d0265b5218"
 Template: "e269fbb5-3750-427a-9149-7aa950b49301"
-Path: /sitecore/templates/Modules/Data Import/Mappings/Fields/To Rich Text/Fields
+Path: /sitecore/templates/Data Import/Mappings/Fields/To Rich Text/Fields
 DB: master
 SharedFields:
 - ID: "06d5295c-ed2f-4a54-9bf2-26228d113318"

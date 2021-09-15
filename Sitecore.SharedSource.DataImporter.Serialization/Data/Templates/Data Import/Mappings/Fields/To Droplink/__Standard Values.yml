@@ -2,7 +2,7 @@
 ID: "937d62b3-69f0-4160-8c62-006142ba1691"
 Parent: "ec4e9590-f027-4c6f-ac08-dcabd8877f1b"
 Template: "ec4e9590-f027-4c6f-ac08-dcabd8877f1b"
-Path: /sitecore/templates/Modules/Data Import/Mappings/Fields/To Droplink/__Standard Values
+Path: /sitecore/templates/Data Import/Mappings/Fields/To Droplink/__Standard Values
 DB: master
 SharedFields:
 - ID: "fa7b99b1-6bb9-469c-b786-f8a9d52d2f0a"

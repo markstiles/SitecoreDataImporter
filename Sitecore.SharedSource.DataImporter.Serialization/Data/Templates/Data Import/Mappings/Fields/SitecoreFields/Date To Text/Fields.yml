@@ -2,7 +2,7 @@
 ID: "c6c92178-6bd5-4781-a557-05b6c3283984"
 Parent: "3383d995-d7ed-47c2-ab18-422d19af371c"
 Template: "e269fbb5-3750-427a-9149-7aa950b49301"
-Path: /sitecore/templates/Modules/Data Import/Mappings/Fields/SitecoreFields/Date To Text/Fields
+Path: /sitecore/templates/Data Import/Mappings/Fields/SitecoreFields/Date To Text/Fields
 DB: master
 Languages:
 - Language: en

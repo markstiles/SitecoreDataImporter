@@ -15,7 +15,7 @@
 				<exclude name="${dir.src}/**/bin/**/*" />
 				<exclude name="${dir.src}/**/Debug/**/*" />
 				<exclude name="${dir.src}/**/Release/**/*" />
-				<include name="${dir.src}/../Sitecore.SharedSource.DataImporter.*/**/*.template" />				
+				<include name="${dir.src}/../Sitecore.SharedSource.DataImporter*/**/*.template" />				
 				<include name="${dir.src}/Feature/**/code/**/*.template" />				
 				<include name="${dir.src}/Feature/**/tests/**/*.template" />				
 				<include name="${dir.src}/Feature/**/serialization/**/*.template" />				
